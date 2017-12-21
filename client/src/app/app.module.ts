@@ -9,6 +9,8 @@ import { HomeComponent } from './components/home/home.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/login/login.component';
 import { AuthService } from './services/auth.service';
+import { FlashMessagesModule } from 'angular2-flash-messages';
+import { FlashMessagesService } from 'angular2-flash-messages';
 
 
 @NgModule({
@@ -23,9 +25,10 @@ import { AuthService } from './services/auth.service';
     BrowserModule,
     HttpModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FlashMessagesModule
   ],
-  providers: [AuthService],
+  providers: [AuthService, FlashMessagesService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
+import { tokenNotExpired } from 'angular2-jwt';
 
 @Injectable()
 export class AuthService {
 
-  domain = ""; // Production;
-  //domain = "http://localhost:8080";
+  //domain = ""; // Production;
+  domain = "http://localhost:8080/";
   authToken;
   user;
   options;
@@ -49,6 +50,7 @@ export class AuthService {
 
   // Function to login user
   login(user) {
+    console.log(this.domain + 'authentication/login');
     return this.http.post(this.domain + 'authentication/login', user).map(res => res.json());
   }
 
@@ -81,8 +83,8 @@ export class AuthService {
   }
 
   // // Function to check if user is logged in
-  // loggedIn() {
-  //   return tokenNotExpired();
-  // }
+  loggedIn() {
+    return tokenNotExpired();
+  }
 
 }
