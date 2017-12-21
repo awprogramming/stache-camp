@@ -28,7 +28,7 @@ import { FlashMessagesService } from 'angular2-flash-messages';
     ReactiveFormsModule,
     FlashMessagesModule
   ],
-  providers: [AuthService, FlashMessagesService],
+  providers: [AuthService,FlashMessagesService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
