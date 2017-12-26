@@ -50,7 +50,6 @@ export class AuthService {
 
   // Function to login user
   login(user) {
-    console.log(this.domain + 'authentication/login');
     return this.http.post(this.domain + 'authentication/login', user).map(res => res.json());
   }
 
@@ -71,7 +70,6 @@ export class AuthService {
 
   // Function to get user's profile data
   getProfile() {
-    // console.log("hello");
     this.createAuthenticationHeaders(); // Create headers before sending to API
     return this.http.get(this.domain + 'authentication/dashboard', this.options).map(res => res.json());
   }
@@ -85,6 +83,13 @@ export class AuthService {
   // // Function to check if user is logged in
   loggedIn() {
     return tokenNotExpired();
+  }
+
+  superUser(){
+    if(this.loggedIn())
+      return JSON.parse(localStorage.getItem('user')).permissions == 'superuser';
+    else
+      return false;
   }
 
 }

@@ -93,7 +93,8 @@ const passwordValidators = [
 const userSchema = new Schema({
     email: {type:String, required: true, unique: true, lowercase: true, validate: emailValidators },
     username: {type:String, required: true, unique: true, lowercase: true, validate: usernameValidators },
-    password: {type:String, required: true, validate: passwordValidators}
+    password: {type:String, required: true, validate: passwordValidators},
+    //permissions: {type:Array, required: true}
 });
 
 

@@ -9,8 +9,7 @@ import { HomeComponent } from './components/home/home.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/login/login.component';
 import { AuthService } from './services/auth.service';
-import { FlashMessagesModule } from 'angular2-flash-messages';
-import { FlashMessagesService } from 'angular2-flash-messages';
+//import { FlashMessagesModule } from 'angular2-flash-messages';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
 
@@ -27,9 +26,9 @@ import { NotAuthGuard } from './guards/notAuth.guard';
     HttpModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    FlashMessagesModule
+    //FlashMessagesModule.forRoot()
   ],
-  providers: [AuthService,FlashMessagesService, AuthGuard, NotAuthGuard],
+  providers: [AuthService, AuthGuard, NotAuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

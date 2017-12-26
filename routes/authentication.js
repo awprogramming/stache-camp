@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const SuperUser = require('../models/superUser');
 const jwt = require('jsonwebtoken');
 const config = require('../config/database');
 
@@ -66,6 +67,19 @@ module.exports = (router) => {
         }
     });
 
+    router.post('/registerSuper', (req,res)=> {
+            let superUser = new SuperUser({
+                username: req.body.username.toLowerCase(),
+                password: req.body.password
+            });
+            superUser.save((err) => {
+                    res.json({
+                        success:true,
+                        message: "Account Registered!"
+                    });
+            });
+    });
+
     router.post('/login',(req,res)=>{
         if (!req.body.username){
             res.json({success:false,message:'No username provided'});
@@ -79,7 +93,26 @@ module.exports = (router) => {
                     res.json({success:false,message:err});
                 }
                 else if(!user){
-                    res.json({success:false,message:"Username not found"});
+                    SuperUser.findOne({username:req.body.username.toLowerCase()}, (err,superuser)=>{
+                        if(err){
+                            res.json({success:false,message:err});
+                        }
+                        else if(!superuser){
+                            res.json({success:false,message:"Username not found"});
+                        }
+                        else{
+                            
+                            validPassword = superuser.comparePassword(req.body.password);
+                            if(!validPassword){
+                                res.json({success:false,message:"Password is not valid"});
+                            }
+                            else{
+                                const token = jwt.sign({userId:superuser._id}, config.secret,{ expiresIn:'24h'});
+                                res.json({success:true,message:"Success",token:token, user:{username:superuser.username,permissions:"superuser"}});
+                            }
+                        }
+                    });
+                    
                 }
                 else{
                     const validPassword = user.comparePassword(req.body.password);
@@ -88,7 +121,7 @@ module.exports = (router) => {
                     }
                     else{
                         const token = jwt.sign({userId:user._id}, config.secret,{ expiresIn:'24h'});
-                        res.json({success:true,message:"Success",token:token, user:{username:user.username}});
+                        res.json({success:true,message:"Success",token:token, user:{username:user.username,permissions:"user"}});
                     }
                 }
             });
@@ -118,7 +151,15 @@ module.exports = (router) => {
             if(err){
                 res.json({success:false,message:err});
             }else if(!user){
-                res.json({success:false,message:"User not found"});
+                SuperUser.findOne({_id:req.decoded.userId}).select('username email').exec((err,superuser)=>{
+                    if(err){
+                        res.json({success:false,message:err});
+                    }else if(!superuser){
+                        res.json({success:false,message:"User not found"});
+                    }else{
+                        res.json({success:true,user:superuser});
+                    }
+                });
             }else{
                 res.json({success:true,user:user});
             }
