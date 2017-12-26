@@ -12,6 +12,8 @@ import { AuthService } from './services/auth.service';
 //import { FlashMessagesModule } from 'angular2-flash-messages';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
+import { SuperUserGuard } from './guards/superuser.guard';
+import { RegisterCampComponent } from './components/register-camp/register-camp.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +21,8 @@ import { NotAuthGuard } from './guards/notAuth.guard';
     NavbarComponent,
     HomeComponent,
     DashboardComponent,
-    LoginComponent
+    LoginComponent,
+    RegisterCampComponent
   ],
   imports: [
     BrowserModule,
@@ -28,7 +31,7 @@ import { NotAuthGuard } from './guards/notAuth.guard';
     ReactiveFormsModule,
     //FlashMessagesModule.forRoot()
   ],
-  providers: [AuthService, AuthGuard, NotAuthGuard],
+  providers: [AuthService, AuthGuard, NotAuthGuard, SuperUserGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

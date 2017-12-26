@@ -3,8 +3,10 @@ import { NgModule } from '@angular/core';
 import { HomeComponent } from './components/home/home.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/login/login.component';
+import { RegisterCampComponent } from './components/register-camp/register-camp.component';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
+import { SuperUserGuard } from './guards/superuser.guard';
 
 const appRoutes: Routes = [
     { 
@@ -15,6 +17,11 @@ const appRoutes: Routes = [
         path: 'dashboard',
         component: DashboardComponent,
         canActivate: [AuthGuard]
+    },
+    {
+        path: 'register-camp',
+        component: RegisterCampComponent,
+        canActivate: [AuthGuard, SuperUserGuard]
     },
     {
         path: 'login',
