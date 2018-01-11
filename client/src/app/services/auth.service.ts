@@ -38,6 +38,10 @@ export class AuthService {
     return this.http.post(this.domain + 'authentication/register', user).map(res => res.json());
   }
 
+  registerCamp(camp){
+    return this.http.post(this.domain + 'authentication/register-camp',camp).map(res => res.json());
+  }
+
   // Function to check if username is taken
   checkUsername(username) {
     return this.http.get(this.domain + 'authentication/checkUsername/' + username).map(res => res.json());
@@ -88,6 +92,13 @@ export class AuthService {
   superUser(){
     if(this.loggedIn())
       return JSON.parse(localStorage.getItem('user')).permissions == 'superuser';
+    else
+      return false;
+  }
+
+  admin(){
+    if(this.loggedIn())
+      return JSON.parse(localStorage.getItem('user')).permissions == 'admin';
     else
       return false;
   }

@@ -1,3 +1,44 @@
-<p>
-  register-camp works!
-</p>
+<h2 class="page-header">Register Camp</h2>
+
+<!-- Custom Success/Error Message -->
+<div class="row show-hide-message">
+  <div [ngClass]="messageClass">
+    {{ message }}
+  </div>
+</div>
+
+<!-- Login Form -->
+<form [formGroup]="form" (submit)="onRegistrationSubmit()">
+
+  <div class="form-group">
+    <label for="name">Camp Name</label>
+    <div>
+      <input class="form-control" type="text" name="name" formControlName="name" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="admin_email">Admin Email</label>
+    <div>
+      <input class="form-control" type="text" name="admin_email" formControlName="admin_email" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="admin_username">Admin Username</label>
+    <div>
+      <input class="form-control" type="text" name="admin_username" formControlName="admin_username" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="admin_password">Admin Password</label>
+    <div>
+      <input class="form-control" type="password" name="admin_password" formControlName="admin_password" />
+    </div>
+  </div>
+
+
+  <!-- Submit Button -->
+  <input [disabled]="processing" class="btn btn-primary" type="submit" value="Register" />
+</form>

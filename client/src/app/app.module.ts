@@ -13,6 +13,7 @@ import { AuthService } from './services/auth.service';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
 import { SuperUserGuard } from './guards/superuser.guard';
+import { AdminGuard } from './guards/admin.guard';
 import { RegisterCampComponent } from './components/register-camp/register-camp.component';
 
 @NgModule({
@@ -31,7 +32,7 @@ import { RegisterCampComponent } from './components/register-camp/register-camp.
     ReactiveFormsModule,
     //FlashMessagesModule.forRoot()
   ],
-  providers: [AuthService, AuthGuard, NotAuthGuard, SuperUserGuard],
+  providers: [AuthService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

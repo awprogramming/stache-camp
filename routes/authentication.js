@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const SuperUser = require('../models/superUser');
+const Camp = require('../models/camp');
 const jwt = require('jsonwebtoken');
 const config = require('../config/database');
 
@@ -68,18 +69,87 @@ module.exports = (router) => {
     });
 
     router.post('/registerSuper', (req,res)=> {
-            let superUser = new SuperUser({
-                username: req.body.username.toLowerCase(),
-                password: req.body.password
-            });
-            superUser.save((err) => {
-                    res.json({
-                        success:true,
-                        message: "Account Registered!"
-                    });
-            });
+        let superUser = new SuperUser({
+            username: req.body.username.toLowerCase(),
+            password: req.body.password
+        });
+        superUser.save((err) => {
+                res.json({
+                    success:true,
+                    message: "Account Registered!"
+                });
+        });
     });
 
+    router.post('/register-camp', (req,res) => {
+        let admin = new User({
+            email: req.body.admin_email,
+            username: req.body.admin_username,
+            password: req.body.admin_password
+        });
+        let camp = new Camp({
+            name: req.body.name,
+            admin: admin,
+            users:[admin]
+        });
+        camp.save((err) =>{
+            if (err) {
+                if(err.code === 11000){
+                    res.json({
+                        success:false,
+                        message: "Username or email already exists"
+                    });
+                }
+                else{
+                    if(err.errors){
+                        if(err.errors.name){
+                            res.json({
+                                success:false,
+                                message: "Camp name required"
+                            });
+                        }
+                        else if(err.errors['users.0.email']){
+                            res.json({
+                                success:false,
+                                message: err.errors['users.0.email'].message
+                            });
+                        }
+                        else if(err.errors['users.0.username']){
+                            res.json({
+                                success:false,
+                                message: err.errors['users.0.username'].message
+                            });
+                        }
+                        else if(err.errors['users.0.password']){
+                            res.json({
+                                success:false,
+                                message: err.errors['users.0.password'].message
+                            });
+                        }
+                        else{
+                            res.json({
+                                success:false,
+                                message: err.errors
+                            });
+                        }
+                    }
+                    else{
+                        res.json({
+                            success:false,
+                            message: "Could not save user. Error: " + err
+                        });
+                    }
+                }
+            }
+            else{
+                res.json({
+                    success:true,
+                    message: "Account Registered!"
+                });
+            }
+        })
+    });
+    
     router.post('/login',(req,res)=>{
         if (!req.body.username){
             res.json({success:false,message:'No username provided'});
@@ -88,11 +158,11 @@ module.exports = (router) => {
             res.json({success:false,message:'No password provided'});
         }
         else{
-            User.findOne({username:req.body.username.toLowerCase()}, (err,user)=>{
+            Camp.findOne({users:{$elemMatch:{username:req.body.username.toLowerCase()}}}, (err,camp)=>{
                 if(err){
-                    res.json({success:false,message:err});
+                    res.json({success:false,message:err.message});
                 }
-                else if(!user){
+                else if(!camp){
                     SuperUser.findOne({username:req.body.username.toLowerCase()}, (err,superuser)=>{
                         if(err){
                             res.json({success:false,message:err});
@@ -115,13 +185,19 @@ module.exports = (router) => {
                     
                 }
                 else{
-                    const validPassword = user.comparePassword(req.body.password);
+                    const validPassword = camp.users[0].comparePassword(req.body.password);
                     if(!validPassword){
                         res.json({success:false,message:"Password is not valid"});
                     }
                     else{
-                        const token = jwt.sign({userId:user._id}, config.secret,{ expiresIn:'24h'});
-                        res.json({success:true,message:"Success",token:token, user:{username:user.username,permissions:"user"}});
+                        const token = jwt.sign({userId:camp.users[0]._id}, config.secret,{ expiresIn:'24h'});
+                        if(camp.users[0]._id.equals(camp.admin._id)){
+                            res.json({success:true,message:"Success",token:token, user:{username:camp.users[0].username,permissions:"admin"}});
+                        }
+                        else{
+                            res.json({success:true,message:"Success",token:token, user:{username:camp.users[0].username,permissions:"user"}});
+                        }
+                        
                     }
                 }
             });
@@ -147,10 +223,10 @@ module.exports = (router) => {
     });
 
     router.get('/dashboard', (req,res)=>{
-        User.findOne({_id:req.decoded.userId}).select('username email').exec((err,user)=>{
+        Camp.findOne({users:{$elemMatch:{_id:req.decoded.userId}}}, (err,camp)=>{
             if(err){
                 res.json({success:false,message:err});
-            }else if(!user){
+            }else if(!camp){
                 SuperUser.findOne({_id:req.decoded.userId}).select('username email').exec((err,superuser)=>{
                     if(err){
                         res.json({success:false,message:err});
@@ -161,7 +237,7 @@ module.exports = (router) => {
                     }
                 });
             }else{
-                res.json({success:true,user:user});
+                res.json({success:true,user:camp.users[0]});
             }
         });
     });

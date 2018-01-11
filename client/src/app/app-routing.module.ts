@@ -6,6 +6,7 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterCampComponent } from './components/register-camp/register-camp.component';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
+import { AdminGuard } from './guards/admin.guard';
 import { SuperUserGuard } from './guards/superuser.guard';
 
 const appRoutes: Routes = [
