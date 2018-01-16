@@ -1,0 +1,4 @@
+<select (change) = "handleChange($event);">
+  <option *ngFor="let module of modules; index as i" value="{{i}}">{{module.formal}}</option>
+</select>
+

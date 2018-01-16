@@ -7,6 +7,10 @@
   <tr *ngFor="let camp of camps">
     <td>{{camp.name}}</td>
     <td>{{camp.admin.email}}</td>
-    <td></td>
+    <td>
+      <button class="btn btn-primary" (click) = "showAddModule(camp)" *ngIf = "!camp.hideAdd">+</button>
+      <app-module-dropdown (selectedChanged) = "preAdd($event,camp)" *ngIf = "camp.hideAdd" [campModules]="camp.modules"></app-module-dropdown>
+      <button class="btn btn-primary" *ngIf = "camp.hideAdd" (click) = "addModule(camp)">Add</button>
+    </td>
   </tr>
 </table>

@@ -39,9 +39,6 @@ export class ModuleComponent implements OnInit {
 
   onRegistrationSubmit() {
     this.processing = true;
-    console.log(this.form.get('formal').value);
-    console.log(this.form.get('short_name').value);
-    console.log(this.form.get('description').value);
     const mod = {
       formal: this.form.get('formal').value,
       short_name: this.form.get('short_name').value,

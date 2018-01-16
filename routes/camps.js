@@ -3,7 +3,6 @@ const config = require('../config/database');
 
 module.exports = (router) => {
     router.get('/all_camps',(req,res) =>{
-        console.log("camps.js");
         Camp.find({},(err,camps) => {
             if(err){
                 res.json({success:false,message:err});
