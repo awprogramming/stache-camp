@@ -78,7 +78,7 @@ export class RegisterCampComponent implements OnInit {
           if(this.previousUrl)
             this.router.navigate([this.previousUrl]);
           else
-            this.router.navigate(['/dashboard']); // Navigate to dashboard view
+            this.router.navigate(['/camps']); // Navigate to dashboard view
         }, 2000);
       }
     });

@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const config = require('./config/database');
 const path = require('path');
 const authentication = require('./routes/authentication')(router);
+const camps = require('./routes/camps')(router);
+const modules = require('./routes/modules')(router);
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
@@ -25,6 +27,8 @@ app.use(bodyParser.urlencoded({ exteded: false}));
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/client/dist/'));
 app.use('/authentication',authentication);
+app.use('/camps',camps);
+app.use('/modules',modules);
 
 
 app.get('/', (req, res) =>{

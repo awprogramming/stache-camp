@@ -9,12 +9,15 @@ import { HomeComponent } from './components/home/home.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/login/login.component';
 import { AuthService } from './services/auth.service';
-//import { FlashMessagesModule } from 'angular2-flash-messages';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
 import { SuperUserGuard } from './guards/superuser.guard';
 import { AdminGuard } from './guards/admin.guard';
 import { RegisterCampComponent } from './components/register-camp/register-camp.component';
+import { CampsComponent } from './components/camps/camps.component';
+import { CampsService } from './services/camps.service';
+import { ModuleService } from './services/module.service';
+import { ModuleComponent } from './components/module/module.component';
 
 @NgModule({
   declarations: [
@@ -23,16 +26,17 @@ import { RegisterCampComponent } from './components/register-camp/register-camp.
     HomeComponent,
     DashboardComponent,
     LoginComponent,
-    RegisterCampComponent
+    RegisterCampComponent,
+    CampsComponent,
+    ModuleComponent
   ],
   imports: [
     BrowserModule,
     HttpModule,
     AppRoutingModule,
-    ReactiveFormsModule,
-    //FlashMessagesModule.forRoot()
+    ReactiveFormsModule
   ],
-  providers: [AuthService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard],
+  providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

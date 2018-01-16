@@ -1,0 +1,53 @@
+<div *ngIf="newModule">
+<h2 class="page-header">Register Module</h2>
+
+<!-- Custom Success/Error Message -->
+<div class="row show-hide-message">
+  <div [ngClass]="messageClass">
+    {{ message }}
+  </div>
+</div>
+
+<!-- Login Form -->
+<form [formGroup]="form" (submit)="onRegistrationSubmit()">
+
+  <div class="form-group">
+    <label for="formal">Module Name</label>
+    <div>
+      <input class="form-control" type="text" name="formal" formControlName="formal" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="short_name">Module Short Name</label>
+    <div>
+      <input class="form-control" type="text" name="short_name" formControlName="short_name" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="description">Description</label>
+    <div>
+      <textarea class="form-control" name="description" formControlName="description" ></textarea>
+    </div>
+  </div>
+
+  <!-- Submit Button -->
+  <input [disabled]="processing" class="btn btn-primary" type="submit" value="Register" />
+  <input class="btn btn-primary" (click) = "cancelAdd()" value="Cancel Add" />
+</form>
+</div>
+
+<button class="btn btn-primary" (click) = "showAdd()" *ngIf = "!newModule">Add</button>
+
+<table class="table">
+  <tr>
+    <th>Module</th>
+    <th>Description</th>
+  </tr>
+  <tr *ngFor="let module of modules">
+    <td>{{module.formal}}</td>
+    <td>{{module.description}}</td>
+    <td></td>
+  </tr>
+</table>

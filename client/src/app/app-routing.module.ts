@@ -4,10 +4,12 @@ import { HomeComponent } from './components/home/home.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterCampComponent } from './components/register-camp/register-camp.component';
+import { CampsComponent } from './components/camps/camps.component';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
 import { AdminGuard } from './guards/admin.guard';
 import { SuperUserGuard } from './guards/superuser.guard';
+import { ModuleComponent } from './components/module/module.component';
 
 const appRoutes: Routes = [
     { 
@@ -25,9 +27,19 @@ const appRoutes: Routes = [
         canActivate: [AuthGuard, SuperUserGuard]
     },
     {
+        path: 'camps',
+        component: CampsComponent,
+        canActivate: [AuthGuard, SuperUserGuard]
+    },
+    {
         path: 'login',
         component: LoginComponent,
         canActivate: [NotAuthGuard]
+    },
+    {
+        path: 'modules',
+        component: ModuleComponent,
+        canActivate: [AuthGuard, SuperUserGuard]
     },
     { path: '**', component: HomeComponent}
 ];
