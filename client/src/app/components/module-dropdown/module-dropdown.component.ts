@@ -22,9 +22,12 @@ export class ModuleDropdownComponent implements OnInit {
   populateModules(){
     this.moduleService.getAllModules().subscribe(data=>{
       this.modules = data.modules;
-      for(var mod of this.campModules){
-        var i = this.modules.indexOf(mod);
-        this.modules.splice(i,1);
+      for(var cmod in this.campModules){
+        for(var mod in this.modules){
+          if(isEquivalent(this.campModules[cmod],this.modules[mod])){
+            this.modules.splice(mod,1);
+          }
+        }
       }
       this.selectedChanged.emit(this.modules[0]);
     });
@@ -39,4 +42,30 @@ export class ModuleDropdownComponent implements OnInit {
     this.populateModules();
   }
 
+}
+
+function isEquivalent(a, b) {
+  // Create arrays of property names
+  var aProps = Object.getOwnPropertyNames(a);
+  var bProps = Object.getOwnPropertyNames(b);
+
+  // If number of properties is different,
+  // objects are not equivalent
+  if (aProps.length != bProps.length) {
+      return false;
+  }
+
+  for (var i = 0; i < aProps.length; i++) {
+      var propName = aProps[i];
+
+      // If values of same property are not equal,
+      // objects are not equivalent
+      if (a[propName] !== b[propName]) {
+          return false;
+      }
+  }
+
+  // If we made it this far, objects
+  // are considered equivalent
+  return true;
 }

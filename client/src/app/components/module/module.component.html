@@ -44,10 +44,11 @@
   <tr>
     <th>Module</th>
     <th>Description</th>
+    <th></th>
   </tr>
   <tr *ngFor="let module of modules">
     <td>{{module.formal}}</td>
     <td>{{module.description}}</td>
-    <td></td>
+    <td><button class="btn btn-primary" (click) = "remove(module)">X</button></td>
   </tr>
 </table>

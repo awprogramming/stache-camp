@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
 import { ModuleService } from '../../services/module.service';
 import { Router } from '@angular/router';
 import { AuthGuard } from '../../guards/auth.guard';
@@ -21,7 +20,6 @@ export class ModuleComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private authService: AuthService,
     private moduleService: ModuleService,
     private router: Router,
     private authGuard: AuthGuard
@@ -54,13 +52,29 @@ export class ModuleComponent implements OnInit {
       } else {
         this.messageClass = 'alert alert-success';
         this.message = data.message;
-      
+        console.log()
         setTimeout(() => {
           if(this.previousUrl)
             this.router.navigate([this.previousUrl]);
-          else
+          else{
+            this.newModule = false;
             this.getAllModules();
+          }
         }, 2000);
+      }
+    });
+  }
+
+  remove(mod){
+    this.moduleService.removeModule(mod).subscribe(data => {
+      if (!data.success) {
+        this.messageClass = 'alert alert-danger';
+        this.message = data.message;
+        this.processing = false;
+      } else {
+        this.messageClass = 'alert alert-success';
+        this.message = data.message;
+        this.getAllModules();
       }
     });
   }

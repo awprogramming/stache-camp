@@ -28,7 +28,13 @@ export class ModuleService {
   }
 
   registerModule(mod){
-    return this.http.post(this.domain + 'modules/add_module',mod).map(res => res.json());
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'modules/add_module',mod,this.options).map(res => res.json());
+  }
+
+  removeModule(mod){
+    this.createAuthenticationHeaders();
+    return this.http.delete(this.domain + 'modules/remove_module/'+mod._id,this.options).map(res => res.json());
   }
 
   getAllModules() {

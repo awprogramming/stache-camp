@@ -3,7 +3,6 @@ const config = require('../config/database');
 
 module.exports = (router) => {
     router.post('/add_module',(req,res) => {
-        console.log("modules.js");
         let mod = new Module({
             formal: req.body.formal,
             short_name: req.body.short_name,
@@ -32,5 +31,27 @@ module.exports = (router) => {
             }
         }).sort({'formal':1})
     });
+
+    router.delete('/remove_module/:id', (req, res) => {
+        if (!req.params.id) {
+          res.json({ success: false, message: 'No id provided' }); 
+        } else {
+          Module.findOne({'_id': req.params.id}, (err, mod)=>{
+            if (err) {
+                res.json({ success: false, message: err }); 
+            } 
+            mod.remove((err, mod) => {
+                if(err){
+                    res.json({ success: false, message: 'Failed to delete' });
+                }
+                else{
+                    res.json({ success: true, message: 'Module deleted!' }); 
+                }
+            });
+          }
+        );
+        }
+      });
+
     return router;
 }

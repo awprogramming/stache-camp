@@ -14,7 +14,7 @@ import { ModuleComponent } from './components/module/module.component';
 const appRoutes: Routes = [
     { 
         path: '',
-        component: HomeComponent
+        component: LoginComponent
     },
     {
         path: 'dashboard',
@@ -41,7 +41,7 @@ const appRoutes: Routes = [
         component: ModuleComponent,
         canActivate: [AuthGuard, SuperUserGuard]
     },
-    { path: '**', component: HomeComponent}
+    { path: '**', component: LoginComponent}
 ];
 
 @NgModule({

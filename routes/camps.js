@@ -17,5 +17,17 @@ module.exports = (router) => {
             }
         }).sort({'name':1})
     });
+
+    router.post('/activate_module',(req,res) =>{
+        Camp.update({"_id":req.body._id},{$push:{modules:req.body.toAdd}}, (err)=>{
+            if(err){
+                res.json({success:false,message:err});
+            }
+            else{
+                res.json({succss:true});
+            }
+        });
+    });
+    
     return router;
 }

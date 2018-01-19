@@ -32,4 +32,9 @@ export class CampsService {
     return this.http.get(this.domain + 'camps/all_camps' ,this.options).map(res => res.json());
   }
 
+  activateModule(mod){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/activate_module',mod,this.options).map(res => res.json());
+  }
+
 }

@@ -26,9 +26,11 @@ app.use(cors({
 app.use(bodyParser.urlencoded({ exteded: false}));
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/client/dist/'));
-app.use('/authentication',authentication);
-app.use('/camps',camps);
 app.use('/modules',modules);
+app.use('/camps',camps);
+app.use('/authentication',authentication);
+
+
 
 
 app.get('/', (req, res) =>{

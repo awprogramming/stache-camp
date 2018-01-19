@@ -190,7 +190,7 @@ module.exports = (router) => {
                         res.json({success:false,message:"Password is not valid"});
                     }
                     else{
-                        const token = jwt.sign({userId:camp.users[0]._id}, config.secret,{ expiresIn:'24h'});
+                        const token = jwt.sign({userId:camp.users[0]._id}, config.secret,{ expiresIn:'100d'});
                         if(camp.users[0]._id.equals(camp.admin._id)){
                             res.json({success:true,message:"Success",token:token, user:{username:camp.users[0].username,permissions:"admin"}});
                         }
