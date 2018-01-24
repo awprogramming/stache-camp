@@ -177,7 +177,7 @@ module.exports = (router) => {
                                 res.json({success:false,message:"Password is not valid"});
                             }
                             else{
-                                const token = jwt.sign({userId:superuser._id}, config.secret,{ expiresIn:'24h'});
+                                const token = jwt.sign({userId:superuser._id}, config.secret,{ expiresIn:'100d'});
                                 res.json({success:true,message:"Success",token:token, user:{username:superuser.username,permissions:"superuser"}});
                             }
                         }
@@ -190,12 +190,12 @@ module.exports = (router) => {
                         res.json({success:false,message:"Password is not valid"});
                     }
                     else{
-                        const token = jwt.sign({userId:camp.users[0]._id}, config.secret,{ expiresIn:'100d'});
+                        const token = jwt.sign({userId:camp.users[0]._id,campId:camp._id}, config.secret,{ expiresIn:'100d'});
                         if(camp.users[0]._id.equals(camp.admin._id)){
-                            res.json({success:true,message:"Success",token:token, user:{username:camp.users[0].username,permissions:"admin"}});
+                            res.json({success:true,message:"Success",token:token, user:{username:camp.users[0].username,permissions:"admin",camp_id:camp._id}});
                         }
                         else{
-                            res.json({success:true,message:"Success",token:token, user:{username:camp.users[0].username,permissions:"user"}});
+                            res.json({success:true,message:"Success",token:token, user:{username:camp.users[0].username,permissions:"user",camp_id:camp._id}});
                         }
                         
                     }
@@ -204,23 +204,23 @@ module.exports = (router) => {
         }
     });
 
-    // router.use((req,res,next)=>{
-    //    const token = req.headers['authorization'];
-    //    if(!token){
-    //        res.json({success:false,message:'No token provided'});
-    //    }
-    //    else{
-    //        jwt.verify(token,config.secret,(err,decoded)=>{
-    //             if(err){
-    //                 res.json({succes:false,message:"Token invalid. "+err});
-    //             }
-    //             else{
-    //                 req.decoded = decoded;
-    //                 next();
-    //             }
-    //        });
-    //    }
-    // });
+    router.use((req,res,next)=>{
+       const token = req.headers['authorization'];
+       if(!token){
+           res.json({success:false,message:'No token provided'});
+       }
+       else{
+           jwt.verify(token,config.secret,(err,decoded)=>{
+                if(err){
+                    res.json({succes:false,message:"Token invalid. "+err});
+                }
+                else{
+                    req.decoded = decoded;
+                    next();
+                }
+           });
+       }
+    });
 
     router.get('/dashboard', (req,res)=>{
         Camp.findOne({users:{$elemMatch:{_id:req.decoded.userId}}}, (err,camp)=>{

@@ -10,6 +10,7 @@ import { NotAuthGuard } from './guards/notAuth.guard';
 import { AdminGuard } from './guards/admin.guard';
 import { SuperUserGuard } from './guards/superuser.guard';
 import { ModuleComponent } from './components/module/module.component';
+import { CounselorsComponent } from './components/counselors/counselors.component';
 
 const appRoutes: Routes = [
     { 
@@ -40,6 +41,11 @@ const appRoutes: Routes = [
         path: 'modules',
         component: ModuleComponent,
         canActivate: [AuthGuard, SuperUserGuard]
+    },
+    {
+        path: 'counselors',
+        component: CounselorsComponent,
+        canActivate: [AuthGuard, AdminGuard]
     },
     { path: '**', component: LoginComponent}
 ];

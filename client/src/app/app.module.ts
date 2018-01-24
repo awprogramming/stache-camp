@@ -19,6 +19,7 @@ import { CampsService } from './services/camps.service';
 import { ModuleService } from './services/module.service';
 import { ModuleComponent } from './components/module/module.component';
 import { ModuleDropdownComponent } from './components/module-dropdown/module-dropdown.component';
+import { CounselorsComponent } from './components/counselors/counselors.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { ModuleDropdownComponent } from './components/module-dropdown/module-dro
     RegisterCampComponent,
     CampsComponent,
     ModuleComponent,
-    ModuleDropdownComponent
+    ModuleDropdownComponent,
+    CounselorsComponent
   ],
   imports: [
     BrowserModule,

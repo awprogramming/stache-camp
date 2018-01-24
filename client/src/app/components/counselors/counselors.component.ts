@@ -1,0 +1,106 @@
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { CampsService } from '../../services/camps.service';
+import { Router } from '@angular/router';
+import { AuthGuard } from '../../guards/auth.guard';
+
+@Component({
+  selector: 'app-counselors',
+  templateUrl: './counselors.component.html',
+  styleUrls: ['./counselors.component.css']
+})
+export class CounselorsComponent implements OnInit {
+  messageClass;
+  message;
+  processing = false;
+  form: FormGroup;
+  previousUrl;
+  newCamp = false;
+  counselors;
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private campsService: CampsService,
+    private router: Router,
+    private authGuard: AuthGuard
+  ) { 
+    this.createForm();
+  }
+
+  createForm() {
+    this.form = this.formBuilder.group({
+      first: ['', Validators.required],
+      last:['', Validators.required],
+      gender: ['', Validators.required]
+    });
+  }
+
+  onRegistrationSubmit() {
+    this.processing = true;
+    const counselor = {
+      first: this.form.get('first').value,
+      last: this.form.get('last').value,
+      gender: this.form.get('gender').value
+    }
+  
+    this.campsService.registerCounselor(counselor).subscribe(data => {
+      console.log(data);
+      if (!data.success) {
+        this.messageClass = 'alert alert-danger';
+        this.message = data.message;
+        this.processing = false;
+      } else {
+        console.log("jello world");
+        this.messageClass = 'alert alert-success';
+        this.message = data.message;
+        setTimeout(() => {
+          if(this.previousUrl)
+            this.router.navigate([this.previousUrl]);
+          else{
+            this.newCamp = false;
+            this.getAllCounselors();
+          }
+        }, 2000);
+      }
+    });
+  }
+  getAllCounselors(){
+    this.campsService.getAllCounselors().subscribe(data => {
+      this.counselors = data.counselors;
+    })
+  }
+
+  remove(counselor){
+    this.campsService.removeCounselor(counselor).subscribe(data => {
+      if (!data.success) {
+        this.messageClass = 'alert alert-danger';
+        this.message = data.message;
+        this.processing = false;
+      } else {
+        this.messageClass = 'alert alert-success';
+        this.message = data.message;
+        this.getAllCounselors();
+      }
+    });
+  }
+
+  showAdd() {
+    this.newCamp = true;
+  }
+
+  cancelAdd() {
+    this.newCamp = false;
+  }
+
+  ngOnInit() {
+    if(this.authGuard.redirectUrl){
+      this.messageClass = 'alert alert-danger';
+      this.message = 'You must be logged in to view that page';
+      this.previousUrl = this.authGuard.redirectUrl;
+      this.authGuard.redirectUrl = undefined;
+    }
+    this.getAllCounselors();
+  }
+
+}
+

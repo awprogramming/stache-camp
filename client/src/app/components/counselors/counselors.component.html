@@ -1,0 +1,69 @@
+<div *ngIf="newCamp">
+    <h2 class="page-header">Register Counselor</h2>
+    
+    <!-- Custom Success/Error Message -->
+    <div class="row show-hide-message">
+      <div [ngClass]="messageClass">
+        {{ message }}
+      </div>
+    </div>
+    
+    <!-- Login Form -->
+    <form [formGroup]="form" (submit)="onRegistrationSubmit()">
+    
+      <div class="form-group">
+        <label for="first">First Name</label>
+        <div>
+          <input class="form-control" type="text" name="first" formControlName="first" />
+        </div>
+      </div>
+    
+      <div class="form-group">
+        <label for="last">Last Name</label>
+        <div>
+          <input class="form-control" type="text" name="last" formControlName="last" />
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="gender">Gender</label>
+        <div>
+          <div>
+            <input class="form-check-input" formControlName="gender" type="radio" name="gender" value="male">
+            <label class="form-check-label">Male</label>
+          </div>
+          <div>
+              <input class="form-check-input" formControlName="gender" type="radio" name="gender" value="female">
+              <label class="form-check-label">Female</label>
+            </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Division</label>
+        <div>
+        </div>
+      </div>
+    
+      <!-- Submit Button -->
+      <input [disabled]="processing" class="btn btn-primary" type="submit" value="Register" />
+      <input class="btn btn-primary" (click) = "cancelAdd()" value="Cancel Add" />
+    </form>
+    </div>
+    
+    <button class="btn btn-primary" (click) = "showAdd()" *ngIf = "!newCamp">Add</button>
+    
+    <table class="table">
+      <tr>
+        <th>First</th>
+        <th>Last</th>
+        <th>Gender</th>
+        <th></th>
+      </tr>
+      <tr *ngFor="let counselor of counselors">
+        <td>{{counselor.first}}</td>
+        <td>{{counselor.last}}</td>
+        <td>{{counselor.gender}}</td>
+        <td><button class="btn btn-primary" (click) = "remove(counselor)">X</button></td>
+      </tr>
+    </table>

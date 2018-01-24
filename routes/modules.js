@@ -26,7 +26,7 @@ module.exports = (router) => {
                     res.json({success:false, message:'No modules registered'})
                 }
                 else{
-                   res.json({succss:true,modules:modules});
+                   res.json({success:true,modules:modules});
                 }
             }
         }).sort({'formal':1})

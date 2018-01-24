@@ -32,9 +32,24 @@ export class CampsService {
     return this.http.get(this.domain + 'camps/all_camps' ,this.options).map(res => res.json());
   }
 
+  getAllCounselors(){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'camps/all_counselors' ,this.options).map(res => res.json());
+  }
+
   activateModule(mod){
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + 'camps/activate_module',mod,this.options).map(res => res.json());
+  }
+
+  registerCounselor(counselor){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/add_counselor',counselor,this.options).map(res => res.json());
+  }
+
+  removeCounselor(counselor){
+    this.createAuthenticationHeaders();
+    return this.http.delete(this.domain + 'camps/remove_counselor/'+counselor._id,this.options).map(res => res.json());
   }
 
 }
