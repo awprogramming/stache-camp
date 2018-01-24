@@ -40,7 +40,6 @@ export class DivisionsComponent implements OnInit {
     }
   
     this.campsService.registerDivision(division).subscribe(data => {
-      console.log(division);
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
         this.message = data.message;
@@ -61,9 +60,7 @@ export class DivisionsComponent implements OnInit {
   }
   getAllDivisions(){
     this.campsService.getAllDivisions().subscribe(data => {
-      console.log(data);
       this.divisions = data.divisions;
-      console.log(this.divisions);
     })
   }
 

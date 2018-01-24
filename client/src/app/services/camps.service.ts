@@ -76,5 +76,12 @@ export class CampsService {
     return this.http.post(this.domain + 'camps/add_division',counselor,this.options).map(res => res.json());
   }
 
+  /* HEAD STAFF */
+
+  registerHeadStaff(user) {
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/register_head_staff', user,this.options).map(res => res.json());
+  }
+
 
 }

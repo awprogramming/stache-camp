@@ -34,7 +34,6 @@ export class CampsComponent implements OnInit {
   }
   hideAddModule(camp){
     camp.hideAdd = false;
-    console.log(camp);
   }
 
   addModule(camp){

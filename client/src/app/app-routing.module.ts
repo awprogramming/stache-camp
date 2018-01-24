@@ -12,6 +12,7 @@ import { SuperUserGuard } from './guards/superuser.guard';
 import { ModuleComponent } from './components/module/module.component';
 import { CounselorsComponent } from './components/counselors/counselors.component';
 import { DivisionsComponent } from './components/divisions/divisions.component';
+import { HeadStaffComponent } from './components/head-staff/head-staff.component';
 
 const appRoutes: Routes = [
     { 
@@ -51,6 +52,11 @@ const appRoutes: Routes = [
     {
         path: 'divisions',
         component: DivisionsComponent,
+        canActivate: [AuthGuard, AdminGuard]
+    },
+    {
+        path: 'head-staff',
+        component: HeadStaffComponent,
         canActivate: [AuthGuard, AdminGuard]
     },
     { path: '**', component: LoginComponent}

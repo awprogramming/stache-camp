@@ -171,7 +171,6 @@ module.exports = (router) => {
                             res.json({success:false,message:"Username not found"});
                         }
                         else{
-                            
                             validPassword = superuser.comparePassword(req.body.password);
                             if(!validPassword){
                                 res.json({success:false,message:"Password is not valid"});
@@ -185,20 +184,24 @@ module.exports = (router) => {
                     
                 }
                 else{
-                    const validPassword = camp.users[0].comparePassword(req.body.password);
-                    if(!validPassword){
-                        res.json({success:false,message:"Password is not valid"});
-                    }
-                    else{
-                        const token = jwt.sign({userId:camp.users[0]._id,campId:camp._id}, config.secret,{ expiresIn:'100d'});
-                        if(camp.users[0]._id.equals(camp.admin._id)){
-                            res.json({success:true,message:"Success",token:token, user:{username:camp.users[0].username,permissions:"admin",camp_id:camp._id}});
+                    const admin = camp.admin;
+                    Camp.find({users:{$elemMatch:{username:req.body.username.toLowerCase()}}},{"users.$":1}, (err,camp)=>{
+                        const validPassword = camp[0].users[0].comparePassword(req.body.password);
+                        if(!validPassword){
+                            res.json({success:false,message:"Password is not valid"});
                         }
                         else{
-                            res.json({success:true,message:"Success",token:token, user:{username:camp.users[0].username,permissions:"user",camp_id:camp._id}});
+                            console.log(camp[0].users[0]);
+                            const token = jwt.sign({userId:camp[0].users[0]._id,campId:camp[0]._id}, config.secret,{ expiresIn:'100d'});
+                            if(camp[0].users[0]._id.equals(admin._id)){
+                                res.json({success:true,message:"Success",token:token, user:{username:camp[0].users[0].username,permissions:"admin",camp_id:camp[0]._id}});
+                            }
+                            else{
+                                res.json({success:true,message:"Success",token:token, user:{username:camp[0].users[0].username,permissions:"user",camp_id:camp[0]._id}});
+                            }
+                            
                         }
-                        
-                    }
+                    });
                 }
             });
         }
@@ -223,10 +226,10 @@ module.exports = (router) => {
     });
 
     router.get('/dashboard', (req,res)=>{
-        Camp.findOne({users:{$elemMatch:{_id:req.decoded.userId}}}, (err,camp)=>{
+        Camp.find({users:{$elemMatch:{_id:req.decoded.userId}}},{"users.$":1}, (err,camp)=>{
             if(err){
                 res.json({success:false,message:err});
-            }else if(!camp){
+            }else if(!camp.length != 0){
                 SuperUser.findOne({_id:req.decoded.userId}).select('username email').exec((err,superuser)=>{
                     if(err){
                         res.json({success:false,message:err});
@@ -237,7 +240,7 @@ module.exports = (router) => {
                     }
                 });
             }else{
-                res.json({success:true,user:camp.users[0]});
+                res.json({success:true,user:camp[0].users[0]});
             }
         });
     });

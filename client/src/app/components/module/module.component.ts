@@ -52,7 +52,7 @@ export class ModuleComponent implements OnInit {
       } else {
         this.messageClass = 'alert alert-success';
         this.message = data.message;
-        console.log()
+
         setTimeout(() => {
           if(this.previousUrl)
             this.router.navigate([this.previousUrl]);

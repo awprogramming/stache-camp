@@ -1,5 +1,7 @@
 const Camp = require('../models/camp');
+const User = require('../models/user');
 const config = require('../config/database');
+const bcrypt = require('bcrypt-nodejs');
 
 module.exports = (router) => {
     router.get('/all_camps',(req,res) =>{
@@ -130,6 +132,75 @@ module.exports = (router) => {
             else{
                 res.json({success:true});
             }
+        });
+    });
+
+    /* HEAD STAFF ROUTES */
+
+    router.post('/register_head_staff', (req,res) => {
+        let user = new User({
+            email: req.body.email.toLowerCase(),
+            username: req.body.username.toLowerCase(),
+            password: req.body.password
+        });
+        bcrypt.hash(user.password,null,null,(err,hash) => {
+            user.password = hash;
+            Camp.update({_id:req.decoded.campId},{$push:{users:user}},(err)=>{
+                if (err) {
+                    if(err.code === 11000){
+                        res.json({
+                            success:false,
+                            message: "Username or email already exists"
+                        });
+                    }
+                    else{
+                        if(err.errors){
+                            if(err.errors.name){
+                                res.json({
+                                    success:false,
+                                    message: "Camp name required"
+                                });
+                            }
+                            else if(err.errors['users.0.email']){
+                                res.json({
+                                    success:false,
+                                    message: err.errors['users.0.email'].message
+                                });
+                            }
+                            else if(err.errors['users.0.username']){
+                                res.json({
+                                    success:false,
+                                    message: err.errors['users.0.username'].message
+                                });
+                            }
+                            else if(err.errors['users.0.password']){
+                                res.json({
+                                    success:false,
+                                    message: err.errors['users.0.password'].message
+                                });
+                            }
+                            else{
+                                res.json({
+                                    success:false,
+                                    message: err.errors
+                                });
+                            }
+                        }
+                        else{
+                            res.json({
+                                success:false,
+                                message: "Could not save user. Error: " + err
+                            });
+                        }
+                    }
+                }
+                else{
+                    res.json({
+                        success:true,
+                        message: "Account Registered!"
+                    });
+                }
+            });
         });
     });
     
