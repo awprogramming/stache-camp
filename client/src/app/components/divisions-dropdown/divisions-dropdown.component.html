@@ -1,0 +1,3 @@
+<select (change) = "handleChange($event);">
+    <option *ngFor="let division of divisions; index as i" value="{{i}}">{{division.name}} ({{division.gender}})</option>
+  </select>

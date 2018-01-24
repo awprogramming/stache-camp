@@ -5,12 +5,14 @@ const bcrypt = require('bcrypt-nodejs');
 const UserSchema = require('./user').schema;
 const ModuleSchema = require('./module').schema;
 const CounselorSchema = require('./counselor').schema;
+const DivisionSchema = require('./division').schema;
 
 
 const campSchema = new Schema({
     name: {type:String, required: true, unique: true},
     admin: UserSchema,
     users: [UserSchema],
+    divisions: [DivisionSchema],
     modules: [ModuleSchema],
     counselors: [CounselorSchema]    
 });

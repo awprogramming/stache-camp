@@ -5,18 +5,18 @@ import { Router } from '@angular/router';
 import { AuthGuard } from '../../guards/auth.guard';
 
 @Component({
-  selector: 'app-counselors',
-  templateUrl: './counselors.component.html',
-  styleUrls: ['./counselors.component.css']
+  selector: 'app-divisions',
+  templateUrl: './divisions.component.html',
+  styleUrls: ['./divisions.component.css']
 })
-export class CounselorsComponent implements OnInit {
+export class DivisionsComponent implements OnInit {
   messageClass;
   message;
   processing = false;
   form: FormGroup;
   previousUrl;
   newCamp = false;
-  counselors;
+  divisions;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -29,21 +29,18 @@ export class CounselorsComponent implements OnInit {
 
   createForm() {
     this.form = this.formBuilder.group({
-      first: ['', Validators.required],
-      last:['', Validators.required],
-      gender: ['', Validators.required]
+      name: ['', Validators.required]
     });
   }
 
   onRegistrationSubmit() {
     this.processing = true;
-    const counselor = {
-      first: this.form.get('first').value,
-      last: this.form.get('last').value,
-      gender: this.form.get('gender').value
+    const division = {
+      name: this.form.get('name').value
     }
   
-    this.campsService.registerCounselor(counselor).subscribe(data => {
+    this.campsService.registerDivision(division).subscribe(data => {
+      console.log(division);
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
         this.message = data.message;
@@ -56,20 +53,22 @@ export class CounselorsComponent implements OnInit {
             this.router.navigate([this.previousUrl]);
           else{
             this.newCamp = false;
-            this.getAllCounselors();
+            this.getAllDivisions();
           }
         }, 2000);
       }
     });
   }
-  getAllCounselors(){
-    this.campsService.getAllCounselors().subscribe(data => {
-      this.counselors = data.counselors;
+  getAllDivisions(){
+    this.campsService.getAllDivisions().subscribe(data => {
+      console.log(data);
+      this.divisions = data.divisions;
+      console.log(this.divisions);
     })
   }
 
-  remove(counselor){
-    this.campsService.removeCounselor(counselor).subscribe(data => {
+  remove(division){
+    this.campsService.removeDivision(division).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
         this.message = data.message;
@@ -77,20 +76,9 @@ export class CounselorsComponent implements OnInit {
       } else {
         this.messageClass = 'alert alert-success';
         this.message = data.message;
-        this.getAllCounselors();
+        this.getAllDivisions();
       }
     });
-  }
-
-  addDivision(counselor){
-    console.log(counselor);
-    this.campsService.addDivision(counselor).subscribe(data => {
-      this.getAllCounselors();
-    });
-  }
-
-  preAdd(e,counselor){
-    counselor.toAdd = e;
   }
 
   showAdd() {
@@ -108,7 +96,7 @@ export class CounselorsComponent implements OnInit {
       this.previousUrl = this.authGuard.redirectUrl;
       this.authGuard.redirectUrl = undefined;
     }
-    this.getAllCounselors();
+    this.getAllDivisions();
   }
 
 }

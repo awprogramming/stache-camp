@@ -20,6 +20,8 @@ import { ModuleService } from './services/module.service';
 import { ModuleComponent } from './components/module/module.component';
 import { ModuleDropdownComponent } from './components/module-dropdown/module-dropdown.component';
 import { CounselorsComponent } from './components/counselors/counselors.component';
+import { DivisionsComponent } from './components/divisions/divisions.component';
+import { DivisionsDropdownComponent } from './components/divisions-dropdown/divisions-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,9 @@ import { CounselorsComponent } from './components/counselors/counselors.componen
     CampsComponent,
     ModuleComponent,
     ModuleDropdownComponent,
-    CounselorsComponent
+    CounselorsComponent,
+    DivisionsComponent,
+    DivisionsDropdownComponent
   ],
   imports: [
     BrowserModule,

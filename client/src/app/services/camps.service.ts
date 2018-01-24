@@ -32,14 +32,17 @@ export class CampsService {
     return this.http.get(this.domain + 'camps/all_camps' ,this.options).map(res => res.json());
   }
 
-  getAllCounselors(){
-    this.createAuthenticationHeaders();
-    return this.http.get(this.domain + 'camps/all_counselors' ,this.options).map(res => res.json());
-  }
 
+  /* MODULES */
   activateModule(mod){
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + 'camps/activate_module',mod,this.options).map(res => res.json());
+  }
+  
+  /* COUNSELORS */
+  getAllCounselors(){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'camps/all_counselors' ,this.options).map(res => res.json());
   }
 
   registerCounselor(counselor){
@@ -51,5 +54,27 @@ export class CampsService {
     this.createAuthenticationHeaders();
     return this.http.delete(this.domain + 'camps/remove_counselor/'+counselor._id,this.options).map(res => res.json());
   }
+
+  /* DIVISIONS */
+  getAllDivisions(){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'camps/all_divisions' ,this.options).map(res => res.json());
+  }
+
+  registerDivision(division){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/register_division',division,this.options).map(res => res.json());
+  }
+
+  removeDivision(division){
+    this.createAuthenticationHeaders();
+    return this.http.delete(this.domain + 'camps/remove_division/'+division._id,this.options).map(res => res.json());
+  }
+
+  addDivision(counselor){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/add_division',counselor,this.options).map(res => res.json());
+  }
+
 
 }

@@ -1,0 +1,40 @@
+<div *ngIf="newCamp">
+    <h2 class="page-header">Register Division</h2>
+    
+    <!-- Custom Success/Error Message -->
+    <div class="row show-hide-message">
+      <div [ngClass]="messageClass">
+        {{ message }}
+      </div>
+    </div>
+    
+    <!-- Login Form -->
+    <form [formGroup]="form" (submit)="onRegistrationSubmit()">
+    
+      <div class="form-group">
+        <label for="name">Name</label>
+        <div>
+          <input class="form-control" type="text" name="name" formControlName="name" />
+        </div>
+      </div>
+    
+      <!-- Submit Button -->
+      <input [disabled]="processing" class="btn btn-primary" type="submit" value="Register" />
+      <input class="btn btn-primary" (click) = "cancelAdd()" value="Cancel Add" />
+    </form>
+    </div>
+    
+    <button class="btn btn-primary" (click) = "showAdd()" *ngIf = "!newCamp">Add</button>
+    
+    <table class="table">
+      <tr>
+        <th>Name</th>
+        <th>Gender</th>
+        <th></th>
+      </tr>
+      <tr *ngFor="let division of divisions">
+        <td>{{division.name}}</td>
+        <td>{{division.gender}}</td>
+        <td><button class="btn btn-primary" (click) = "remove(division)">X</button></td>
+      </tr>
+    </table>
