@@ -83,7 +83,7 @@ export class CounselorsComponent implements OnInit {
   }
 
   addDivision(counselor){
-    this.campsService.addDivision(counselor).subscribe(data => {
+    this.campsService.addDivisionToCounselor(counselor).subscribe(data => {
       this.getAllCounselors();
     });
   }

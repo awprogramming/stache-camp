@@ -19,7 +19,7 @@
       </div>
     
       <!-- Submit Button -->
-      <input [disabled]="processing" class="btn btn-primary" type="submit" value="Register" />
+      <input class="btn btn-primary" type="submit" value="Register" />
       <input class="btn btn-primary" (click) = "cancelAdd()" value="Cancel Add" />
     </form>
     </div>
@@ -29,12 +29,14 @@
     <table class="table">
       <tr>
         <th>Name</th>
-        <th>Gender</th>
+        <th>Boys</th>
+        <th>Girls</th>
         <th></th>
       </tr>
       <tr *ngFor="let division of divisions">
         <td>{{division.name}}</td>
         <td>{{division.gender}}</td>
+        <td></td>
         <td><button class="btn btn-primary" (click) = "remove(division)">X</button></td>
       </tr>
     </table>

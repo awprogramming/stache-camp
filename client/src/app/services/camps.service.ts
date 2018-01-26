@@ -71,9 +71,9 @@ export class CampsService {
     return this.http.delete(this.domain + 'camps/remove_division/'+division._id,this.options).map(res => res.json());
   }
 
-  addDivision(counselor){
+  addDivisionToCounselor(counselor){
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + 'camps/add_division',counselor,this.options).map(res => res.json());
+    return this.http.post(this.domain + 'camps/add_division_counselor',counselor,this.options).map(res => res.json());
   }
 
   /* HEAD STAFF */
@@ -81,6 +81,21 @@ export class CampsService {
   registerHeadStaff(user) {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + 'camps/register_head_staff', user,this.options).map(res => res.json());
+  }
+
+  getAllHeads(){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'camps/all_heads' ,this.options).map(res => res.json());
+  }
+
+  removeHead(head){
+    this.createAuthenticationHeaders();
+    return this.http.delete(this.domain + 'camps/remove_head/'+head._id,this.options).map(res => res.json());
+  }
+
+  addDivisionToHead(head){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/add_division_head',head,this.options).map(res => res.json());
   }
 
 

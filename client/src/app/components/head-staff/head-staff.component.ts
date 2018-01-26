@@ -15,6 +15,8 @@ export class HeadStaffComponent implements OnInit {
   processing = false;
   form: FormGroup;
   previousUrl;
+  heads;
+  newHead;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -50,9 +52,50 @@ export class HeadStaffComponent implements OnInit {
       } else {
         this.messageClass = 'alert alert-success'; 
         this.message = data.message; 
+        this.getAllHeads();
+        this.newHead = false;
       }
     });
   }
+
+  getAllHeads(){
+    this.campsService.getAllHeads().subscribe(data => {
+      this.heads = data.heads;
+      console.log(this.heads);
+    })
+  }
+
+  remove(head){
+    this.campsService.removeHead(head).subscribe(data => {
+      if (!data.success) {
+        this.messageClass = 'alert alert-danger';
+        this.message = data.message;
+        this.processing = false;
+      } else {
+        this.messageClass = 'alert alert-success';
+        this.message = data.message;
+        this.getAllHeads();
+      }
+    });
+  }
+
+  showAdd(){
+    this.newHead = true;
+  }
+
+  addDivision(head){
+    this.campsService.addDivisionToHead(head).subscribe(data => {
+      this.getAllHeads();
+    });
+  }
+
+  /* Add Division to head staff member */
+
+  preAdd(e,head){
+    head.toAdd = e;
+  }
+
+  /******/
 
   ngOnInit() {
     if(this.authGuard.redirectUrl){
@@ -61,6 +104,7 @@ export class HeadStaffComponent implements OnInit {
       this.previousUrl = this.authGuard.redirectUrl;
       this.authGuard.redirectUrl = undefined;
     }
+    this.getAllHeads();
   }
 
 }

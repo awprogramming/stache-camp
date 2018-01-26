@@ -1,32 +1,55 @@
-<h2 class="page-header">Register Head Staff Member</h2>
+<div *ngIf="newHead">
+  <h2 class="page-header">Register Head Staff Member</h2>
 
-<!-- Custom Success/Error Message -->
-<div class="row show-hide-message">
-  <div [ngClass]="messageClass">
-    {{ message }}
+  <!-- Custom Success/Error Message -->
+  <div class="row show-hide-message">
+    <div [ngClass]="messageClass">
+      {{ message }}
+    </div>
   </div>
+
+  <form [formGroup]="form" (submit)="onRegistrationSubmit()">
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <div>
+        <input class="form-control" type="text" name="email" formControlName="email" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="username">Username</label>
+      <div>
+        <input class="form-control" type="text" name="username" formControlName="username" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <div>
+        <input class="form-control" type="password" name="password" formControlName="password" />
+      </div>
+    </div>
+    <!-- Submit Button -->
+    <input [disabled]="processing" class="btn btn-primary" type="submit" value="Register" />
+  </form>
 </div>
-
-<form [formGroup]="form" (submit)="onRegistrationSubmit()">
-
-  <div class="form-group">
-    <label for="email">Email</label>
-    <div>
-      <input class="form-control" type="text" name="email" formControlName="email" />
-    </div>
-  </div>
-  <div class="form-group">
-    <label for="username">Username</label>
-    <div>
-      <input class="form-control" type="text" name="username" formControlName="username" />
-    </div>
-  </div>
-  <div class="form-group">
-    <label for="password">Password</label>
-    <div>
-      <input class="form-control" type="password" name="password" formControlName="password" />
-    </div>
-  </div>
-  <!-- Submit Button -->
-  <input [disabled]="processing" class="btn btn-primary" type="submit" value="Register" />
-</form>
+<button class="btn btn-primary" (click) = "showAdd()" *ngIf = "!newHead">Add</button>
+<table class="table">
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Division(s)</th>
+      <th></th>
+    </tr>
+    <tr *ngFor="let head of heads">
+      <td>{{head._id.username}}</td>
+      <td>{{head._id.email}}</td>
+      <td *ngIf="head.divisions">
+        <p *ngFor="let division of head.divisions">{{division.name}}</p>
+      </td>
+      <td *ngIf="!head.divisions">
+        <app-divisions-dropdown (selectedChanged) = "preAdd($event,head)"></app-divisions-dropdown>
+        <button class="btn btn-primary" (click) = "addDivision(head)">Add</button>
+      </td>
+      <td><button class="btn btn-primary" (click) = "remove(head)">X</button></td>
+    </tr>
+  </table>

@@ -2,6 +2,7 @@ const Camp = require('../models/camp');
 const User = require('../models/user');
 const config = require('../config/database');
 const bcrypt = require('bcrypt-nodejs');
+const mongoose = require('mongoose');
 
 module.exports = (router) => {
     router.get('/all_camps',(req,res) =>{
@@ -84,7 +85,7 @@ module.exports = (router) => {
     });
 
     router.post('/register_division',(req,res) => {
-        Camp.update({"_id":req.decoded.campId},{$push:{divisions:{$each:[{name:req.body.name,gender:"male"},{name:req.body.name,gender:"female"}]}}}, (err, camp)=>{
+        Camp.update({"_id":req.decoded.campId},{$push:{divisions:{name:req.body.name}}}, (err, camp)=>{
             if(err){
                 res.json({success:false,message:err});
             }
@@ -110,7 +111,7 @@ module.exports = (router) => {
         }
       });
 
-      router.post('/add_division',(req,res) => {
+      router.post('/add_division_counselor',(req,res) => {
         Camp.update({_id:req.decoded.campId,counselors:{$elemMatch:{_id:req.body._id}}},{$set:{"counselors.$.division":req.body.toAdd}}, (err,counselor)=>{
             if(err){
                 res.json({success:false,message:err});
@@ -201,6 +202,49 @@ module.exports = (router) => {
                     });
                 }
             });
+        });
+    });
+
+    router.get('/all_heads',(req,res) =>{
+        console.log(req.decoded.campId);
+        Camp.aggregate([
+            { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
+            { $unwind: '$divisions'},
+            { $project: {divisions:1}},
+            { $unwind: '$divisions.leaders'},
+            { $group : { _id : {_id:"$divisions.leaders._id",username:'$divisions.leaders.username',email:'$divisions.leaders.email'}, divisions:{$addToSet:"$divisions"}}}
+        ],(err,result)=>{
+            res.json({success:true,heads:result});
+        });
+    });
+
+    router.delete('/remove_head/:id', (req, res) => {
+        if (!req.params.id) {
+          res.json({ success: false, message: 'No id provided' }); 
+        } else {
+            Camp.findOneAndUpdate({'_id': req.decoded.campId},{$pull:{users:{_id:req.params.id}}},(err)=>{
+                if(err){
+                    res.json({ success: false, message: 'Failed to delete' });
+                }
+                else{
+                    res.json({ success: true, message: 'Head staff member deleted!' }); 
+                }
+            });
+        }
+      });
+
+      router.post('/add_division_head',(req,res) => {
+        const toAdd = req.body.toAdd;
+        delete req.body.toAdd;
+        Camp.update({_id:req.decoded.campId,divisions:{$elemMatch:{_id:toAdd._id}}},{$push:{"divisions.$.leaders":req.body}}, (err,head)=>{
+            console.log(head);
+            console.log(err);
+            if(err){
+                res.json({success:false,message:err});
+            }
+            else{
+                res.json({success:true});
+            }
         });
     });
     
