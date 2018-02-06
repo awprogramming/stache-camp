@@ -84,8 +84,9 @@ module.exports = (router) => {
     router.post('/register-camp', (req,res) => {
         let admin = new User({
             email: req.body.admin_email,
-            username: req.body.admin_username,
-            password: req.body.admin_password
+            password: req.body.admin_password,
+            first: req.body.admin_first,
+            last: req.body.admin_last
         });
         let camp = new Camp({
             name: req.body.name,
@@ -151,19 +152,19 @@ module.exports = (router) => {
     });
     
     router.post('/login',(req,res)=>{
-        if (!req.body.username){
+        if (!req.body.email){
             res.json({success:false,message:'No username provided'});
         }
         else if(!req.body.password){
             res.json({success:false,message:'No password provided'});
         }
         else{
-            Camp.findOne({users:{$elemMatch:{username:req.body.username.toLowerCase()}}}, (err,camp)=>{
+            Camp.findOne({users:{$elemMatch:{email:req.body.email.toLowerCase()}}}, (err,camp)=>{
                 if(err){
                     res.json({success:false,message:err.message});
                 }
                 else if(!camp){
-                    SuperUser.findOne({username:req.body.username.toLowerCase()}, (err,superuser)=>{
+                    SuperUser.findOne({username:req.body.email.toLowerCase()}, (err,superuser)=>{
                         if(err){
                             res.json({success:false,message:err});
                         }
@@ -177,7 +178,7 @@ module.exports = (router) => {
                             }
                             else{
                                 const token = jwt.sign({userId:superuser._id}, config.secret,{ expiresIn:'100d'});
-                                res.json({success:true,message:"Success",token:token, user:{username:superuser.username,permissions:"superuser"}});
+                                res.json({success:true,message:"Success",token:token, user:{email:superuser.username,permissions:"superuser"}});
                             }
                         }
                     });
@@ -185,7 +186,7 @@ module.exports = (router) => {
                 }
                 else{
                     const admin = camp.admin;
-                    Camp.find({users:{$elemMatch:{username:req.body.username.toLowerCase()}}},{"users.$":1}, (err,camp)=>{
+                    Camp.find({users:{$elemMatch:{email:req.body.email.toLowerCase()}}},{"users.$":1}, (err,camp)=>{
                         const validPassword = camp[0].users[0].comparePassword(req.body.password);
                         if(!validPassword){
                             res.json({success:false,message:"Password is not valid"});
@@ -193,10 +194,10 @@ module.exports = (router) => {
                         else{
                             const token = jwt.sign({userId:camp[0].users[0]._id,campId:camp[0]._id}, config.secret,{ expiresIn:'100d'});
                             if(camp[0].users[0]._id.equals(admin._id)){
-                                res.json({success:true,message:"Success",token:token, user:{username:camp[0].users[0].username,permissions:"admin",camp_id:camp[0]._id}});
+                                res.json({success:true,message:"Success",token:token, user:{email:camp[0].users[0].email,permissions:"admin",camp_id:camp[0]._id}});
                             }
                             else{
-                                res.json({success:true,message:"Success",token:token, user:{username:camp[0].users[0].username,permissions:"user",camp_id:camp[0]._id}});
+                                res.json({success:true,message:"Success",token:token, user:{email:camp[0].users[0].email,permissions:"user",camp_id:camp[0]._id}});
                             }
                             
                         }

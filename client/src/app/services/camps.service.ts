@@ -42,7 +42,8 @@ export class CampsService {
   /* COUNSELORS */
   getAllCounselors(){
     this.createAuthenticationHeaders();
-    return this.http.get(this.domain + 'camps/all_counselors' ,this.options).map(res => res.json());
+    var permissions = JSON.parse(localStorage.getItem('user')).permissions;
+    return this.http.get(this.domain + 'camps/all_counselors/'+permissions,this.options).map(res => res.json());
   }
 
   registerCounselor(counselor){
@@ -93,9 +94,18 @@ export class CampsService {
     return this.http.delete(this.domain + 'camps/remove_head/'+head._id,this.options).map(res => res.json());
   }
 
-  addDivisionToHead(head){
+  addHeadToDivision(division){
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + 'camps/add_division_head',head,this.options).map(res => res.json());
+    return this.http.post(this.domain + 'camps/add_head_division',division,this.options).map(res => res.json());
+  }
+
+  removeHeadFromDivision(division_id,leader_id){
+    this.createAuthenticationHeaders();
+    var data = {
+      "division_id":division_id,
+      "leader_id":leader_id
+    }
+    return this.http.post(this.domain + 'camps/remove_head_division',data,this.options).map(res => res.json());
   }
 
 

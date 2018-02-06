@@ -6,7 +6,8 @@ const UserSchema = require('./user').schema;
 
 const divisionSchema = new Schema({
     name: {type:String, required: true},
-    leaders: [UserSchema]
+    leaders: [UserSchema],
+    gender:{type:String, enum:['male','female'], required: true},
 });
 
 module.exports = mongoose.model('Division',divisionSchema);

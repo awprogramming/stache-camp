@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
     this.disableForm(); // Disable form while being process
     // Create user object from user's input
     const user = {
-      username: this.form.get('username').value, // Username input field
+      email: this.form.get('username').value, // Username input field
       password: this.form.get('password').value // Password input field
     }
     //Function to send login data to API
@@ -73,7 +73,7 @@ export class LoginComponent implements OnInit {
             this.router.navigate([this.previousUrl]);
           else
             this.router.navigate(['/modules']); // Navigate to dashboard view
-        }, 2000);
+        }, 1000);
       }
     });
   }

@@ -1,0 +1,3 @@
+<select *ngIf="heads && heads.length!=0" (change) = "handleChange($event);">
+  <option *ngFor="let head of heads; index as i" value="{{i}}">{{head.first}} {{head.last}}</option>
+</select>

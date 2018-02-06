@@ -23,7 +23,99 @@ module.exports = (router) => {
 
     /* COUNSELOR ROUTES */
 
-    router.get('/all_counselors',(req,res) =>{
+    router.get('/all_counselors/:permissions',(req,res) =>{
+        if(req.params.permissions == "user"){
+            // Camp.aggregate([
+            //     {$match:{_id:mongoose.Types.ObjectId(req.decoded.campId)}},
+            //     {$unwind:"$counselors"},
+            //     {$project:{counselors:1}},
+            //     {$unwind:"$counselors.division.leaders"},
+            //     {$match:{"counselors.division.$.leaders":{_id:mongoose.Types.ObjectId(req.decoded.userId)}}}
+            //     //{$unwind:"$divisions.counselors"},
+            //     //{$match:{divisions:{$elemMatch:{leaders:{_id:req.decoded.userId}}}}}
+            // ],(err,result)=>{
+            //     console.log(result);
+            // });
+        Camp.findById(req.decoded.campId).exec()
+        .then(function(camp){
+            var leaderDivisions = [];
+            for(let division of camp.divisions){
+                for(let leader of division.leaders){
+                    if(leader._id == req.decoded.userId){
+                        leaderDivisions.push(division._id);
+                    }
+                }
+            }
+            //res.json({success:true,counselors:leaderDivisions});
+            var result = {
+                "ld":leaderDivisions,
+                "camp":camp
+            }
+            return result;
+        })
+        .then(function(result){
+            var leaderDivisions = result.ld;
+            var result = result.camp;
+            var counselors = {};
+            var ctr = 0;
+            var finished = false;
+            for(let counselor of result.counselors){
+                for(let division of leaderDivisions){
+                    if(counselor.division._id.equals(division)){
+                        if(!(counselor.division.name in counselors))
+                            counselors[counselor.division.name] = []
+                        counselors[counselor.division.name].push(counselor);
+                    }
+                }
+            }
+            return counselors;
+        })
+        .then(function(counselors){
+            res.json({success:true,counselors:counselors});
+        });
+        //Camp.findById(req.decoded.campId ,(err,result)=>{
+            // function getCounselors(){
+            //     var leaderDivisions = [];
+            //     for(let division of result.divisions){
+            //         for(let leader of division.leaders){
+            //             if(leader._id == req.decoded.userId){
+            //                 leaderDivisions.push(division._id);
+            //             }
+            //         }
+            //     }
+            //     var counselors = [];
+            //     var ctr = 0;
+            //     var finished = false;
+            //     for(let counselor of result.counselors){
+            //         ctr++;
+            //         for(let division of leaderDivisions){
+            //             if(counselor.division._id.equals(division)){
+            //                 if(counselors[counselor.division.name] === undefined)
+            //                     counselors[counselor.division.name] = []
+            //                 counselors[counselor.division.name].push(counselor);
+            //             }
+            //         };
+            //         if(ctr == result.counselors.length){
+            //             console.log(ctr);
+            //             finished = true;
+            //         }
+            //     }
+            // }
+            // if(finished){
+            //     console.log(counselors);
+            //     res.json({success:true,counselors:counselors});
+            // }
+
+            // // async function sendResults(){
+            // //     var test = await getCounselors();
+            // //     console.log(test);
+            // //     res.json({success:true,counselors:test});
+            // // }
+
+            // getCounselors();
+            // });
+        }
+        else{
         Camp.findOne({_id:req.decoded.campId},(err,camp) => {
             if(err){
                 res.json({success:false,message:err});
@@ -37,6 +129,7 @@ module.exports = (router) => {
                 }
             }
         });
+        }
     });
 
     router.post('/add_counselor',(req,res) => {
@@ -67,25 +160,37 @@ module.exports = (router) => {
       });
 
     /* DIVISION ROUTES */
+    
+
 
     router.get('/all_divisions',(req,res) =>{
-        Camp.findOne({_id:req.decoded.campId},(err,camp) => {
-            if(err){
-                res.json({success:false,message:err});
-            }
-            else{
-                if(!camp.divisions || camp.divisions.length == 0){
-                    res.json({success:false, message:'No divisions registered'})
-                }
-                else{
-                   res.json({success:true,divisions:camp.divisions});
-                }
-            }
+
+        Camp.aggregate([
+            { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
+            { $unwind: '$divisions'},
+            { $project: {divisions:1}},
+            { $group : { _id : {gender:"$divisions.gender"}, divisions:{$push:"$divisions"}}},
+            
+        ],(err,result)=>{
+            res.json({success:true,divisions:result});
         });
+        // Camp.findOne({_id:req.decoded.campId},(err,camp) => {
+        //     if(err){
+        //         res.json({success:false,message:err});
+        //     }
+        //     else{
+        //         if(!camp.divisions || camp.divisions.length == 0){
+        //             res.json({success:false, message:'No divisions registered'})
+        //         }
+        //         else{
+        //            res.json({success:true,divisions:camp.divisions});
+        //         }
+        //     }
+        // });
     });
 
     router.post('/register_division',(req,res) => {
-        Camp.update({"_id":req.decoded.campId},{$push:{divisions:{name:req.body.name}}}, (err, camp)=>{
+        Camp.update({"_id":req.decoded.campId},{$push:{divisions:{$each:[{name:req.body.name,gender:'male'},{name:req.body.name,gender:'female'}]}}}, (err, camp)=>{
             if(err){
                 res.json({success:false,message:err});
             }
@@ -141,8 +246,9 @@ module.exports = (router) => {
     router.post('/register_head_staff', (req,res) => {
         let user = new User({
             email: req.body.email.toLowerCase(),
-            username: req.body.username.toLowerCase(),
-            password: req.body.password
+            password: req.body.password,
+            first: req.body.first,
+            last: req.body.last
         });
         bcrypt.hash(user.password,null,null,(err,hash) => {
             user.password = hash;
@@ -151,7 +257,7 @@ module.exports = (router) => {
                     if(err.code === 11000){
                         res.json({
                             success:false,
-                            message: "Username or email already exists"
+                            message: "Email already exists"
                         });
                     }
                     else{
@@ -166,12 +272,6 @@ module.exports = (router) => {
                                 res.json({
                                     success:false,
                                     message: err.errors['users.0.email'].message
-                                });
-                            }
-                            else if(err.errors['users.0.username']){
-                                res.json({
-                                    success:false,
-                                    message: err.errors['users.0.username'].message
                                 });
                             }
                             else if(err.errors['users.0.password']){
@@ -206,47 +306,80 @@ module.exports = (router) => {
     });
 
     router.get('/all_heads',(req,res) =>{
-        console.log(req.decoded.campId);
-        Camp.aggregate([
-            { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
-            { $unwind: '$divisions'},
-            { $project: {divisions:1}},
-            { $unwind: '$divisions.leaders'},
-            { $group : { _id : {_id:"$divisions.leaders._id",username:'$divisions.leaders.username',email:'$divisions.leaders.email'}, divisions:{$addToSet:"$divisions"}}}
-        ],(err,result)=>{
-            res.json({success:true,heads:result});
-        });
-    });
+        // Camp.aggregate([
+        //     { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
+        //     { $unwind: '$divisions'},
+        //     { $project: {divisions:1}},
+        //     { $unwind: '$divisions.leaders'},
+        //     { $group : { _id : {_id:"$divisions.leaders._id",username:'$divisions.leaders.username',email:'$divisions.leaders.email'}, divisions:{$addToSet:"$divisions"}}}
+        // ],(err,result)=>{
+        //     res.json({success:true,heads:result});
+        // });
 
+        Camp.findOne({_id:req.decoded.campId},(err,camp) => {
+            if(err){
+                res.json({success:false,message:err});
+            }
+            else{
+                if(camp.users.length == 1){
+                    res.json({success:false, message:'No head staff registered'})
+                }
+                else{
+                   res.json({success:true,heads:camp.users.slice(1)});
+                }
+            }
+        });
+
+    });
+    //
     router.delete('/remove_head/:id', (req, res) => {
         if (!req.params.id) {
           res.json({ success: false, message: 'No id provided' }); 
         } else {
-            Camp.findOneAndUpdate({'_id': req.decoded.campId},{$pull:{users:{_id:req.params.id}}},(err)=>{
+            Camp.findByIdAndUpdate(req.decoded.campId,{$pull:{users:{_id:req.params.id}}},{new:true},(err,camp)=>{
+            //Camp.findById(req.decoded.campId,(err,camp)=>{
+                camp.divisions.forEach((division)=>{
+                    division.leaders.forEach((leader)=>{
+                        leader.remove();
+                    });
+                });
+                camp.save({ validateBeforeSave: false });
                 if(err){
                     res.json({ success: false, message: 'Failed to delete' });
                 }
                 else{
+                    
                     res.json({ success: true, message: 'Head staff member deleted!' }); 
                 }
             });
         }
       });
 
-      router.post('/add_division_head',(req,res) => {
+      router.post('/add_head_division',(req,res) => {
         const toAdd = req.body.toAdd;
         delete req.body.toAdd;
-        Camp.update({_id:req.decoded.campId,divisions:{$elemMatch:{_id:toAdd._id}}},{$push:{"divisions.$.leaders":req.body}}, (err,head)=>{
-            console.log(head);
-            console.log(err);
-            if(err){
-                res.json({success:false,message:err});
-            }
-            else{
-                res.json({success:true});
-            }
+        Camp.update({_id:req.decoded.campId,divisions:{$elemMatch:{_id:req.body._id}}},{$push:{"divisions.$.leaders":toAdd}},(err,camp)=>{
+            console.log(camp);
+            res.json({success:true});
+        });
+        // Camp.update({_id:req.decoded.campId,divisions:{$elemMatch:{_id:req.body._id}}},{$push:{divisions:{leaders:req.body}}}, (err,head)=>{
+        //     if(err){
+        //         res.json({success:false,message:err});
+        //     }
+        //     else{
+        //         res.json({success:true});
+        //     }
+        // });
+    });
+
+    router.post('/remove_head_division',(req,res) => {
+        Camp.update({_id:req.decoded.campId,divisions:{$elemMatch:{_id:req.body.division_id}}},{$pull:{"divisions.$.leaders":{_id:req.body.leader_id}}},(err,camp)=>{
+            console.log(camp);
+            res.json({success:true});
         });
     });
+
+
     
     return router;
 }

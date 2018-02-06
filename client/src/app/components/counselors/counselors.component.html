@@ -51,9 +51,9 @@
     </form>
     </div>
     
-    <button class="btn btn-primary" (click) = "showAdd()" *ngIf = "!newCamp">Add</button>
+    <button class="btn btn-primary" (click) = "showAdd()" *ngIf = "!newCamp && authService.admin()">Add</button>
     
-    <table class="table">
+    <table class="table" *ngIf="authService.admin()">
       <tr>
         <th>First</th>
         <th>Last</th>
@@ -65,11 +65,37 @@
         <td>{{counselor.first}}</td>
         <td>{{counselor.last}}</td>
         <td>{{counselor.gender}}</td>
-        <td *ngIf="counselor.division">{{counselor.division.name}}</td>
+        <td *ngIf="counselor.division ">{{counselor.division.name}}</td>
         <td *ngIf="!counselor.division">
-          <app-divisions-dropdown (selectedChanged) = "preAdd($event,counselor)"></app-divisions-dropdown>
+          <app-divisions-dropdown (selectedChanged) = "preAdd($event,counselor)" [gender]="counselor.gender"></app-divisions-dropdown>
           <button class="btn btn-primary" (click) = "addDivision(counselor)">Add</button>
         </td>
         <td><button class="btn btn-primary" (click) = "remove(counselor)">X</button></td>
       </tr>
     </table>
+    <div *ngIf="authService.isUser()">
+      <div *ngFor="let division of divisions">
+      <h2>{{division}}</h2>
+      <table class="table" >
+          <tr>
+            <th>First</th>
+            <th>Last</th>
+            <th>Gender</th>
+            <th *ngIf="authService.admin()">Division</th>
+            <th *ngIf="authService.admin()"></th>
+          </tr>
+          <tr *ngFor="let counselor of counselors[division]">
+            <td>{{counselor.first}}</td>
+            <td>{{counselor.last}}</td>
+            <td>{{counselor.gender}}</td>
+            <td *ngIf="counselor.division && authService.admin()">{{counselor.division.name}}</td>
+            <td *ngIf="!counselor.division && authService.admin()">
+              <app-divisions-dropdown (selectedChanged) = "preAdd($event,counselor)" [gender]="counselor.gender"></app-divisions-dropdown>
+              <button class="btn btn-primary" (click) = "addDivision(counselor)">Add</button>
+            </td>
+            <td *ngIf="authService.admin()"><button class="btn btn-primary" (click) = "remove(counselor)">X</button></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    

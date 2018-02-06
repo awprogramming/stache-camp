@@ -29,9 +29,10 @@ export class HeadStaffComponent implements OnInit {
 
   createForm() {
     this.form = this.formBuilder.group({
-      username:['', Validators.required],
       email: ['', Validators.required], 
-      password: ['',Validators.required]
+      password: ['',Validators.required],
+      first: ['',Validators.required],
+      last: ['',Validators.required]
     });
   }
 
@@ -39,9 +40,10 @@ export class HeadStaffComponent implements OnInit {
   onRegistrationSubmit() {
     this.processing = true; 
     const headStaff = {
-      username: this.form.get('username').value, 
       email: this.form.get('email').value, 
-      password: this.form.get('password').value
+      password: this.form.get('password').value,
+      first: this.form.get('first').value,
+      last: this.form.get('last').value
     }
 
     this.campsService.registerHeadStaff(headStaff).subscribe(data => {
@@ -61,7 +63,6 @@ export class HeadStaffComponent implements OnInit {
   getAllHeads(){
     this.campsService.getAllHeads().subscribe(data => {
       this.heads = data.heads;
-      console.log(this.heads);
     })
   }
 
@@ -83,11 +84,11 @@ export class HeadStaffComponent implements OnInit {
     this.newHead = true;
   }
 
-  addDivision(head){
-    this.campsService.addDivisionToHead(head).subscribe(data => {
-      this.getAllHeads();
-    });
-  }
+  // addDivision(head){
+  //   this.campsService.addDivisionToHead(head).subscribe(data => {
+  //     this.getAllHeads();
+  //   });
+  // }
 
   /* Add Division to head staff member */
 

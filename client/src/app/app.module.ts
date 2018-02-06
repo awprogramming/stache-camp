@@ -13,6 +13,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
 import { SuperUserGuard } from './guards/superuser.guard';
 import { AdminGuard } from './guards/admin.guard';
+import { AdminOrUserGuard } from './guards/adminOrUser.guard';
 import { RegisterCampComponent } from './components/register-camp/register-camp.component';
 import { CampsComponent } from './components/camps/camps.component';
 import { CampsService } from './services/camps.service';
@@ -23,6 +24,7 @@ import { CounselorsComponent } from './components/counselors/counselors.componen
 import { DivisionsComponent } from './components/divisions/divisions.component';
 import { DivisionsDropdownComponent } from './components/divisions-dropdown/divisions-dropdown.component';
 import { HeadStaffComponent } from './components/head-staff/head-staff.component';
+import { HeadStaffDropdownComponent } from './components/head-staff-dropdown/head-staff-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,8 @@ import { HeadStaffComponent } from './components/head-staff/head-staff.component
     CounselorsComponent,
     DivisionsComponent,
     DivisionsDropdownComponent,
-    HeadStaffComponent
+    HeadStaffComponent,
+    HeadStaffDropdownComponent
   ],
   imports: [
     BrowserModule,
@@ -46,7 +49,7 @@ import { HeadStaffComponent } from './components/head-staff/head-staff.component
     AppRoutingModule,
     ReactiveFormsModule
   ],
-  providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard],
+  providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard, AdminOrUserGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

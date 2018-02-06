@@ -29,7 +29,8 @@ export class RegisterCampComponent implements OnInit {
   createForm() {
     this.form = this.formBuilder.group({
       name: ['', Validators.required], // Username field
-      admin_username:['', Validators.required],
+      admin_first:['', Validators.required],
+      admin_last:['', Validators.required],
       admin_email: ['', Validators.required], // Password field
       admin_password: ['',Validators.required]
     });
@@ -38,7 +39,6 @@ export class RegisterCampComponent implements OnInit {
   // Function to disable form
   disableForm() {
     this.form.controls['name'].disable(); // Disable username field
-    this.form.controls['admin_username'].disable(); // Enable password field
     this.form.controls['admin_email'].disable(); // Disable password field
     this.form.controls['admin_password'].enable(); // Enable password field
   }
@@ -46,7 +46,6 @@ export class RegisterCampComponent implements OnInit {
   // Function to enable form
   enableForm() {
     this.form.controls['name'].enable(); // Enable username field
-    this.form.controls['admin_username'].enable(); // Enable password field
     this.form.controls['admin_email'].enable(); // Enable password field
     this.form.controls['admin_password'].enable(); // Enable password field
   }
@@ -58,7 +57,8 @@ export class RegisterCampComponent implements OnInit {
     // Create user object from user's input
     const camp = {
       name: this.form.get('name').value, // Username input field
-      admin_username: this.form.get('admin_username').value, // Password input field
+      admin_first: this.form.get('admin_first').value,
+      admin_last:this.form.get('admin_last').value,
       admin_email: this.form.get('admin_email').value, // Password input field
       admin_password: this.form.get('admin_password').value
     }

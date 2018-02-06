@@ -8,7 +8,7 @@ import { CampsService } from '../../services/camps.service';
   styleUrls: ['./divisions-dropdown.component.css']
 })
 export class DivisionsDropdownComponent implements OnInit {
-
+  @Input() gender: String;
   @Output() selectedChanged = new EventEmitter();
   divisions;
   constructor(
@@ -17,7 +17,12 @@ export class DivisionsDropdownComponent implements OnInit {
 
   populateDivisions(){
     this.campService.getAllDivisions().subscribe(data=>{
-      this.divisions = data.divisions;
+      console.log(data.divisions);
+      if(this.gender=="female")
+        this.divisions = data.divisions[0].divisions;
+      else if(this.gender=="male")
+        this.divisions = data.divisions[1].divisions;
+      
       this.selectedChanged.emit(this.divisions[0]);
     });
     
@@ -31,4 +36,32 @@ export class DivisionsDropdownComponent implements OnInit {
     this.populateDivisions();
   }
 
+}
+
+function isEquivalent(a, b) {
+  // Create arrays of property names
+  var aProps = Object.getOwnPropertyNames(a);
+  var bProps = Object.getOwnPropertyNames(b);
+
+  // If number of properties is different,
+  // objects are not equivalent
+  if (aProps.length != bProps.length) {
+      return false;
+  }
+
+  for (var i = 0; i < aProps.length; i++) {
+      
+      var propName = aProps[i];
+        if(propName != "leaders"){
+        // If values of same property are not equal,
+        // objects are not equivalent
+        if (a[propName] !== b[propName]) {
+            return false;
+        }
+      }
+  }
+
+  // If we made it this far, objects
+  // are considered equivalent
+  return true;
 }

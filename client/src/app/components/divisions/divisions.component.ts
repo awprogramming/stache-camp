@@ -47,14 +47,12 @@ export class DivisionsComponent implements OnInit {
       } else {
         this.messageClass = 'alert alert-success';
         this.message = data.message;
-        setTimeout(() => {
           if(this.previousUrl)
             this.router.navigate([this.previousUrl]);
           else{
             this.newCamp = false;
             this.getAllDivisions();
           }
-        }, 2000);
       }
     });
   }
@@ -76,6 +74,26 @@ export class DivisionsComponent implements OnInit {
         this.getAllDivisions();
       }
     });
+  }
+
+  preAddHead(e,division){
+    division.toAdd = e;
+  }
+
+  addHead(division){
+    this.campsService.addHeadToDivision(division).subscribe(data => {
+      this.getAllDivisions();
+    });
+  }
+
+  removeHead(division_id,leader_id){
+    this.campsService.removeHeadFromDivision(division_id,leader_id).subscribe(data =>{
+      this.getAllDivisions();
+    })
+  }
+
+  showAddButton(e,division){
+    division.showAddButton = e;
   }
 
   showAdd() {

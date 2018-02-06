@@ -3,6 +3,8 @@ import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 import { CampsService } from '../../services/camps.service';
 import { Router } from '@angular/router';
 import { AuthGuard } from '../../guards/auth.guard';
+import { AuthService } from '../../services/auth.service';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-counselors',
@@ -17,10 +19,12 @@ export class CounselorsComponent implements OnInit {
   previousUrl;
   newCamp = false;
   counselors;
+  divisions;
 
   constructor(
     private formBuilder: FormBuilder,
     private campsService: CampsService,
+    private authService: AuthService,
     private router: Router,
     private authGuard: AuthGuard
   ) { 
@@ -64,8 +68,11 @@ export class CounselorsComponent implements OnInit {
   }
   getAllCounselors(){
     this.campsService.getAllCounselors().subscribe(data => {
-      this.counselors = data.counselors;
-    })
+      if(this.authService.isUser()){
+        this.divisions = Object.keys(data.counselors);
+      }
+        this.counselors = data.counselors;
+    });
   }
 
   remove(counselor){

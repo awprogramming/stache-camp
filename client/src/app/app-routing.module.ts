@@ -13,6 +13,7 @@ import { ModuleComponent } from './components/module/module.component';
 import { CounselorsComponent } from './components/counselors/counselors.component';
 import { DivisionsComponent } from './components/divisions/divisions.component';
 import { HeadStaffComponent } from './components/head-staff/head-staff.component';
+import { AdminOrUserGuard } from './guards/adminOrUser.guard';
 
 const appRoutes: Routes = [
     { 
@@ -47,7 +48,7 @@ const appRoutes: Routes = [
     {
         path: 'counselors',
         component: CounselorsComponent,
-        canActivate: [AuthGuard, AdminGuard]
+        canActivate: [AuthGuard, AdminOrUserGuard]
     },
     {
         path: 'divisions',

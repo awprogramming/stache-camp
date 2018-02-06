@@ -32,35 +32,6 @@ const emailValidators = [
     }
 ]
 
-let usernameLengthChecker = (username) => {
-    if (!username){
-        return false;
-    } else{
-        if(username.length < 3 || username.length > 15)
-            return false;
-        else
-            return true;
-    }
-}
-
-let validUsernameChecker = (username) => {
-    if (!username){
-        return false;
-    } else {
-        const regExp = new RegExp(/^[a-zA-Z0-9]+$/);
-        return regExp.test(username);
-    }
-}
-
-const usernameValidators = [
-    {
-        validator: usernameLengthChecker, message: 'Username must be between 3 and 15 characters'
-    },
-    {
-        validator: validUsernameChecker, message: 'Username must not have any special characters'
-    }
-]
-
 let passwordLengthChecker = (password) => {
     if (!password){
         return false;
@@ -92,14 +63,15 @@ const passwordValidators = [
 
 const userSchema = new Schema({
     email: {type:String, required: true, unique: true,sparse:true, lowercase: true, validate: emailValidators },
-    username: {type:String, required: true, unique: true,sparse:true, lowercase: true, validate: usernameValidators },
     password: {type:String, required: true, validate: passwordValidators},
-    //permissions: {type:Array, required: true}
+    first:{type:String, required:true},
+    last:{type:String, required:true}
+
 });
 
 
-
 userSchema.pre('save',function(next) {
+
     if(!this.isModified('password'))
         return next();
     
