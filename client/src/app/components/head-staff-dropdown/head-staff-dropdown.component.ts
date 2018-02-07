@@ -19,18 +19,18 @@ export class HeadStaffDropdownComponent implements OnInit {
   ) { }
 
   populateHeads(){
-    this.campService.getAllHeads().subscribe(data=>{
-      this.heads = data.heads;
-      for(var ex in this.exclude){
-        for(var head in this.heads){
-          if(isEquivalent(this.exclude[ex],this.heads[head])){
-            this.heads.splice(head,1);
-          }
-        }
-      }
-      this.selectedChanged.emit(this.heads[0]);
-      this.showAddButton.emit(this.heads.length!=0);
-    });
+    // this.campService.getAllHeads().subscribe(data=>{
+    //   this.heads = data.heads;
+    //   for(var ex in this.exclude){
+    //     for(var head in this.heads){
+    //       if(isEquivalent(this.exclude[ex],this.heads[head])){
+    //         this.heads.splice(head,1);
+    //       }
+    //     }
+    //   }
+    //   this.selectedChanged.emit(this.heads[0]);
+    //   this.showAddButton.emit(this.heads.length!=0);
+    // });
     
   }
 

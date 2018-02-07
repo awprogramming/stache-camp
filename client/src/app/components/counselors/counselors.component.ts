@@ -24,7 +24,7 @@ export class CounselorsComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private campsService: CampsService,
-    private authService: AuthService,
+    public authService: AuthService,
     private router: Router,
     private authGuard: AuthGuard
   ) { 

@@ -25,7 +25,7 @@ app.use(cors({
 
 app.use(bodyParser.urlencoded({ exteded: false}));
 app.use(bodyParser.json());
-app.use(express.static(__dirname + '/client/dist/'));
+app.use(express.static(__dirname + '/public'));
 app.use('/modules',modules);
 app.use('/camps',camps);
 app.use('/authentication',authentication);
@@ -34,9 +34,9 @@ app.use('/authentication',authentication);
 
 
 app.get('/', (req, res) =>{
-    res.sendFile(path.join(__dirname +'/client/dist/index.html'));
+    res.sendFile(path.join(__dirname +'/public/index.html'));
 });
 
-app.listen(8080, () =>{
-    console.log('Listening on port 8080');
+app.listen(process.env.PORT || 8080, () =>{
+    console.log('Listening on port ' + process.env.PORT);
 });
