@@ -939,18 +939,19 @@ var HeadStaffDropdownComponent = (function () {
         this.showAddButton = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
     }
     HeadStaffDropdownComponent.prototype.populateHeads = function () {
-        // this.campService.getAllHeads().subscribe(data=>{
-        //   this.heads = data.heads;
-        //   for(var ex in this.exclude){
-        //     for(var head in this.heads){
-        //       if(isEquivalent(this.exclude[ex],this.heads[head])){
-        //         this.heads.splice(head,1);
-        //       }
-        //     }
-        //   }
-        //   this.selectedChanged.emit(this.heads[0]);
-        //   this.showAddButton.emit(this.heads.length!=0);
-        // });
+        var _this = this;
+        this.campService.getAllHeads().subscribe(function (data) {
+            _this.heads = data.heads;
+            for (var ex in _this.exclude) {
+                for (var head in _this.heads) {
+                    if (isEquivalent(_this.exclude[ex], _this.heads[head])) {
+                        _this.heads.splice(head, 1);
+                    }
+                }
+            }
+            _this.selectedChanged.emit(_this.heads[0]);
+            _this.showAddButton.emit(_this.heads.length != 0);
+        });
     };
     HeadStaffDropdownComponent.prototype.handleChange = function (e) {
         this.selectedChanged.emit(this.heads[e.target.value]);
@@ -2086,7 +2087,7 @@ var AuthService = (function () {
     function AuthService(http) {
         this.http = http;
         //domain = ""; // Production;
-        this.domain = "";
+        this.domain = "http://localhost:8080/";
     }
     // Function to create headers, add token, to be used in HTTP requests
     AuthService.prototype.createAuthenticationHeaders = function () {
