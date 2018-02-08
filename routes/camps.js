@@ -427,6 +427,16 @@ module.exports = (router) => {
         }
       });
 
+      router.post('/add_specialty_counselor',(req,res) => {
+        Camp.update({_id:req.decoded.campId,counselors:{$elemMatch:{_id:req.body._id}}},{$set:{"counselors.$.specialty":req.body.toAdd}}, (err,counselor)=>{
+            if(err){
+                res.json({success:false,message:err});
+            }
+            else{
+                res.json({success:true});
+            }
+        });
+    });
     
     return router;
 }

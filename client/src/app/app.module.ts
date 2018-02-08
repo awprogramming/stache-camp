@@ -26,6 +26,7 @@ import { DivisionsDropdownComponent } from './components/divisions-dropdown/divi
 import { HeadStaffComponent } from './components/head-staff/head-staff.component';
 import { HeadStaffDropdownComponent } from './components/head-staff-dropdown/head-staff-dropdown.component';
 import { SpecialtiesComponent } from './components/specialties/specialties.component';
+import { SpecialtiesDropdownComponent } from './components/specialties-dropdown/specialties-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { SpecialtiesComponent } from './components/specialties/specialties.compo
     DivisionsDropdownComponent,
     HeadStaffComponent,
     HeadStaffDropdownComponent,
-    SpecialtiesComponent
+    SpecialtiesComponent,
+    SpecialtiesDropdownComponent
   ],
   imports: [
     BrowserModule,

@@ -101,6 +101,16 @@ export class CounselorsComponent implements OnInit {
     counselor.toAdd = e;
   }
 
+  addSpecialty(specialty){
+    this.campsService.addSpecialtyToCounselor(specialty).subscribe(data => {
+      this.getAllCounselors();
+    });
+  }
+
+  preAddSpecialty(e,specialty){
+    specialty.toAdd = e;
+  }
+
   showAdd() {
     this.newCamp = true;
   }

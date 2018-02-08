@@ -65,6 +65,7 @@
         <th>Gender</th>
         <th>Division</th>
         <th>Type</th>
+        <th>Specialty</th>
         <th></th>
       </tr>
       <tr *ngFor="let counselor of counselors">
@@ -77,6 +78,11 @@
           <button class="btn btn-primary" (click) = "addDivision(counselor)">Add</button>
         </td>
         <td>{{counselor.type}}</td>
+        <td *ngIf="counselor.specialty">{{counselor.specialty.name}}</td>
+        <td *ngIf="counselor.type=='specialist' && !counselor.specialty">
+            <app-specialties-dropdown (selectedChanged) = "preAddSpecialty($event,counselor)"></app-specialties-dropdown>
+            <button class="btn btn-primary" (click) = "addSpecialty(counselor)">Add</button>
+        </td>
         <td><button class="btn btn-primary" (click) = "remove(counselor)">X</button></td>
       </tr>
     </table>
@@ -89,12 +95,14 @@
             <th>Last</th>
             <th>Gender</th>
             <th>Type</th>
+            <th>Specialty</th>
           </tr>
           <tr *ngFor="let counselor of counselors[division]">
             <td>{{counselor.first}}</td>
             <td>{{counselor.last}}</td>
             <td>{{counselor.gender}}</td>
             <td>{{counselor.type}}</td>
+            <td>{{counselor.specialty}}</td>
           </tr>
         </table>
       </div>
