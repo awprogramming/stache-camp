@@ -6,6 +6,7 @@ const UserSchema = require('./user').schema;
 const ModuleSchema = require('./module').schema;
 const CounselorSchema = require('./counselor').schema;
 const DivisionSchema = require('./division').schema;
+const SpecialtySchema = require('./specialty').schema;
 
 
 const campSchema = new Schema({
@@ -14,7 +15,8 @@ const campSchema = new Schema({
     users: [UserSchema],
     divisions: [DivisionSchema],
     modules: [ModuleSchema],
-    counselors: [CounselorSchema]    
+    counselors: [CounselorSchema],
+    specialties: [SpecialtySchema]
 });
 
 module.exports = mongoose.model('Camp',campSchema);

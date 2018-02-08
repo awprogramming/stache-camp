@@ -133,6 +133,7 @@ module.exports = (router) => {
     });
 
     router.post('/add_counselor',(req,res) => {
+        console.log(req.body);
         Camp.update({"_id":req.decoded.campId},{$push:{counselors:req.body}}, (err, camp)=>{
             if(err){
                 res.json({success:false,message:err});
@@ -379,6 +380,52 @@ module.exports = (router) => {
         });
     });
 
+
+    /* Specialties */
+
+    router.post('/register_specialty',(req,res) => {
+        Camp.update({"_id":req.decoded.campId},{$push:{specialties:req.body}}, (err, camp)=>{
+            if(err){
+                res.json({success:false,message:err});
+            }
+            else{
+                res.json({success:true});
+            }
+        });
+    });
+
+    router.get('/all_specialties',(req,res) =>{
+        Camp.findOne({_id:req.decoded.campId},(err,camp) => {
+            if(err){
+                res.json({success:false,message:err});
+            }
+            else{
+                if(camp.specialties.length == 0){
+                    res.json({success:false, message:'No specialties registered'})
+                }
+                else{
+                res.json({success:true,specialties:camp.specialties});
+                }
+            }
+        });
+    });
+
+    router.delete('/remove_specialty/:id', (req, res) => {
+        if (!req.params.id) {
+          res.json({ success: false, message: 'No id provided' }); 
+        } else {
+            Camp.findByIdAndUpdate(req.decoded.campId,{$pull:{specialties:{_id:req.params.id}}},{new:true}).exec().then((camp) =>{
+                camp.counselors.forEach((counselor)=>{
+                    if(counselor.specialty && counselor.specialty._id.equals(req.params.id))
+                        counselor.specialty.remove()
+                })
+                camp.save({ validateBeforeSave: false });
+                return;
+            }).then(()=>{
+                res.json({ success: true, message: 'Specialty deleted!' }); 
+            });
+        }
+      });
 
     
     return router;

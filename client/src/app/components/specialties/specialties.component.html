@@ -1,0 +1,40 @@
+<div *ngIf="newCamp">
+  <h2 class="page-header">Register Specialty</h2>
+  
+  <!-- Custom Success/Error Message -->
+  <div class="row show-hide-message">
+    <div [ngClass]="messageClass">
+      {{ message }}
+    </div>
+  </div>
+  
+  <!-- Login Form -->
+  <form [formGroup]="form" (submit)="onRegistrationSubmit()">
+  
+    <div class="form-group">
+      <label for="name">Name</label>
+      <div>
+        <input class="form-control" type="text" name="name" formControlName="name" />
+      </div>
+    </div>
+  
+    <!-- Submit Button -->
+    <input class="btn btn-primary" type="submit" value="Register" />
+    <input class="btn btn-primary" (click) = "cancelAdd()" value="Cancel Add" />
+  </form>
+  </div>
+  
+  <button class="btn btn-primary" (click) = "showAdd()" *ngIf = "!newCamp">Add</button>
+  <div>
+    <table class="table">
+        <tr>
+          <th>Name</th>
+          <th></th>
+        </tr>
+        <tr *ngFor="let specialty of specialties">
+          <td>{{specialty.name}}</td>
+          <td><button class="btn btn-primary" (click) = "remove(specialty)">X</button></td>
+        </tr>
+      </table>
+  </div>
+  

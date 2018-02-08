@@ -35,13 +35,18 @@
           <div>
               <input class="form-check-input" formControlName="gender" type="radio" name="gender" value="female">
               <label class="form-check-label">Female</label>
-            </div>
+          </div>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="description">Division</label>
+        <label for="type">Type</label>
         <div>
+            <select class="form-control" formControlName="type" name="type" >
+              <option value="general">General</option>
+              <option value="specialist">Specialist</option>
+              <option value="group_leader">Group Leader</option>
+            </select>
         </div>
       </div>
     
@@ -59,6 +64,7 @@
         <th>Last</th>
         <th>Gender</th>
         <th>Division</th>
+        <th>Type</th>
         <th></th>
       </tr>
       <tr *ngFor="let counselor of counselors">
@@ -70,6 +76,7 @@
           <app-divisions-dropdown (selectedChanged) = "preAdd($event,counselor)" [gender]="counselor.gender"></app-divisions-dropdown>
           <button class="btn btn-primary" (click) = "addDivision(counselor)">Add</button>
         </td>
+        <td>{{counselor.type}}</td>
         <td><button class="btn btn-primary" (click) = "remove(counselor)">X</button></td>
       </tr>
     </table>
@@ -81,19 +88,13 @@
             <th>First</th>
             <th>Last</th>
             <th>Gender</th>
-            <th *ngIf="authService.admin()">Division</th>
-            <th *ngIf="authService.admin()"></th>
+            <th>Type</th>
           </tr>
           <tr *ngFor="let counselor of counselors[division]">
             <td>{{counselor.first}}</td>
             <td>{{counselor.last}}</td>
             <td>{{counselor.gender}}</td>
-            <td *ngIf="counselor.division && authService.admin()">{{counselor.division.name}}</td>
-            <td *ngIf="!counselor.division && authService.admin()">
-              <app-divisions-dropdown (selectedChanged) = "preAdd($event,counselor)" [gender]="counselor.gender"></app-divisions-dropdown>
-              <button class="btn btn-primary" (click) = "addDivision(counselor)">Add</button>
-            </td>
-            <td *ngIf="authService.admin()"><button class="btn btn-primary" (click) = "remove(counselor)">X</button></td>
+            <td>{{counselor.type}}</td>
           </tr>
         </table>
       </div>

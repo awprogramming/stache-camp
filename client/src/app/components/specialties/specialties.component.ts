@@ -3,28 +3,25 @@ import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 import { CampsService } from '../../services/camps.service';
 import { Router } from '@angular/router';
 import { AuthGuard } from '../../guards/auth.guard';
-import { AuthService } from '../../services/auth.service';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
-  selector: 'app-counselors',
-  templateUrl: './counselors.component.html',
-  styleUrls: ['./counselors.component.css']
+  selector: 'app-specialties',
+  templateUrl: './specialties.component.html',
+  styleUrls: ['./specialties.component.css']
 })
-export class CounselorsComponent implements OnInit {
+export class SpecialtiesComponent implements OnInit {
+  
   messageClass;
   message;
   processing = false;
   form: FormGroup;
   previousUrl;
   newCamp = false;
-  counselors;
-  divisions;
+  specialties;
 
   constructor(
     private formBuilder: FormBuilder,
     private campsService: CampsService,
-    public authService: AuthService,
     private router: Router,
     private authGuard: AuthGuard
   ) { 
@@ -33,23 +30,17 @@ export class CounselorsComponent implements OnInit {
 
   createForm() {
     this.form = this.formBuilder.group({
-      first: ['', Validators.required],
-      last:['', Validators.required],
-      gender: ['', Validators.required],
-      type: ['',Validators.required]
+      name: ['', Validators.required]
     });
   }
 
   onRegistrationSubmit() {
     this.processing = true;
-    const counselor = {
-      first: this.form.get('first').value,
-      last: this.form.get('last').value,
-      gender: this.form.get('gender').value,
-      type: this.form.get('type').value
+    const specialty = {
+      name: this.form.get('name').value
     }
   
-    this.campsService.registerCounselor(counselor).subscribe(data => {
+    this.campsService.registerSpecialty(specialty).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
         this.message = data.message;
@@ -57,28 +48,23 @@ export class CounselorsComponent implements OnInit {
       } else {
         this.messageClass = 'alert alert-success';
         this.message = data.message;
-        setTimeout(() => {
           if(this.previousUrl)
             this.router.navigate([this.previousUrl]);
           else{
             this.newCamp = false;
-            this.getAllCounselors();
+            this.getAllSpecialties();
           }
-        }, 2000);
       }
     });
   }
-  getAllCounselors(){
-    this.campsService.getAllCounselors().subscribe(data => {
-      if(this.authService.isUser()){
-        this.divisions = Object.keys(data.counselors);
-      }
-        this.counselors = data.counselors;
-    });
+  getAllSpecialties(){
+    this.campsService.getAllSpecialties().subscribe(data => {
+      this.specialties = data.specialties;
+    })
   }
 
-  remove(counselor){
-    this.campsService.removeCounselor(counselor).subscribe(data => {
+  remove(specialty){
+    this.campsService.removeSpecialty(specialty).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
         this.message = data.message;
@@ -86,19 +72,29 @@ export class CounselorsComponent implements OnInit {
       } else {
         this.messageClass = 'alert alert-success';
         this.message = data.message;
-        this.getAllCounselors();
+        this.getAllSpecialties();
       }
     });
   }
 
-  addDivision(counselor){
-    this.campsService.addDivisionToCounselor(counselor).subscribe(data => {
-      this.getAllCounselors();
-    });
+  preAddHead(e,specialty){
+    specialty.toAdd = e;
   }
 
-  preAdd(e,counselor){
-    counselor.toAdd = e;
+  // addHead(specialty){
+  //   this.campsService.addHeadToSpecialty(specialty).subscribe(data => {
+  //     this.getAllSpecialties();
+  //   });
+  // }
+
+  // removeHead(specialty_id,leader_id){
+  //   this.campsService.removeHeadFromSpecialty(specialty_id,leader_id).subscribe(data =>{
+  //     this.getAllSpecialties();
+  //   })
+  // }
+
+  showAddButton(e,specialty){
+    specialty.showAddButton = e;
   }
 
   showAdd() {
@@ -116,7 +112,7 @@ export class CounselorsComponent implements OnInit {
       this.previousUrl = this.authGuard.redirectUrl;
       this.authGuard.redirectUrl = undefined;
     }
-    this.getAllCounselors();
+    this.getAllSpecialties();
   }
 
 }
