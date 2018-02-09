@@ -16,9 +16,12 @@ export class CounselorsComponent implements OnInit {
   message;
   processing = false;
   form: FormGroup;
+  bulkAddForm: FormGroup;
   previousUrl;
   newCamp = false;
+  bulkAdd = false;
   counselors;
+  uploaded_counselors;
   divisions;
 
   constructor(
@@ -37,6 +40,9 @@ export class CounselorsComponent implements OnInit {
       last:['', Validators.required],
       gender: ['', Validators.required],
       type: ['',Validators.required]
+    });
+    this.bulkAddForm = this.formBuilder.group({
+      counselor_file:['']
     });
   }
 
@@ -68,6 +74,53 @@ export class CounselorsComponent implements OnInit {
       }
     });
   }
+
+  fileUploaded(event: any) {
+    const file = event.srcElement.files[0];
+    var myReader:FileReader = new FileReader();
+    var counselors = [];
+    myReader.onloadend = function(e){
+      // you can perform an action with readed data here
+      var lines = myReader.result.split('\r');
+      var skip = true;
+      for(let line of lines){
+        if(skip)
+          skip = false;
+        else{
+        var vals = line.split(',');
+          const counselor = {
+            first: vals[0],
+            last: vals[1],
+            gender: vals[2],
+            type: vals[3]
+          }
+          counselors.push(counselor);
+        }
+      }
+    }
+    myReader.readAsText(file);
+    this.uploaded_counselors = counselors;
+}
+
+  onBulkUploadSubmit(){
+    this.campsService.bulkRegisterCounselor(this.uploaded_counselors).subscribe(data => {
+      if (!data.success) {
+        this.messageClass = 'alert alert-danger';
+        this.message = data.message;
+        this.processing = false;
+      } else {
+        this.messageClass = 'alert alert-success';
+        this.message = data.message;
+        if(this.previousUrl)
+          this.router.navigate([this.previousUrl]);
+        else{
+          this.newCamp = false;
+          this.getAllCounselors();
+        }
+      }
+    });
+  }
+
   getAllCounselors(){
     this.campsService.getAllCounselors().subscribe(data => {
       if(this.authService.isUser()){
@@ -101,14 +154,14 @@ export class CounselorsComponent implements OnInit {
     counselor.toAdd = e;
   }
 
-  addSpecialty(specialty){
-    this.campsService.addSpecialtyToCounselor(specialty).subscribe(data => {
+  addSpecialty(counselor){
+    this.campsService.addSpecialtyToCounselor(counselor).subscribe(data => {
       this.getAllCounselors();
     });
   }
 
   preAddSpecialty(e,specialty){
-    specialty.toAdd = e;
+    specialty.toAddSpecialty = e;
   }
 
   showAdd() {
@@ -117,6 +170,14 @@ export class CounselorsComponent implements OnInit {
 
   cancelAdd() {
     this.newCamp = false;
+  }
+
+  showBulkAdd(){
+    this.bulkAdd = true;
+  }
+  
+  cancelBulkAdd(){
+    this.bulkAdd = false;
   }
 
   ngOnInit() {

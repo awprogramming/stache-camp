@@ -51,6 +51,11 @@ export class CampsService {
     return this.http.post(this.domain + 'camps/add_counselor',counselor,this.options).map(res => res.json());
   }
 
+  bulkRegisterCounselor(counselors){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/bulk_add_counselor',counselors,this.options).map(res => res.json());
+  }
+
   removeCounselor(counselor){
     this.createAuthenticationHeaders();
     return this.http.delete(this.domain + 'camps/remove_counselor/'+counselor._id,this.options).map(res => res.json());

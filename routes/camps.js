@@ -144,6 +144,17 @@ module.exports = (router) => {
         });
     });
 
+    router.post('/bulk_add_counselor',(req,res) => {
+        Camp.update({"_id":req.decoded.campId},{$push:{counselors:{$each:req.body}}}, (err, camp)=>{
+            if(err){
+                res.json({success:false,message:err});
+            }
+            else{
+                res.json({success:true});
+            }
+        });
+    });
+
     router.delete('/remove_counselor/:id', (req, res) => {
         if (!req.params.id) {
           res.json({ success: false, message: 'No id provided' }); 
@@ -428,7 +439,7 @@ module.exports = (router) => {
       });
 
       router.post('/add_specialty_counselor',(req,res) => {
-        Camp.update({_id:req.decoded.campId,counselors:{$elemMatch:{_id:req.body._id}}},{$set:{"counselors.$.specialty":req.body.toAdd}}, (err,counselor)=>{
+        Camp.update({_id:req.decoded.campId,counselors:{$elemMatch:{_id:req.body._id}}},{$set:{"counselors.$.specialty":req.body.toAddSpecialty}}, (err,counselor)=>{
             if(err){
                 res.json({success:false,message:err});
             }
