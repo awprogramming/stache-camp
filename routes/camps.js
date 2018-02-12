@@ -448,6 +448,29 @@ module.exports = (router) => {
             }
         });
     });
+
+    /* options */
+
+    router.get('/options',(req,res) =>{
+        Camp.findOne({_id:req.decoded.campId},(err,camp) => {
+            if(err){
+                res.json({success:false,message:err});
+            }
+            else{
+                res.json({success:true,options:camp.options});
+            }
+        });
+    });
+
+    router.post('/change_session',(req,res) =>{
+        Camp.findById(req.decoded.campId).exec().then((camp)=>{
+            const newSession = camp.sessions.create(req.body);
+            camp.sessions.push(newSession);
+            camp.options.session = newSession;
+            camp.save({ validateBeforeSave: false });
+            res.json({success:true});
+        });
+    });
     
     return router;
 }

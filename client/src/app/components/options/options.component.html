@@ -1,0 +1,15 @@
+<h2>Options</h2>
+
+<h3>Session</h3>
+<p>{{options.session.name}}</p>
+<form [formGroup]="form" (submit)="onFormSubmit()">
+    
+    <div class="form-group">
+      <label for="session_name">New Session</label>
+      <div>
+        <input class="form-control" type="text" name="session_name" formControlName="session_name" />
+      </div>
+    </div>
+    <!-- Submit Button -->
+    <input class="btn btn-primary" type="submit" value="Submit" />
+  </form>

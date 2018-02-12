@@ -134,4 +134,17 @@ export class CampsService {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + 'camps/add_specialty_counselor',counselor,this.options).map(res => res.json());
   }
+
+  /* Options */
+
+  getOptions(){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'camps/options' ,this.options).map(res => res.json());
+  }
+
+  changeSession(session){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/change_session',session,this.options).map(res => res.json());
+
+  }
 }

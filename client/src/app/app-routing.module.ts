@@ -15,6 +15,7 @@ import { DivisionsComponent } from './components/divisions/divisions.component';
 import { HeadStaffComponent } from './components/head-staff/head-staff.component';
 import { AdminOrUserGuard } from './guards/adminOrUser.guard';
 import { SpecialtiesComponent } from './components/specialties/specialties.component';
+import { OptionsComponent } from './components/options/options.component';
 
 const appRoutes: Routes = [
     { 
@@ -64,6 +65,11 @@ const appRoutes: Routes = [
     {
         path: 'specialties',
         component: SpecialtiesComponent,
+        canActivate: [AuthGuard, AdminGuard]
+    },
+    {
+        path: 'options',
+        component: OptionsComponent,
         canActivate: [AuthGuard, AdminGuard]
     },
     { path: '**', component: LoginComponent}
