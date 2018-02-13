@@ -86,35 +86,58 @@
     
     <button class="btn btn-primary" (click) = "showBulkAdd()" *ngIf = "!bulkAdd && authService.admin()">Upload Counselor CSV File</button>
     
-    <table class="table" *ngIf="authService.admin()">
-      <tr>
-        <th>First</th>
-        <th>Last</th>
-        <th>Gender</th>
-        <th>Division</th>
-        <th>Type</th>
-        <th>Specialty</th>
-        <th></th>
-      </tr>
-      <tr *ngFor="let counselor of counselors">
-        <td>{{counselor.first}}</td>
-        <td>{{counselor.last}}</td>
-        <td>{{counselor.gender}}</td>
-        <td *ngIf="counselor.division ">{{counselor.division.name}}</td>
-        <td *ngIf="!counselor.division">
-          <app-divisions-dropdown (selectedChanged) = "preAdd($event,counselor)" [gender]="counselor.gender"></app-divisions-dropdown>
-          <button class="btn btn-primary" (click) = "addDivision(counselor)">Add</button>
-        </td>
-        <td>{{counselor.type}}</td>
-        <td *ngIf="counselor.specialty">{{counselor.specialty.name}}</td>
-        <td *ngIf="counselor.type=='specialist' && !counselor.specialty">
-            <app-specialties-dropdown (selectedChanged) = "preAddSpecialty($event,counselor)"></app-specialties-dropdown>
-            <button class="btn btn-primary" (click) = "addSpecialty(counselor)">Add</button>
-        </td>
-        <td *ngIf="counselor.type!='specialist' && !counselor.specialty"></td>
-        <td><button class="btn btn-primary" (click) = "remove(counselor)">X</button></td>
-      </tr>
-    </table>
+    <div *ngIf="authService.admin()">
+        <div class="panel with-nav-tabs">
+            <div class="panel-heading">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item" [ngClass] = "{'active':i==0}" *ngFor="let session of sessions; let i = index">
+                          <a  class="nav-link" id="{{session._id.session_name}}-tab" data-toggle="tab" href="#{{session._id.session_name}}" role="tab" attr.aria-controls="{{session._id.session_name}}" aria-selected="true">{{session._id.session_name}}</a>
+                        </li>
+                    </ul>
+            </div>
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div *ngFor="let session of sessions; let i = index" [ngClass] = "{'in active':i==0}" class="tab-pane fade" id="{{session._id.session_name}}">
+                        <h2>{{session._id.session_name}}</h2>
+                        <table class="table" >
+                            <tr>
+                              <th>First</th>
+                              <th>Last</th>
+                              <th>Gender</th>
+                              <th>Division</th>
+                              <th>Type</th>
+                              <th>Specialty</th>
+                              <th *ngIf="i!=0"></th>
+                              <th></th>
+                            </tr>
+                            <tr *ngFor="let counselor of session.counselors">
+                              <td>{{counselor.first}}</td>
+                              <td>{{counselor.last}}</td>
+                              <td>{{counselor.gender}}</td>
+                              <td *ngIf="counselor.division ">{{counselor.division.name}}</td>
+                              <td *ngIf="!counselor.division">
+                                <app-divisions-dropdown (selectedChanged) = "preAdd($event,counselor)" [gender]="counselor.gender"></app-divisions-dropdown>
+                                <button class="btn btn-primary" (click) = "addDivision(counselor)">Add</button>
+                              </td>
+                              <td>{{counselor.type}}</td>
+                              <td *ngIf="counselor.specialty">{{counselor.specialty.name}}</td>
+                              <td *ngIf="counselor.type=='specialist' && !counselor.specialty">
+                                  <app-specialties-dropdown (selectedChanged) = "preAddSpecialty($event,counselor)"></app-specialties-dropdown>
+                                  <button class="btn btn-primary" (click) = "addSpecialty(counselor)">Add</button>
+                              </td>
+                              <td *ngIf="counselor.type!='specialist' && !counselor.specialty"></td>
+                              <td *ngIf="i!=0 && counselor.hired">Hired</td>
+                              <td *ngIf="i!=0 && !counselor.hired">
+                                  <button class="btn btn-primary" (click) = "rehire(counselor)">Rehire</button>
+                              </td>
+                              <td><button class="btn btn-primary" (click) = "remove(counselor)">X</button></td>
+                            </tr>
+                          </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div *ngIf="authService.isUser()">
       <div *ngFor="let division of divisions">
       <h2>{{division}}</h2>

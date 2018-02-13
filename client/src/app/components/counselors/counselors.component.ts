@@ -23,6 +23,8 @@ export class CounselorsComponent implements OnInit {
   counselors;
   uploaded_counselors;
   divisions;
+  sessions;
+  hired;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -125,8 +127,34 @@ export class CounselorsComponent implements OnInit {
     this.campsService.getAllCounselors().subscribe(data => {
       if(this.authService.isUser()){
         this.divisions = Object.keys(data.counselors);
-      }
         this.counselors = data.counselors;
+      }
+      if(this.authService.admin()){
+        this.sessions = data.output.sessions;
+        console.log(this.sessions[0]);
+        if(data.output.sessions[0]._id.session_id!=data.output.cur_session._id){
+          const session = {
+            "_id": {
+              "session_id":data.output.cur_session._id,
+              "session_name":data.output.cur_session.name
+            },
+            "counselors":[]
+          }
+          this.sessions.unshift(session);
+          console.log(this.sessions);
+        }
+        else{
+        this.hired = data.output.sessions[0].counselors;
+
+        for(var i = 1; i < this.sessions.length; i++){
+          for(let counselor of this.sessions[i].counselors){
+            for(let h of this.hired)
+              if(h._id == counselor._id)
+                counselor.hired = true;
+          }
+        }
+      }
+      } 
     });
   }
 
@@ -178,6 +206,19 @@ export class CounselorsComponent implements OnInit {
   
   cancelBulkAdd(){
     this.bulkAdd = false;
+  }
+
+  rehire(c){
+    const counselor = {
+      "counselor": c,
+      "session":{
+        "_id":this.sessions[0]._id.session_id,
+        "name":this.sessions[0]._id.session_name
+      }
+    }
+    this.campsService.rehire(counselor).subscribe(data => {
+      this.getAllCounselors();
+    });
   }
 
   ngOnInit() {

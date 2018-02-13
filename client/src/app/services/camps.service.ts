@@ -61,6 +61,11 @@ export class CampsService {
     return this.http.delete(this.domain + 'camps/remove_counselor/'+counselor._id,this.options).map(res => res.json());
   }
 
+  rehire(counselor){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/rehire',counselor,this.options).map(res => res.json());
+  }
+
   /* DIVISIONS */
   getAllDivisions(){
     this.createAuthenticationHeaders();

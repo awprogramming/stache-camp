@@ -116,32 +116,59 @@ module.exports = (router) => {
             // });
         }
         else{
-        Camp.findOne({_id:req.decoded.campId},(err,camp) => {
-            if(err){
-                res.json({success:false,message:err});
-            }
-            else{
-                if(!camp.counselors || camp.counselors.length == 0){
-                    res.json({success:false, message:'No Counselors registered'})
+        Camp.findById(req.decoded.campId).exec().then((camp)=>{
+            const current_session = camp.options.session;
+            Camp.aggregate([
+                { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
+                { $unwind: '$counselors'},
+                { $unwind: '$counselors.sessions'},
+                { $project: {counselors:1}},
+                { $group : { _id : {session_id:"$counselors.sessions._id",session_name:"$counselors.sessions.name"}, counselors:{$push:"$counselors"}}},
+                
+            ],(err,result)=>{
+                const output = {
+                    "sessions":result,
+                    "cur_session":current_session
                 }
-                else{
-                   res.json({success:true,counselors:camp.counselors});
-                }
-            }
+                res.json({success:true,output:output});
+            });
+            // Camp.findOne({_id:req.decoded.campId},(err,camp) => {
+            //     if(err){
+            //         res.json({success:false,message:err});
+            //     }
+            //     else{
+            //         if(!camp.counselors || camp.counselors.length == 0){
+            //             res.json({success:false, message:'No Counselors registered'})
+            //         }
+            //         else{
+            //            res.json({success:true,counselors:camp.counselors});
+            //         }
+            //     }
+            // });
         });
+        
         }
     });
 
     router.post('/add_counselor',(req,res) => {
-        console.log(req.body);
-        Camp.update({"_id":req.decoded.campId},{$push:{counselors:req.body}}, (err, camp)=>{
-            if(err){
-                res.json({success:false,message:err});
-            }
-            else{
-                res.json({success:true});
-            }
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            const sessions = [];
+            sessions.push(camp.options.session);
+            const counselor = req.body;
+            counselor.sessions = sessions;
+            const newCounselor = camp.counselors.create(counselor);
+            camp.counselors.push(newCounselor);
+            camp.save({ validateBeforeSave: false });
+            res.json({success:true});
         });
+        // Camp.update({"_id":req.decoded.campId},{$push:{counselors:req.body}}, (err, camp)=>{
+        //     if(err){
+        //         res.json({success:false,message:err});
+        //     }
+        //     else{
+        //         res.json({success:true});
+        //     }
+        // });
     });
 
     router.post('/bulk_add_counselor',(req,res) => {
@@ -169,6 +196,19 @@ module.exports = (router) => {
                 }
             });
         }
+      });
+
+      router.post('/rehire',(req,res)=>{
+        Camp.findById(req.decoded.campId, (err, camp)=>{
+            if(err){
+                res.json({success:false,message:err});
+            }
+            else{
+                camp.counselors.id(req.body.counselor._id).sessions.push(req.body.session)
+                camp.save({ validateBeforeSave: false });
+                res.json({success: true})
+            }
+        });
       });
 
     /* DIVISION ROUTES */
