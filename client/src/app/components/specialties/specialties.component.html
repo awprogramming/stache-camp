@@ -29,10 +29,16 @@
     <table class="table">
         <tr>
           <th>Name</th>
+          <th>Head Specialists</th>
           <th></th>
         </tr>
         <tr *ngFor="let specialty of specialties">
           <td>{{specialty.name}}</td>
+          <td>
+            <p *ngFor="let leader of specialty.head_specialists">{{leader.first}} {{leader.last}} <button class="btn btn-primary" (click) = "removeHead(specialty._id,leader._id)">X</button></p>
+            <app-head-staff-dropdown (selectedChanged) = "preAddHead($event,specialty)" (showAddButton) = "showAddButton($event,specialty)" [exclude]="specialty.head_specialists"></app-head-staff-dropdown>
+            <button class="btn btn-primary" *ngIf = "specialty.showAddButton" (click) = "addHead(specialty)">Add</button>
+          </td>
           <td><button class="btn btn-primary" (click) = "remove(specialty)">X</button></td>
         </tr>
       </table>

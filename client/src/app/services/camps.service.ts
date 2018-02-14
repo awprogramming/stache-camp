@@ -118,6 +118,20 @@ export class CampsService {
     return this.http.post(this.domain + 'camps/remove_head_division',data,this.options).map(res => res.json());
   }
 
+  addHeadToSpecialty(specialty){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/add_head_specialty',specialty,this.options).map(res => res.json());
+  }
+
+  removeHeadFromSpecialty(specialty_id,leader_id){
+    this.createAuthenticationHeaders();
+    var data = {
+      "specialty_id":specialty_id,
+      "leader_id":leader_id
+    }
+    return this.http.post(this.domain + 'camps/remove_head_specialty',data,this.options).map(res => res.json());
+  }
+
   /* Specialty */
 
   registerSpecialty(specialty) {

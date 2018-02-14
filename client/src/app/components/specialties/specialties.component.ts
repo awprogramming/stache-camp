@@ -81,17 +81,17 @@ export class SpecialtiesComponent implements OnInit {
     specialty.toAdd = e;
   }
 
-  // addHead(specialty){
-  //   this.campsService.addHeadToSpecialty(specialty).subscribe(data => {
-  //     this.getAllSpecialties();
-  //   });
-  // }
+  addHead(specialty){
+    this.campsService.addHeadToSpecialty(specialty).subscribe(data => {
+      this.getAllSpecialties();
+    });
+  }
 
-  // removeHead(specialty_id,leader_id){
-  //   this.campsService.removeHeadFromSpecialty(specialty_id,leader_id).subscribe(data =>{
-  //     this.getAllSpecialties();
-  //   })
-  // }
+  removeHead(specialty_id,leader_id){
+    this.campsService.removeHeadFromSpecialty(specialty_id,leader_id).subscribe(data =>{
+      this.getAllSpecialties();
+    })
+  }
 
   showAddButton(e,specialty){
     specialty.showAddButton = e;

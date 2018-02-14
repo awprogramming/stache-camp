@@ -430,7 +430,32 @@ module.exports = (router) => {
             res.json({success:true});
         });
     });
+    
+    router.post('/add_head_specialty',(req,res) => {
+        const toAdd = req.body.toAdd;
+        delete req.body.toAdd;
+        console.log(req.body);
+        console.log(toAdd);
+        Camp.update({_id:req.decoded.campId,specialties:{$elemMatch:{_id:req.body._id}}},{$push:{"specialties.$.head_specialists":toAdd}},(err,camp)=>{
+            console.log(camp);
+            res.json({success:true});
+        });
+        // Camp.update({_id:req.decoded.campId,specialtys:{$elemMatch:{_id:req.body._id}}},{$push:{specialtys:{leaders:req.body}}}, (err,head)=>{
+        //     if(err){
+        //         res.json({success:false,message:err});
+        //     }
+        //     else{
+        //         res.json({success:true});
+        //     }
+        // });
+    });
 
+    router.post('/remove_head_specialty',(req,res) => {
+        Camp.update({_id:req.decoded.campId,specialties:{$elemMatch:{_id:req.body.specialty_id}}},{$pull:{"specialties.$.head_specialists":{_id:req.body.leader_id}}},(err,camp)=>{
+            console.log(camp);
+            res.json({success:true});
+        });
+    });
 
     /* Specialties */
 
