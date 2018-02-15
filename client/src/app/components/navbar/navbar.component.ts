@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { CampsService } from '../../services/camps.service';
 //import { FlashMessagesService } from 'angular2-flash-messages';
 
 @Component({
@@ -12,6 +13,7 @@ export class NavbarComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
+    public campsService: CampsService,
     private router: Router,
     //private flashMessagesService: FlashMessagesService
   ) { }

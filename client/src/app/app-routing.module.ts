@@ -17,12 +17,10 @@ import { AdminOrUserGuard } from './guards/adminOrUser.guard';
 import { SpecialtiesComponent } from './components/specialties/specialties.component';
 import { OptionsComponent } from './components/options/options.component';
 import { ModuleGuard } from './guards/module.guard';
+import { EvaluationsComponent } from './components/evaluations/evaluations.component';
+import { QuestionsComponent } from './components/questions/questions.component';
 
 const appRoutes: Routes = [
-    { 
-        path: '',
-        component: LoginComponent
-    },
     {
         path: 'dashboard',
         component: DashboardComponent,
@@ -75,17 +73,20 @@ const appRoutes: Routes = [
     },
     {
         path:'evaluations',
-        component: OptionsComponent,
+        component: EvaluationsComponent,
         canActivate: [AuthGuard,ModuleGuard],
         data: {module: 'eval'}
     },
     {
-        path:'sports',
-        component: OptionsComponent,
+        path:'questions',
+        component: QuestionsComponent,
         canActivate: [AuthGuard,ModuleGuard],
-        data: {module: 'sports'}
+        data: {module: 'eval'}
     },
-    { path: '**', component: LoginComponent}
+    {   path: '**', 
+        component: DashboardComponent,
+        canActivate:[AuthGuard]
+    }
 ];
 
 @NgModule({

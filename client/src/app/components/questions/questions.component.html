@@ -1,0 +1,45 @@
+<div *ngIf="newQuestion">
+    <h2 class="page-header">Register Question</h2>
+    
+    <!-- Custom Success/Error Message -->
+    <div class="row show-hide-message">
+      <div [ngClass]="messageClass">
+        {{ message }}
+      </div>
+    </div>
+    
+    <form [formGroup]="form" (submit)="onRegistrationSubmit()">
+      <div class="form-group">
+        <label for="content">Content</label>
+        <div>
+          <input class="form-control" type="text" name="content" formControlName="content" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="type">Type</label>
+        <div>
+            <app-counselor-types-dropdown (selectedChanged) = "preAddType($event,type)"></app-counselor-types-dropdown>
+        </div>
+      </div>
+    
+      <!-- Submit Button -->
+      <input class="btn btn-primary" type="submit" value="Register" />
+      <input class="btn btn-primary" (click) = "cancelAdd()" value="Cancel Add" />
+    </form>
+    </div>
+    <button class="btn btn-primary" (click) = "showAdd()" *ngIf = "!newQuestion">Add</button>
+
+    <div *ngFor="let type of types">
+      <h2>{{type._id.type.type}}</h2>
+      <table class="table">
+          <tr>
+            <th>Content</th>
+            <th></th>
+          </tr>
+          <tr *ngFor="let question of type.questions">
+            <td>{{question.content}}</td>
+            <td><button class="btn btn-primary" (click) = "remove(question)">X</button></td>
+          </tr>
+        </table>
+    </div>

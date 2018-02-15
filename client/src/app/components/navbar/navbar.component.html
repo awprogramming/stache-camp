@@ -8,10 +8,21 @@
         <li *ngIf="authService.superUser()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/register-camp">Register Camp</a></li>
         <li *ngIf="authService.superUser()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/camps">Camps</a></li>
         <li *ngIf="authService.superUser()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/modules">Modules</a></li>
-        <li *ngIf="authService.admin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/head-staff">Head Staff</a></li>
-        <li *ngIf="authService.admin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/divisions">Divisions</a></li>
-        <li *ngIf="authService.admin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/specialties">Specialties</a></li>
-        <li *ngIf="authService.admin()||authService.isUser()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/counselors">Counselors</a></li>
+        <li *ngIf="authService.loggedIn()" class="nav-item dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Staff <b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu">
+              <li *ngIf="authService.admin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/head-staff">Head Staff</a></li>
+              <li *ngIf="authService.admin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/divisions">Divisions</a></li>
+              <li *ngIf="authService.admin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/specialties">Specialties</a></li>
+              <li *ngIf="authService.admin()||authService.isUser()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/counselors">Counselors</a></li>
+            </ul>
+        </li>
+        <li *ngIf="authService.loggedIn() && campsService.hasModule('eval')" class="nav-item dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Evaluations <b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu">
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/questions">Questions</a></li>
+            </ul>
+        </li>
         <li *ngIf="!authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/login">Login</a></li>
         <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/dashboard">Dashboard</a></li>
         <li *ngIf="authService.admin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/options">Options</a></li>

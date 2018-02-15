@@ -7,6 +7,7 @@ const path = require('path');
 const authentication = require('./routes/authentication')(router);
 const camps = require('./routes/camps')(router);
 const modules = require('./routes/modules')(router);
+const evaluations = require('./routes/evaluations')(router);
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
@@ -29,6 +30,7 @@ app.use(express.static(__dirname + '/public'));
 app.use('/modules',modules);
 app.use('/camps',camps);
 app.use('/authentication',authentication);
+app.use('/evaluations',evaluations);
 
 
 

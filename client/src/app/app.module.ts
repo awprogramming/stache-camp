@@ -30,6 +30,10 @@ import { SpecialtiesDropdownComponent } from './components/specialties-dropdown/
 import { OptionsComponent } from './components/options/options.component';
 import { CounselorTypesDropdownComponent } from './components/counselor-types-dropdown/counselor-types-dropdown.component';
 import { ModuleGuard } from './guards/module.guard';
+import { EvaluationsService } from './services/evaluations.service';
+import { EvaluationsComponent } from './components/evaluations/evaluations.component';
+import { QuestionsComponent } from './components/questions/questions.component';
+
 
 @NgModule({
   declarations: [
@@ -51,6 +55,8 @@ import { ModuleGuard } from './guards/module.guard';
     SpecialtiesDropdownComponent,
     OptionsComponent,
     CounselorTypesDropdownComponent,
+    EvaluationsComponent,
+    QuestionsComponent,
   ],
   imports: [
     BrowserModule,
@@ -58,7 +64,7 @@ import { ModuleGuard } from './guards/module.guard';
     AppRoutingModule,
     ReactiveFormsModule
   ],
-  providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard, AdminOrUserGuard, ModuleGuard],
+  providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard, AdminOrUserGuard, ModuleGuard,EvaluationsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
