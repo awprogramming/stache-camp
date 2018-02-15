@@ -25,6 +25,8 @@ export class CounselorsComponent implements OnInit {
   divisions;
   sessions;
   hired;
+  toAddType;
+  options;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -54,7 +56,7 @@ export class CounselorsComponent implements OnInit {
       first: this.form.get('first').value,
       last: this.form.get('last').value,
       gender: this.form.get('gender').value,
-      type: this.form.get('type').value
+      type: this.toAddType
     }
   
     this.campsService.registerCounselor(counselor).subscribe(data => {
@@ -81,6 +83,8 @@ export class CounselorsComponent implements OnInit {
     const file = event.srcElement.files[0];
     var myReader:FileReader = new FileReader();
     var counselors = [];
+    var types = this.options.counselor_types;
+    var session = this.options.session;
     myReader.onloadend = function(e){
       // you can perform an action with readed data here
       var lines = myReader.result.split('\r');
@@ -89,12 +93,19 @@ export class CounselorsComponent implements OnInit {
         if(skip)
           skip = false;
         else{
-        var vals = line.split(',');
+          var vals = line.split(',');
           const counselor = {
             first: vals[0],
             last: vals[1],
             gender: vals[2],
-            type: vals[3]
+            type:  vals[3],
+            sessions: [session]
+          }
+          for(let type of types){
+            if(type.type == vals[3]){
+              counselor.type = type
+              break;
+            }
           }
           counselors.push(counselor);
         }
@@ -131,7 +142,6 @@ export class CounselorsComponent implements OnInit {
       }
       if(this.authService.admin()){
         this.sessions = data.output.sessions;
-        console.log(this.sessions[0]);
         if(data.output.sessions[0]._id.session_id!=data.output.cur_session._id){
           const session = {
             "_id": {
@@ -155,6 +165,12 @@ export class CounselorsComponent implements OnInit {
         }
       }
       } 
+    });
+  }
+
+  getOptions(){
+    this.campsService.getOptions().subscribe(data => {
+      this.options = data.options
     });
   }
 
@@ -190,6 +206,10 @@ export class CounselorsComponent implements OnInit {
 
   preAddSpecialty(e,specialty){
     specialty.toAddSpecialty = e;
+  }
+
+  preAddType(e,type){
+    this.toAddType = e;
   }
 
   showAdd() {
@@ -229,6 +249,7 @@ export class CounselorsComponent implements OnInit {
       this.authGuard.redirectUrl = undefined;
     }
     this.getAllCounselors();
+    this.getOptions();
   }
 
 }

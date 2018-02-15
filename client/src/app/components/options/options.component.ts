@@ -17,6 +17,8 @@ export class OptionsComponent implements OnInit {
   message;
   previousUrl;
   form;
+  newTypeForm;
+  newType = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -32,6 +34,9 @@ export class OptionsComponent implements OnInit {
     this.form = this.formBuilder.group({
       session_name: ['', Validators.required],
     });
+    this.newTypeForm = this.formBuilder.group({
+      type: ['', Validators.required],
+    });
   }
 
   onFormSubmit() {
@@ -44,10 +49,35 @@ export class OptionsComponent implements OnInit {
 
   }
 
+  onNewTypeSubmit() {
+    const type = {
+      type: this.newTypeForm.get('type').value
+    }
+   this.campsService.addType(type).subscribe(data => {
+      this.getOptions();
+    });
+
+  }
+
+  showAdd(){
+    this.newType = true;
+  }
+
+  cancelAdd(){
+    this.newType = false;
+  }
+
+  removeType(type){
+    this.campsService.removeType(type).subscribe(data => {
+        this.getOptions();
+
+    });
+  }
 
   getOptions(){
     this.campsService.getOptions().subscribe(data => {
       this.options = data.options
+      console.log(this.options);
     });
   }
 

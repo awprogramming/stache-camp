@@ -39,6 +39,20 @@ export class CampsService {
     return this.http.post(this.domain + 'camps/activate_module',mod,this.options).map(res => res.json());
   }
   
+  getModules(){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'camps/all_modules',this.options).map(res => res.json());
+  }
+
+  hasModule(hmod){
+    for(let mod of JSON.parse(localStorage.getItem('user')).modules){
+      if(hmod == mod.short_name)
+        return true
+    }
+    return false;
+    
+  }
+  
   /* COUNSELORS */
   getAllCounselors(){
     this.createAuthenticationHeaders();
@@ -164,6 +178,15 @@ export class CampsService {
   changeSession(session){
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + 'camps/change_session',session,this.options).map(res => res.json());
+  }
 
+  addType(type){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/register_type', type,this.options).map(res => res.json());
+  }
+
+  removeType(type){
+    this.createAuthenticationHeaders();
+    return this.http.delete(this.domain + 'camps/remove_type/'+type._id,this.options).map(res => res.json());
   }
 }

@@ -28,6 +28,8 @@ import { HeadStaffDropdownComponent } from './components/head-staff-dropdown/hea
 import { SpecialtiesComponent } from './components/specialties/specialties.component';
 import { SpecialtiesDropdownComponent } from './components/specialties-dropdown/specialties-dropdown.component';
 import { OptionsComponent } from './components/options/options.component';
+import { CounselorTypesDropdownComponent } from './components/counselor-types-dropdown/counselor-types-dropdown.component';
+import { ModuleGuard } from './guards/module.guard';
 
 @NgModule({
   declarations: [
@@ -48,6 +50,7 @@ import { OptionsComponent } from './components/options/options.component';
     SpecialtiesComponent,
     SpecialtiesDropdownComponent,
     OptionsComponent,
+    CounselorTypesDropdownComponent,
   ],
   imports: [
     BrowserModule,
@@ -55,7 +58,7 @@ import { OptionsComponent } from './components/options/options.component';
     AppRoutingModule,
     ReactiveFormsModule
   ],
-  providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard, AdminOrUserGuard],
+  providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard, AdminOrUserGuard, ModuleGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

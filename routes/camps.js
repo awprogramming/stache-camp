@@ -172,6 +172,7 @@ module.exports = (router) => {
     });
 
     router.post('/bulk_add_counselor',(req,res) => {
+        console.log(req.body);
         Camp.update({"_id":req.decoded.campId},{$push:{counselors:{$each:req.body}}}, (err, camp)=>{
             if(err){
                 res.json({success:false,message:err});
@@ -289,6 +290,22 @@ module.exports = (router) => {
             }
             else{
                 res.json({success:true});
+            }
+        });
+    });
+
+    router.get('/camp_modules',(req,res) =>{
+        Camp.findOne({_id:req.decoded.campId},(err,camp) => {
+            if(err){
+                res.json({success:false,message:err});
+            }
+            else{
+                if(camp.modules.length == 0){
+                    res.json({success:false, message:'No modules registered'})
+                }
+                else{
+                res.json({success:true,modules:camp.modules});
+                }
             }
         });
     });
@@ -536,6 +553,36 @@ module.exports = (router) => {
             res.json({success:true});
         });
     });
+
+    router.post('/register_type',(req,res) =>{
+        Camp.findOne({_id:req.decoded.campId},(err,camp) => {
+            if(err){
+                res.json({success:false,message:err});
+            }
+            else{
+                camp.options.counselor_types.push(req.body);
+                camp.save({ validateBeforeSave: false });
+                res.json({success:true,options:camp.options});
+            }
+        });
+    });
+
+    router.delete('/remove_type/:id', (req, res) => {
+        if (!req.params.id) {
+          res.json({ success: false, message: 'No id provided' }); 
+        } else {
+            Camp.findByIdAndUpdate(req.decoded.campId,{$pull:{"options.counselor_types":{_id:req.params.id}}},{new:true}).exec().then((camp) =>{
+                camp.counselors.forEach((counselor)=>{
+                    if(counselor.type._id.equals(req.params.id))
+                        counselor.type.remove()
+                })
+                camp.save({ validateBeforeSave: false });
+                return;
+            }).then(()=>{
+                res.json({ success: true, message: 'Type deleted!' }); 
+            });
+        }
+      });
     
     return router;
 }

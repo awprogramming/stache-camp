@@ -16,6 +16,7 @@ import { HeadStaffComponent } from './components/head-staff/head-staff.component
 import { AdminOrUserGuard } from './guards/adminOrUser.guard';
 import { SpecialtiesComponent } from './components/specialties/specialties.component';
 import { OptionsComponent } from './components/options/options.component';
+import { ModuleGuard } from './guards/module.guard';
 
 const appRoutes: Routes = [
     { 
@@ -71,6 +72,18 @@ const appRoutes: Routes = [
         path: 'options',
         component: OptionsComponent,
         canActivate: [AuthGuard, AdminGuard]
+    },
+    {
+        path:'evaluations',
+        component: OptionsComponent,
+        canActivate: [AuthGuard,ModuleGuard],
+        data: {module: 'eval'}
+    },
+    {
+        path:'sports',
+        component: OptionsComponent,
+        canActivate: [AuthGuard,ModuleGuard],
+        data: {module: 'sports'}
     },
     { path: '**', component: LoginComponent}
 ];

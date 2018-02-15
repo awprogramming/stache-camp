@@ -1,0 +1,3 @@
+<select (change) = "handleChange($event);" class="form-control" name="counselor-type" >
+  <option *ngFor="let type of types; index as i" value="{{i}}">{{type.type}}</option>
+</select>

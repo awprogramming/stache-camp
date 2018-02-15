@@ -5,68 +5,6 @@ const jwt = require('jsonwebtoken');
 const config = require('../config/database');
 
 module.exports = (router) => {
-    router.post('/register', (req,res)=> {
-        if(!req.body.email){
-            res.json({success:false,message:"You must provide an email"});
-        } 
-        else if(!req.body.username){
-            res.json({success:false,message:"You must provide a username"});
-        }
-        else if(!req.body.password){
-            res.json({success:false,message:"You must provide a password"});
-        }
-        else{
-            let user = new User({
-                email: req.body.email.toLowerCase(),
-                username: req.body.username.toLowerCase(),
-                password: req.body.password
-            });
-            user.save((err) => {
-                if (err) {
-                    if(err.code === 11000){
-                        res.json({
-                            success:false,
-                            message: "Username or email already exists"
-                        });
-                    }
-                    else{
-                        if(err.errors){
-                            if(err.errors.email){
-                                res.json({
-                                    success:false,
-                                    message: err.errors.email.message
-                                });
-                            }
-                            else if(err.errors.username){
-                                res.json({
-                                    success:false,
-                                    message: err.errors.username.message
-                                });
-                            }
-                            else if(err.errors.password){
-                                res.json({
-                                    success:false,
-                                    message: err.errors.password.message
-                                });
-                            }
-                        }
-                        else{
-                            res.json({
-                                success:false,
-                                message: "Could not save user. Error: " + err
-                            });
-                        }
-                    }
-                }
-                else{
-                    res.json({
-                        success:true,
-                        message: "Account Registered!"
-                    });
-                }
-            });
-        }
-    });
 
     router.post('/registerSuper', (req,res)=> {
         let superUser = new SuperUser({
@@ -91,7 +29,17 @@ module.exports = (router) => {
         let camp = new Camp({
             name: req.body.name,
             admin: admin,
-            users:[admin]
+            users:[admin],
+            options:{
+                counselor_types:[
+                    {
+                        type: "general"
+                    },
+                    {
+                        type: "specialist"
+                    }
+                ]
+            }
         });
         camp.save((err) =>{
             if (err) {
@@ -178,7 +126,7 @@ module.exports = (router) => {
                             }
                             else{
                                 const token = jwt.sign({userId:superuser._id}, config.secret,{ expiresIn:'100d'});
-                                res.json({success:true,message:"Success",token:token, user:{email:superuser.username,permissions:"superuser"}});
+                                res.json({success:true,message:"Success",token:token, user:{email:superuser.username,permissions:"superuser",modules:[]}});
                             }
                         }
                     });
@@ -186,7 +134,7 @@ module.exports = (router) => {
                 }
                 else{
                     const admin = camp.admin;
-                    Camp.find({users:{$elemMatch:{email:req.body.email.toLowerCase()}}},{"users.$":1}, (err,camp)=>{
+                    Camp.find({users:{$elemMatch:{email:req.body.email.toLowerCase()}}}, (err,camp)=>{
                         const validPassword = camp[0].users[0].comparePassword(req.body.password);
                         if(!validPassword){
                             res.json({success:false,message:"Password is not valid"});
@@ -194,10 +142,10 @@ module.exports = (router) => {
                         else{
                             const token = jwt.sign({userId:camp[0].users[0]._id,campId:camp[0]._id}, config.secret,{ expiresIn:'100d'});
                             if(camp[0].users[0]._id.equals(admin._id)){
-                                res.json({success:true,message:"Success",token:token, user:{email:camp[0].users[0].email,permissions:"admin",camp_id:camp[0]._id}});
+                                res.json({success:true,message:"Success",token:token, user:{email:camp[0].users[0].email,permissions:"admin",camp_id:camp[0]._id,modules:camp[0].modules}});
                             }
                             else{
-                                res.json({success:true,message:"Success",token:token, user:{email:camp[0].users[0].email,permissions:"user",camp_id:camp[0]._id}});
+                                res.json({success:true,message:"Success",token:token, user:{email:camp[0].users[0].email,permissions:"user",camp_id:camp[0]._id,modules:camp[0].modules}});
                             }
                             
                         }

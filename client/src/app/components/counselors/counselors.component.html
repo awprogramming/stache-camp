@@ -42,11 +42,7 @@
       <div class="form-group">
         <label for="type">Type</label>
         <div>
-            <select class="form-control" formControlName="type" name="type" >
-              <option value="general">General</option>
-              <option value="specialist">Specialist</option>
-              <option value="group_leader">Group Leader</option>
-            </select>
+            <app-counselor-types-dropdown (selectedChanged) = "preAddType($event,type)"></app-counselor-types-dropdown>
         </div>
       </div>
     
@@ -66,7 +62,6 @@
       </div>
     </div>
     
-    <!-- Login Form -->
     <form [formGroup]="bulkAddForm" (submit)="onBulkUploadSubmit()">
     
       <div class="form-group">
@@ -108,7 +103,7 @@
                               <th>Type</th>
                               <th>Specialty</th>
                               <th *ngIf="i!=0"></th>
-                              <th></th>
+                              <th *ngIf="i==0"></th>
                             </tr>
                             <tr *ngFor="let counselor of session.counselors">
                               <td>{{counselor.first}}</td>
@@ -116,21 +111,20 @@
                               <td>{{counselor.gender}}</td>
                               <td *ngIf="counselor.division ">{{counselor.division.name}}</td>
                               <td *ngIf="!counselor.division">
-                                <app-divisions-dropdown (selectedChanged) = "preAdd($event,counselor)" [gender]="counselor.gender"></app-divisions-dropdown>
-                                <button class="btn btn-primary" (click) = "addDivision(counselor)">Add</button>
+                                <app-divisions-dropdown *ngIf="i==0" (selectedChanged) = "preAdd($event,counselor)" [gender]="counselor.gender"></app-divisions-dropdown>
+                                <button *ngIf="i==0" class="btn btn-primary" (click) = "addDivision(counselor)">Add</button>
                               </td>
-                              <td>{{counselor.type}}</td>
+                              <td>{{counselor.type.type}}</td>
                               <td *ngIf="counselor.specialty">{{counselor.specialty.name}}</td>
-                              <td *ngIf="counselor.type=='specialist' && !counselor.specialty">
-                                  <app-specialties-dropdown (selectedChanged) = "preAddSpecialty($event,counselor)"></app-specialties-dropdown>
-                                  <button class="btn btn-primary" (click) = "addSpecialty(counselor)">Add</button>
+                              <td *ngIf="!counselor.specialty">
+                                  <app-specialties-dropdown *ngIf="i==0 && counselor.type.type=='specialist'" (selectedChanged) = "preAddSpecialty($event,counselor)"></app-specialties-dropdown>
+                                  <button *ngIf="i==0 && counselor.type.type=='specialist'" class="btn btn-primary" (click) = "addSpecialty(counselor)">Add</button>
                               </td>
-                              <td *ngIf="counselor.type!='specialist' && !counselor.specialty"></td>
                               <td *ngIf="i!=0 && counselor.hired">Hired</td>
                               <td *ngIf="i!=0 && !counselor.hired">
                                   <button class="btn btn-primary" (click) = "rehire(counselor)">Rehire</button>
                               </td>
-                              <td><button class="btn btn-primary" (click) = "remove(counselor)">X</button></td>
+                              <td *ngIf="i==0"><button class="btn btn-primary" (click) = "remove(counselor)">X</button></td>
                             </tr>
                           </table>
                     </div>
@@ -153,7 +147,7 @@
             <td>{{counselor.first}}</td>
             <td>{{counselor.last}}</td>
             <td>{{counselor.gender}}</td>
-            <td>{{counselor.type}}</td>
+            <td>{{counselor.type.type}}</td>
             <td>{{counselor.specialty}}</td>
           </tr>
         </table>

@@ -1,15 +1,41 @@
 <h2>Options</h2>
 
 <h3>Session</h3>
-<p>{{options.session.name}}</p>
+<p>{{options?.session.name}}</p>
 <form [formGroup]="form" (submit)="onFormSubmit()">
-    
+  <div class="form-group">
+    <label for="session_name">New Session</label>
+    <div>
+      <input class="form-control" type="text" name="session_name" formControlName="session_name" />
+    </div>
+  </div>
+  <!-- Submit Button -->
+  <input class="btn btn-primary" type="submit" value="Submit" />
+</form>
+
+<h3>Counselor Types</h3>
+<table class="table">
+  <tr>
+    <th>Type</th>
+    <th></th>
+  </tr>
+  <tr *ngFor="let type of options?.counselor_types">
+    <td>{{type.type}}</td>
+    <td><button class="btn btn-primary" (click) = "removeType(type)">X</button></td>
+  </tr>
+</table>
+<div *ngIf="newType">
+  <form [formGroup]="newTypeForm" (submit)="onNewTypeSubmit()">
     <div class="form-group">
-      <label for="session_name">New Session</label>
+      <label for="type">Name</label>
       <div>
-        <input class="form-control" type="text" name="session_name" formControlName="session_name" />
+        <input class="form-control" type="text" name="type" formControlName="type" />
       </div>
     </div>
+
     <!-- Submit Button -->
-    <input class="btn btn-primary" type="submit" value="Submit" />
+    <input class="btn btn-primary" type="submit" value="Register" />
+    <input class="btn btn-primary" (click) = "cancelAdd()" value="Cancel Add" />
   </form>
+</div>
+<button class="btn btn-primary" (click) = "showAdd()" *ngIf = "!newType">Add</button>

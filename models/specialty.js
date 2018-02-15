@@ -8,4 +8,4 @@ const specialtySchema = new Schema({
     head_specialists: [UserSchema]
 });
 
-module.exports = mongoose.model('Specialty',specialtySchema);``
+module.exports = mongoose.model('Specialty',specialtySchema);
