@@ -101,6 +101,15 @@ export class HeadStaffComponent implements OnInit {
   preAddType(e,type){
     this.toAddType = e;
   }
+  preAddhType(e,head){
+    head.toAddType = e;
+  }
+
+  addhType(head){
+    this.campsService.addTypeToHead(head).subscribe(data => {
+      this.getAllHeads();
+    });
+  }
 
   /******/
 

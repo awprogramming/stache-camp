@@ -142,18 +142,19 @@ module.exports = (router) => {
                 }
                 else{
                     const admin = camp.admin;
-                    Camp.find({users:{$elemMatch:{email:req.body.email.toLowerCase()}}}, (err,camp)=>{
-                        const validPassword = camp[0].users[0].comparePassword(req.body.password);
+                    Camp.findOne({users:{$elemMatch:{email:req.body.email.toLowerCase()}}},{"users.$":1,modules:1}, (err,camp)=>{
+
+                        const validPassword = camp.users[0].comparePassword(req.body.password);
                         if(!validPassword){
                             res.json({success:false,message:"Password is not valid"});
                         }
                         else{
-                            const token = jwt.sign({userId:camp[0].users[0]._id,campId:camp[0]._id}, config.secret,{ expiresIn:'100d'});
-                            if(camp[0].users[0]._id.equals(admin._id)){
-                                res.json({success:true,message:"Success",token:token, user:{email:camp[0].users[0].email,permissions:"admin",camp_id:camp[0]._id,modules:camp[0].modules}});
+                            const token = jwt.sign({userId:camp.users[0]._id,campId:camp._id}, config.secret,{ expiresIn:'100d'});
+                            if(camp.users[0]._id.equals(admin._id)){
+                                res.json({success:true,message:"Success",token:token, user:{email:camp.users[0].email,permissions:"admin",camp_id:camp._id,modules:camp.modules}});
                             }
                             else{
-                                res.json({success:true,message:"Success",token:token, user:{email:camp[0].users[0].email,permissions:"user",camp_id:camp[0]._id,modules:camp[0].modules}});
+                                res.json({success:true,message:"Success",token:token, user:{email:camp.users[0].email,permissions:"user",camp_id:camp._id,modules:camp.modules}});
                             }
                             
                         }

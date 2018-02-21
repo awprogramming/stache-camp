@@ -24,97 +24,119 @@ module.exports = (router) => {
 
     /* COUNSELOR ROUTES */
 
+
+    //maybe pass in type into here to
     router.get('/all_counselors/:permissions',(req,res) =>{
         if(req.params.permissions == "user"){
-            // Camp.aggregate([
-            //     {$match:{_id:mongoose.Types.ObjectId(req.decoded.campId)}},
-            //     {$unwind:"$counselors"},
-            //     {$project:{counselors:1}},
-            //     {$unwind:"$counselors.division.leaders"},
-            //     {$match:{"counselors.division.$.leaders":{_id:mongoose.Types.ObjectId(req.decoded.userId)}}}
-            //     //{$unwind:"$divisions.counselors"},
-            //     //{$match:{divisions:{$elemMatch:{leaders:{_id:req.decoded.userId}}}}}
-            // ],(err,result)=>{
-            //     console.log(result);
-            // });
-        Camp.findById(req.decoded.campId).exec()
-        .then(function(camp){
-            var leaderDivisions = [];
-            for(let division of camp.divisions){
-                for(let leader of division.leaders){
-                    if(leader._id == req.decoded.userId){
-                        leaderDivisions.push(division._id);
-                    }
+            
+            Camp.findById(req.decoded.campId).exec()
+            .then(function(camp){
+                var type;
+                for(let user of camp.users){
+                    if(user._id == req.decoded.userId)
+                        type = user.type;
                 }
-            }
-            //res.json({success:true,counselors:leaderDivisions});
-            var result = {
-                "ld":leaderDivisions,
-                "camp":camp
-            }
-            return result;
-        })
-        .then(function(result){
-            var leaderDivisions = result.ld;
-            var result = result.camp;
-            var counselors = {};
-            var ctr = 0;
-            var finished = false;
-            for(let counselor of result.counselors){
-                for(let division of leaderDivisions){
-                    if(counselor.division._id.equals(division)){
-                        if(!(counselor.division.name in counselors))
-                            counselors[counselor.division.name] = []
-                        counselors[counselor.division.name].push(counselor);
-                    }
+                var result = {
+                    "type":type,
+                    "camp":camp
                 }
-            }
-            return counselors;
-        })
-        .then(function(counselors){
-            res.json({success:true,counselors:counselors});
-        });
-        //Camp.findById(req.decoded.campId ,(err,result)=>{
-            // function getCounselors(){
-            //     var leaderDivisions = [];
-            //     for(let division of result.divisions){
-            //         for(let leader of division.leaders){
-            //             if(leader._id == req.decoded.userId){
-            //                 leaderDivisions.push(division._id);
-            //             }
-            //         }
-            //     }
-            //     var counselors = [];
-            //     var ctr = 0;
-            //     var finished = false;
-            //     for(let counselor of result.counselors){
-            //         ctr++;
-            //         for(let division of leaderDivisions){
-            //             if(counselor.division._id.equals(division)){
-            //                 if(counselors[counselor.division.name] === undefined)
-            //                     counselors[counselor.division.name] = []
-            //                 counselors[counselor.division.name].push(counselor);
-            //             }
-            //         };
-            //         if(ctr == result.counselors.length){
-            //             console.log(ctr);
-            //             finished = true;
-            //         }
-            //     }
-            // }
-            // if(finished){
-            //     console.log(counselors);
-            //     res.json({success:true,counselors:counselors});
-            // }
+                return result;
+            })
+            .then(function(result){
+                const camp = result.camp;
+                const type = result.type;
+                if(result.type.type == "Leader"){
+                    var leaderDivisions = [];
+                    for(let division of camp.divisions){
+                        for(let leader of division.leaders){
+                            if(leader._id == req.decoded.userId){
+                                leaderDivisions.push(division._id);
+                            }
+                        }
+                    }
+                    //res.json({success:true,counselors:leaderDivisions});
+                    var result = {
+                        "type":type,
+                        "ld":leaderDivisions,
+                        "camp":camp
+                    }
+                    return result;
+                }
+                else{
+                    var hsSpecialties = [];
+                    for(let specialty of camp.specialties){
+                        for(let leader of specialty.head_specialists){
+                            if(leader._id == req.decoded.userId){
+                                hsSpecialties.push(specialty._id);
+                            }
+                        }
+                    }
+                    var result = {
+                        "type":type,
+                        "hsS":hsSpecialties,
+                        "camp":camp
+                    }
+                    return result;
+                }
+            })
+            .then(function(result){
+                if(result.type.type == "Leader"){
+                    var leaderDivisions = result.ld;
+                    var result = result.camp;
+                    var counselors = {};
+                    var ctr = 0;
+                    var finished = false;
+                    for(let counselor of result.counselors){
+                        var hired = false;
+                        for(let session of counselor.sessions){
+                            if(session._id.equals(result.options.session._id)){
+                                hired = true;
+                                break;
+                            }
+                        }
+                        if(hired){
+                            for(let division of leaderDivisions){
 
-            // // async function sendResults(){
-            // //     var test = await getCounselors();
-            // //     console.log(test);
-            // //     res.json({success:true,counselors:test});
-            // // }
-
-            // getCounselors();
-            // });
+                                if(counselor.division && counselor.division._id.equals(division)){
+                                    if(!(counselor.division.name in counselors))
+                                        counselors[counselor.division.name] = []
+                                    counselors[counselor.division.name].push(counselor);
+                                }
+                            }
+                        }
+                    }
+                    return counselors;
+                }
+                else{
+                    var hsSpecialties = result.hsS;
+                    var result = result.camp;
+                    var counselors = {};
+                    var ctr = 0;
+                    var finished = false;
+                    for(let counselor of result.counselors){
+                        var hired = false;
+                        for(let session of counselor.sessions){
+                            if(session._id.equals(result.options.session._id)){
+                                hired = true;
+                                break;
+                            }
+                        }
+                        if(hired){
+                            for(let specialty of hsSpecialties){
+                                if(counselor.type.type == "specialist" && counselor.specialty && counselor.specialty._id.equals(specialty)){
+                                    if(!(counselor.specialty.name in counselors))
+                                        counselors[counselor.specialty.name] = []
+                                    counselors[counselor.specialty.name].push(counselor);
+                                }
+                            }
+                        }
+                    }
+                    return counselors;
+                }
+            })
+            .then(function(counselors){
+                res.json({success:true,counselors:counselors});
+            });
         }
         else{
         Camp.findById(req.decoded.campId).exec().then((camp)=>{
@@ -198,7 +220,6 @@ module.exports = (router) => {
     });
 
     router.post('/bulk_add_counselor',(req,res) => {
-        console.log(req.body);
         Camp.update({"_id":req.decoded.campId},{$push:{counselors:{$each:req.body}}}, (err, camp)=>{
             if(err){
                 res.json({success:false,message:err});
@@ -466,7 +487,6 @@ module.exports = (router) => {
         const toAdd = req.body.toAdd;
         delete req.body.toAdd;
         Camp.update({_id:req.decoded.campId,divisions:{$elemMatch:{_id:req.body._id}}},{$push:{"divisions.$.leaders":toAdd}},(err,camp)=>{
-            console.log(camp);
             res.json({success:true});
         });
         // Camp.update({_id:req.decoded.campId,divisions:{$elemMatch:{_id:req.body._id}}},{$push:{divisions:{leaders:req.body}}}, (err,head)=>{
@@ -481,7 +501,6 @@ module.exports = (router) => {
 
     router.post('/remove_head_division',(req,res) => {
         Camp.update({_id:req.decoded.campId,divisions:{$elemMatch:{_id:req.body.division_id}}},{$pull:{"divisions.$.leaders":{_id:req.body.leader_id}}},(err,camp)=>{
-            console.log(camp);
             res.json({success:true});
         });
     });
@@ -489,8 +508,6 @@ module.exports = (router) => {
     router.post('/add_head_specialty',(req,res) => {
         const toAdd = req.body.toAdd;
         delete req.body.toAdd;
-        console.log(req.body);
-        console.log(toAdd);
         Camp.update({_id:req.decoded.campId,specialties:{$elemMatch:{_id:req.body._id}}},{$push:{"specialties.$.head_specialists":toAdd}},(err,camp)=>{
             console.log(camp);
             res.json({success:true});
@@ -507,8 +524,18 @@ module.exports = (router) => {
 
     router.post('/remove_head_specialty',(req,res) => {
         Camp.update({_id:req.decoded.campId,specialties:{$elemMatch:{_id:req.body.specialty_id}}},{$pull:{"specialties.$.head_specialists":{_id:req.body.leader_id}}},(err,camp)=>{
-            console.log(camp);
             res.json({success:true});
+        });
+    });
+
+    router.post('/add_type_head',(req,res) => {
+        Camp.update({_id:req.decoded.campId,users:{$elemMatch:{_id:req.body._id}}},{$set:{"users.$.type":req.body.toAddType}}, (err,user)=>{
+            if(err){
+                res.json({success:false,message:err});
+            }
+            else{
+                res.json({success:true});
+            }
         });
     });
 

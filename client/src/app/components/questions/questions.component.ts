@@ -18,6 +18,7 @@ export class QuestionsComponent implements OnInit {
   newQuestion = false;
   types;
   toAddType;
+  toAddhType;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -31,7 +32,8 @@ export class QuestionsComponent implements OnInit {
   createForm() {
     this.form = this.formBuilder.group({
       content: ['', Validators.required],
-      type: ['',Validators.required]
+      type: ['',Validators.required],
+      htype: ['',Validators.required]
     });
   }
 
@@ -39,7 +41,8 @@ export class QuestionsComponent implements OnInit {
     this.processing = true;
     const question = {
       content: this.form.get('content').value,
-      type: this.toAddType
+      type: this.toAddType,
+      byWho: this.toAddhType
     }
   
     this.evaluationsService.registerQuestion(question).subscribe(data => {
@@ -70,6 +73,10 @@ export class QuestionsComponent implements OnInit {
 
   preAddType(e,type){
     this.toAddType = e;
+  }
+
+  preAddhType(e,type){
+    this.toAddhType = e;
   }
 
   remove(question){

@@ -22,6 +22,13 @@
             <app-counselor-types-dropdown (selectedChanged) = "preAddType($event,type)"></app-counselor-types-dropdown>
         </div>
       </div>
+
+      <div class="form-group">
+        <label for="headStaff-type">Type</label>
+        <div>
+            <app-head-staff-type-dropdown (selectedChanged) = "preAddhType($event,type)"></app-head-staff-type-dropdown>
+        </div>
+      </div>
     
       <!-- Submit Button -->
       <input class="btn btn-primary" type="submit" value="Register" />
@@ -35,10 +42,12 @@
       <table class="table">
           <tr>
             <th>Content</th>
+            <th>Evaluated By</th>
             <th></th>
           </tr>
           <tr *ngFor="let question of type.questions">
             <td>{{question.content}}</td>
+            <td>{{question.byWho.type}}</td>
             <td><button class="btn btn-primary" (click) = "remove(question)">X</button></td>
           </tr>
         </table>

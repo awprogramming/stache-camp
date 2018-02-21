@@ -56,7 +56,11 @@
       <td>{{head.first}}</td>
       <td>{{head.last}}</td>
       <td>{{head.email}}</td>
-      <td>{{head.type?.type}}</td>
+      <td *ngIf="head.type">{{head.type.type}}</td>
+      <td *ngIf="!head.type">
+          <app-head-staff-type-dropdown (selectedChanged) = "preAddhType($event,head)"></app-head-staff-type-dropdown>
+          <button class="btn btn-primary" (click) = "addhType(head)">Add</button>
+      </td>
       <td><button class="btn btn-primary" (click) = "remove(head)">X</button></td>
     </tr>
   </table>

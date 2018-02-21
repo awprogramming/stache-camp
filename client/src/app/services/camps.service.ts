@@ -146,6 +146,11 @@ export class CampsService {
     return this.http.post(this.domain + 'camps/remove_head_specialty',data,this.options).map(res => res.json());
   }
 
+  addTypeToHead(head){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/add_type_head',head,this.options).map(res => res.json());
+  }
+
   /* Specialty */
 
   registerSpecialty(specialty) {
