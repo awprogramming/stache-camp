@@ -61,5 +61,28 @@ module.exports = (router) => {
         }
       });
 
+    router.post('/change_per_session',(req,res) =>{
+
+        Camp.update({"_id":req.decoded.campId},{"options.evaluationOpts.perSession":req.body.perSession}, (err, camp)=>{
+            if(err){
+                res.json({success:false,message:err});
+            }
+            else{
+                res.json({success:true});
+            }
+        });
+    });
+
+    router.post('/change_period',(req,res) =>{
+
+        Camp.update({"_id":req.decoded.campId},{"options.evaluationOpts.currentEval":req.body.period}, (err, camp)=>{
+            if(err){
+                res.json({success:false,message:err});
+            }
+            else{
+                res.json({success:true});
+            }
+        });
+    });
     return router;
 }

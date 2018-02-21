@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt-nodejs');
+const HeadStaffTypeSchema = require('./headStaffType').schema;
 
 let emailLengthChecker = (email) => {
     if (!email)
@@ -65,7 +66,8 @@ const userSchema = new Schema({
     email: {type:String, required: true, unique: true,sparse:true, lowercase: true, validate: emailValidators },
     password: {type:String, required: true, validate: passwordValidators},
     first:{type:String, required:true},
-    last:{type:String, required:true}
+    last:{type:String, required:true},
+    type:HeadStaffTypeSchema
 
 });
 

@@ -39,4 +39,14 @@ export class EvaluationsService {
     return this.http.get(this.domain + 'evaluations/all_questions' ,this.options).map(res => res.json());
   }
 
+  changePerSession(newAmount){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'evaluations/change_per_session',newAmount,this.options).map(res => res.json());
+  }
+
+  changePeriod(newPeriod){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'evaluations/change_period',newPeriod,this.options).map(res => res.json());
+  }
+
 }

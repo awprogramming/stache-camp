@@ -4,7 +4,7 @@ import { CampsService } from '../../services/camps.service';
 import { Router } from '@angular/router';
 import { AuthGuard } from '../../guards/auth.guard';
 import { AuthService } from '../../services/auth.service';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { EvaluationsService } from '../../services/evaluations.service';
 
 @Component({
   selector: 'app-options',
@@ -18,12 +18,16 @@ export class OptionsComponent implements OnInit {
   previousUrl;
   form;
   newTypeForm;
+  newhTypeForm;
+  perSessionForm;
   newType = false;
+  newhType = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private campsService: CampsService,
     public authService: AuthService,
+    private evaluationsService: EvaluationsService,
     private router: Router,
     private authGuard: AuthGuard
   ) {
@@ -37,6 +41,12 @@ export class OptionsComponent implements OnInit {
     this.newTypeForm = this.formBuilder.group({
       type: ['', Validators.required],
     });
+    this.newhTypeForm = this.formBuilder.group({
+      htype: ['', Validators.required],
+    });
+    this.perSessionForm = this.formBuilder.group({
+      per_session: ['', Validators.required],
+    });
   }
 
   onFormSubmit() {
@@ -49,6 +59,26 @@ export class OptionsComponent implements OnInit {
 
   }
 
+  increasePeriod(){
+    const newPeriod = {
+      period: this.options.evaluationOpts.currentEval+1
+    }
+    this.changePeriod(newPeriod);
+  }
+
+  decreasePeriod(){
+    const newPeriod = {
+      period: this.options.evaluationOpts.currentEval-1
+    }
+    this.changePeriod(newPeriod);
+  }
+  
+  changePeriod(newPeriod){
+    this.evaluationsService.changePeriod(newPeriod).subscribe(data => {
+      this.getOptions();
+    });
+  }
+
   onNewTypeSubmit() {
     const type = {
       type: this.newTypeForm.get('type').value
@@ -56,7 +86,24 @@ export class OptionsComponent implements OnInit {
    this.campsService.addType(type).subscribe(data => {
       this.getOptions();
     });
+  }
 
+  onNewhTypeSubmit() {
+    const htype = {
+      type: this.newhTypeForm.get('htype').value
+    }
+   this.campsService.addhType(htype).subscribe(data => {
+      this.getOptions();
+    });
+  }
+
+  onPerSessionSubmit(){
+    const perSession = {
+      perSession: this.perSessionForm.get('per_session').value
+    }
+    this.evaluationsService.changePerSession(perSession).subscribe(data => {
+      this.getOptions();
+    });
   }
 
   showAdd(){
@@ -67,12 +114,27 @@ export class OptionsComponent implements OnInit {
     this.newType = false;
   }
 
+  showhAdd(){
+    this.newhType = true;
+  }
+
+  cancelhAdd(){
+    this.newhType = false;
+  }
+
   removeType(type){
     this.campsService.removeType(type).subscribe(data => {
         this.getOptions();
 
     });
   }
+
+  removehType(type){
+    this.campsService.removehType(type).subscribe(data => {
+        this.getOptions();
+    });
+  }
+
 
   getOptions(){
     this.campsService.getOptions().subscribe(data => {

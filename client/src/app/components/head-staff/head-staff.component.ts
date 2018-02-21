@@ -17,6 +17,7 @@ export class HeadStaffComponent implements OnInit {
   previousUrl;
   heads;
   newHead;
+  toAddType;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -43,7 +44,8 @@ export class HeadStaffComponent implements OnInit {
       email: this.form.get('email').value, 
       password: this.form.get('password').value,
       first: this.form.get('first').value,
-      last: this.form.get('last').value
+      last: this.form.get('last').value,
+      type: this.toAddType
     }
 
     this.campsService.registerHeadStaff(headStaff).subscribe(data => {
@@ -94,6 +96,10 @@ export class HeadStaffComponent implements OnInit {
 
   preAdd(e,head){
     head.toAdd = e;
+  }
+
+  preAddType(e,type){
+    this.toAddType = e;
   }
 
   /******/

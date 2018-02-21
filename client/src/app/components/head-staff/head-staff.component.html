@@ -21,6 +21,12 @@
           <input class="form-control" type="text" name="last" formControlName="last" />
         </div>
       </div>
+      <div class="form-group">
+        <label for="type">Type</label>
+        <div>
+            <app-head-staff-type-dropdown (selectedChanged) = "preAddType($event,type)"></app-head-staff-type-dropdown>
+        </div>
+      </div>
     <div class="form-group">
       <label for="email">Email</label>
       <div>
@@ -43,12 +49,14 @@
       <th>First</th>
       <th>Last</th>
       <th>Email</th>
+      <th>Type</th>
       <th></th>
     </tr>
     <tr *ngFor="let head of heads">
       <td>{{head.first}}</td>
       <td>{{head.last}}</td>
       <td>{{head.email}}</td>
+      <td>{{head.type?.type}}</td>
       <td><button class="btn btn-primary" (click) = "remove(head)">X</button></td>
     </tr>
   </table>

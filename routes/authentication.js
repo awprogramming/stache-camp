@@ -38,6 +38,14 @@ module.exports = (router) => {
                     {
                         type: "specialist"
                     }
+                ],
+                headStaff_types:[
+                    {
+                        type:"leader"
+                    },
+                    {
+                        type:"head_specialist"
+                    }
                 ]
             }
         });

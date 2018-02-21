@@ -33,6 +33,7 @@ import { ModuleGuard } from './guards/module.guard';
 import { EvaluationsService } from './services/evaluations.service';
 import { EvaluationsComponent } from './components/evaluations/evaluations.component';
 import { QuestionsComponent } from './components/questions/questions.component';
+import { HeadStaffTypeDropdownComponent } from './components/head-staff-type-dropdown/head-staff-type-dropdown.component';
 
 
 @NgModule({
@@ -57,6 +58,7 @@ import { QuestionsComponent } from './components/questions/questions.component';
     CounselorTypesDropdownComponent,
     EvaluationsComponent,
     QuestionsComponent,
+    HeadStaffTypeDropdownComponent,
   ],
   imports: [
     BrowserModule,

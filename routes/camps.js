@@ -1,5 +1,6 @@
 const Camp = require('../models/camp');
 const User = require('../models/user');
+const EvalOpts = require('../models/evalOpts');
 const config = require('../config/database');
 const bcrypt = require('bcrypt-nodejs');
 const mongoose = require('mongoose');
@@ -157,8 +158,33 @@ module.exports = (router) => {
             const counselor = req.body;
             counselor.sessions = sessions;
             const newCounselor = camp.counselors.create(counselor);
+            for(let mod of camp.modules){
+                if(mod.short_name=="eval"){
+                    const evaluation = newCounselor.evaluations.create({
+                        number: camp.options.evaluationOpts.currentEval,
+                        session: camp.options.session,
+                        started: false,
+                        submitted: false,
+                        approved: false,
+                        answers: []
+                    });
+                    const answers = []
+                    for(let question of camp.options.evaluationOpts.questions){
+                        if(question.type._id.equals(newCounselor.type._id)){
+                            const answer = {
+                                question:question
+                            };
+                            evaluation.answers.create(answer);
+                            evaluation.answers.push(answer);
+                        }
+                    }
+                    newCounselor.evaluations.push(evaluation);
+                    break;
+                }
+            }
             camp.counselors.push(newCounselor);
             camp.save({ validateBeforeSave: false });
+        }).then((camp)=>{
             res.json({success:true});
         });
         // Camp.update({"_id":req.decoded.campId},{$push:{counselors:req.body}}, (err, camp)=>{
@@ -284,14 +310,25 @@ module.exports = (router) => {
     /* MODULE ROUTES */
 
     router.post('/activate_module',(req,res) =>{
-        Camp.update({"_id":req.body._id},{$push:{modules:req.body.toAdd}}, (err)=>{
-            if(err){
-                res.json({success:false,message:err});
-            }
-            else{
-                res.json({success:true});
-            }
+
+        Camp.findById(req.body._id).exec().then((camp)=>{
+            camp.modules.push(req.body.toAdd);
+            let evalOpts = new EvalOpts();
+            camp.options.evaluationOpts = evalOpts;
+            camp.save({ validateBeforeSave: false });
+            res.json({success:true});
         });
+
+        // let evalOpts = new EvalOpts();
+
+        // Camp.update({"_id":req.body._id},{$push:{modules:req.body.toAdd},"options.evaluationOpts":evalOpts}, (err)=>{
+        //     if(err){
+        //         res.json({success:false,message:err});
+        //     }
+        //     else{
+        //         res.json({success:true});
+        //     }
+        // });
     });
 
     router.get('/camp_modules',(req,res) =>{
@@ -317,7 +354,8 @@ module.exports = (router) => {
             email: req.body.email.toLowerCase(),
             password: req.body.password,
             first: req.body.first,
-            last: req.body.last
+            last: req.body.last,
+            type: req.body.type
         });
         bcrypt.hash(user.password,null,null,(err,hash) => {
             user.password = hash;
@@ -575,6 +613,36 @@ module.exports = (router) => {
                 camp.counselors.forEach((counselor)=>{
                     if(counselor.type._id.equals(req.params.id))
                         counselor.type.remove()
+                })
+                camp.save({ validateBeforeSave: false });
+                return;
+            }).then(()=>{
+                res.json({ success: true, message: 'Type deleted!' }); 
+            });
+        }
+      });
+
+      router.post('/register_htype',(req,res) =>{
+        Camp.findOne({_id:req.decoded.campId},(err,camp) => {
+            if(err){
+                res.json({success:false,message:err});
+            }
+            else{
+                camp.options.headStaff_types.push(req.body);
+                camp.save({ validateBeforeSave: false });
+                res.json({success:true,options:camp.options});
+            }
+        });
+    });
+
+    router.delete('/remove_htype/:id', (req, res) => {
+        if (!req.params.id) {
+          res.json({ success: false, message: 'No id provided' }); 
+        } else {
+            Camp.findByIdAndUpdate(req.decoded.campId,{$pull:{"options.headStaff_types":{_id:req.params.id}}},{new:true}).exec().then((camp) =>{
+                camp.users.forEach((user)=>{
+                    if(user.type && user.type._id.equals(req.params.id))
+                        user.type.remove()
                 })
                 camp.save({ validateBeforeSave: false });
                 return;

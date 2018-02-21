@@ -185,8 +185,18 @@ export class CampsService {
     return this.http.post(this.domain + 'camps/register_type', type,this.options).map(res => res.json());
   }
 
+  addhType(type){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/register_htype', type,this.options).map(res => res.json());
+  }
+
   removeType(type){
     this.createAuthenticationHeaders();
     return this.http.delete(this.domain + 'camps/remove_type/'+type._id,this.options).map(res => res.json());
+  }
+
+  removehType(type){
+    this.createAuthenticationHeaders();
+    return this.http.delete(this.domain + 'camps/remove_htype/'+type._id,this.options).map(res => res.json());
   }
 }
