@@ -1,3 +1,17 @@
-<p>
-  evaluations works!
-</p>
+<div *ngFor="let division of divisions">
+  <h2>{{division}}</h2>
+  <table class="table" >
+    <tr>
+      <th>First</th>
+      <th>Last</th>
+      <th *ngFor="let i of perSession">Eval {{i+1}}</th>
+    </tr>
+    <tr *ngFor="let counselor of counselors[division]">
+      <td>{{counselor.first}}</td>
+      <td>{{counselor.last}}</td>
+      <td *ngFor="let i of perSession">
+        <a *ngIf="counselor.evals[i]" [routerLink]="['/evaluate', counselor._id, counselor.evals[i]._id]">Go</a>
+      </td>
+    </tr>
+  </table>
+</div>

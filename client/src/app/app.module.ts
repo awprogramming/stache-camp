@@ -34,6 +34,7 @@ import { EvaluationsService } from './services/evaluations.service';
 import { EvaluationsComponent } from './components/evaluations/evaluations.component';
 import { QuestionsComponent } from './components/questions/questions.component';
 import { HeadStaffTypeDropdownComponent } from './components/head-staff-type-dropdown/head-staff-type-dropdown.component';
+import { EvaluateComponent } from './components/evaluate/evaluate.component';
 
 
 @NgModule({
@@ -59,6 +60,7 @@ import { HeadStaffTypeDropdownComponent } from './components/head-staff-type-dro
     EvaluationsComponent,
     QuestionsComponent,
     HeadStaffTypeDropdownComponent,
+    EvaluateComponent,
   ],
   imports: [
     BrowserModule,

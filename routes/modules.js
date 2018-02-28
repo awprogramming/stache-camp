@@ -12,8 +12,9 @@ module.exports = (router) => {
                 res.json({
                     success:true,
                     message: "Module Registered!"
-                });
+                });    
         });
+
     });
 
     router.get('/all_modules',(req,res) =>{

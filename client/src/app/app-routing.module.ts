@@ -19,6 +19,7 @@ import { OptionsComponent } from './components/options/options.component';
 import { ModuleGuard } from './guards/module.guard';
 import { EvaluationsComponent } from './components/evaluations/evaluations.component';
 import { QuestionsComponent } from './components/questions/questions.component';
+import { EvaluateComponent } from './components/evaluate/evaluate.component';
 
 const appRoutes: Routes = [
     {
@@ -82,6 +83,10 @@ const appRoutes: Routes = [
         component: QuestionsComponent,
         canActivate: [AuthGuard,ModuleGuard],
         data: {module: 'eval'}
+    },
+    {
+        path:'evaluate/:counselorId/:evaluationId',
+        component: EvaluateComponent
     },
     {   path: '**', 
         component: DashboardComponent,

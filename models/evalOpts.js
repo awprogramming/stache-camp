@@ -9,6 +9,10 @@ const evalOptsSchema = new Schema({
     low: {type:Number, default:0,required:true},
     high: {type:Number, default:5, required:true},
     questions:[QuestionSchema],
+    gold: {type:Number, default:87,required:true},
+    silver: {type:Number, default:78,required:true},
+    green: {type:Number, default:67,required:true}
+    
 });
 
 module.exports = mongoose.model('EvalOpts',evalOptsSchema);

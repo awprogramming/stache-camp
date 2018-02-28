@@ -10,7 +10,8 @@ const evaluationSchema = new Schema({
     answers: [AnswerSchema],
     started: Boolean,
     submitted: Boolean,
-    approved: Boolean
+    approved: Boolean,
+    additional_notes:String
 });
 
 module.exports = mongoose.model('Evaluation',evaluationSchema);

@@ -151,10 +151,10 @@ module.exports = (router) => {
                         else{
                             const token = jwt.sign({userId:camp.users[0]._id,campId:camp._id}, config.secret,{ expiresIn:'100d'});
                             if(camp.users[0]._id.equals(admin._id)){
-                                res.json({success:true,message:"Success",token:token, user:{email:camp.users[0].email,permissions:"admin",camp_id:camp._id,modules:camp.modules}});
+                                res.json({success:true,message:"Success",token:token, user:{_id:camp.users[0]._id,email:camp.users[0].email,permissions:"admin",camp_id:camp._id,modules:camp.modules}});
                             }
                             else{
-                                res.json({success:true,message:"Success",token:token, user:{email:camp.users[0].email,permissions:"user",camp_id:camp._id,modules:camp.modules}});
+                                res.json({success:true,message:"Success",token:token, user:{_id:camp.users[0]._id,type:camp.users[0].type,email:camp.users[0].email,permissions:"user",camp_id:camp._id,modules:camp.modules}});
                             }
                             
                         }

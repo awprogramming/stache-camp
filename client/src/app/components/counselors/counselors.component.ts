@@ -4,7 +4,6 @@ import { CampsService } from '../../services/camps.service';
 import { Router } from '@angular/router';
 import { AuthGuard } from '../../guards/auth.guard';
 import { AuthService } from '../../services/auth.service';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-counselors',

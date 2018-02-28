@@ -20,7 +20,8 @@
         <li *ngIf="authService.loggedIn() && campsService.hasModule('eval')" class="nav-item dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Evaluations <b class="caret"></b></a>
             <ul class="dropdown-menu" role="menu">
-                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/questions">Questions</a></li>
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/evaluations">Current Session Evals</a></li>
+                <li *ngIf="authService.admin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/questions">Questions</a></li>
             </ul>
         </li>
         <li *ngIf="!authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/login">Login</a></li>

@@ -25,7 +25,6 @@ module.exports = (router) => {
     /* COUNSELOR ROUTES */
 
 
-    //maybe pass in type into here to
     router.get('/all_counselors/:permissions',(req,res) =>{
         if(req.params.permissions == "user"){
             
@@ -334,10 +333,43 @@ module.exports = (router) => {
 
         Camp.findById(req.body._id).exec().then((camp)=>{
             camp.modules.push(req.body.toAdd);
-            let evalOpts = new EvalOpts();
-            camp.options.evaluationOpts = evalOpts;
-            camp.save({ validateBeforeSave: false });
-            res.json({success:true});
+            if(req.body.toAdd.short_name=="eval"){
+                let evalOpts = new EvalOpts();
+                camp.options.evaluationOpts = evalOpts;
+                camp.counselors.forEach((counselor)=>{
+                    for(let session of counselor.sessions){
+                        if(session.equals(camp.options.session)){
+                            const evaluation = counselor.evaluations.create({
+                                number: camp.options.evaluationOpts.currentEval,
+                                session: camp.options.session,
+                                started: false,
+                                submitted: false,
+                                approved: false,
+                                answers: []
+                            });
+                            const answers = []
+                            for(let question of camp.options.evaluationOpts.questions){
+                                if(question.type._id.equals(counselor.type._id)){
+                                    const answer = {
+                                        question:question
+                                    };
+                                    evaluation.answers.create(answer);
+                                    evaluation.answers.push(answer);
+                                }
+                            }
+                            counselor.evaluations.push(evaluation);
+                            break;
+                        }
+                    }
+                    
+                });
+                camp.save({ validateBeforeSave: false });
+                res.json({success:true});
+            }
+            else{
+                camp.save({ validateBeforeSave: false });
+                res.json({success:true});
+            }
         });
 
         // let evalOpts = new EvalOpts();
@@ -614,6 +646,33 @@ module.exports = (router) => {
             const newSession = camp.sessions.create(req.body);
             camp.sessions.push(newSession);
             camp.options.session = newSession;
+            /***/
+            if(camp.options.evaluationOpts){
+                camp.options.evaluationOpts.currentEval = 1;
+                camp.counselors.forEach((counselor)=>{
+                    const evaluation = counselor.evaluations.create({
+                        number: camp.options.evaluationOpts.currentEval,
+                        session: newSession,
+                        started: false,
+                        submitted: false,
+                        approved: false,
+                        answers: []
+                    });
+                    const answers = []
+                    for(let question of camp.options.evaluationOpts.questions){
+                        if(question.type._id.equals(counselor.type._id)){
+                            const answer = {
+                                question:question
+                            };
+                            evaluation.answers.create(answer);
+                            evaluation.answers.push(answer);
+                        }
+                    }
+                    counselor.evaluations.push(evaluation);
+                });
+                camp.save({ validateBeforeSave: false })
+            }
+            /***/
             camp.save({ validateBeforeSave: false });
             res.json({success:true});
         });

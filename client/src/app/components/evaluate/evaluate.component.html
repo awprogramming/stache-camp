@@ -1,0 +1,37 @@
+<a href="/evaluations">Back</a>
+<h2>Evaluation #{{evaluation?.evaluation.number}} for {{evaluation?.counselor.first}} {{evaluation?.counselor.last}}</h2>
+<h3>Session: {{evaluation?.evaluation.session.name}}</h3>
+
+<div *ngFor="let answer of evaluation?.evaluation.answers; $index as i">
+    <div class="flex">
+      <div class="con-td">
+          <p>{{answer.question.content}}</p>
+          <input class="slider" type="range" min="{{options?.evaluationOpts.low}}" max="{{options?.evaluationOpts.high}}" (change)="slider_change($event,answer)" step="1" value="{{answer.numerical}}">
+          <textarea class="full form-control" (focusout)="textarea_change($event,answer)">{{answer.text}}</textarea>
+      </div>
+      <div class="num-td">
+          <span class="numerical">{{answer.numerical}}</span>
+      </div>
+    </div>
+    <hr>
+</div>
+<div>
+<span>Additional Notes</span>
+<textarea class="full form-control" (focusout)="additional_change($event)">{{evaluation?.evaluation.additional_notes}}</textarea>
+</div>
+
+<div id="filler"></div>
+
+
+<div class="eval_summary">
+  <hr>
+  <div class="flex">
+    <span class="flex-1">Score: {{percentage}}%</span>
+    <span class="flex-1">Level: {{level}}</span>
+    <div class="flex-1">
+      <button *ngIf="!saved" class="btn btn-primary" (click) = "save()">Save</button>
+      <span *ngIf="saved">Saved</span>
+      <button class="btn btn-primary" (click) = "submit()">Submit</button>
+    </div>
+  </div>
+</div>
