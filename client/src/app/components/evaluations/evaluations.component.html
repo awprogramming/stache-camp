@@ -10,7 +10,15 @@
       <td>{{counselor.first}}</td>
       <td>{{counselor.last}}</td>
       <td *ngFor="let i of perSession">
-        <a *ngIf="counselor.evals[i]" [routerLink]="['/evaluate', counselor._id, counselor.evals[i]._id]">Go</a>
+        
+        <a *ngIf="counselor.evals[i]" [routerLink]="['/evaluate', counselor._id, counselor.evals[i]._id]">{{i+1==options.evaluationOpts.currentEval?"Go":"View"}}</a>
+        <div *ngIf="counselor.evals[i]">
+          <span>Status: <span [ngClass]="getClass(counselor.evals[i])">&#9679;</span></span>
+          <br>
+          <div *ngFor="let sub of getSubKeys(counselor.evals[i])">
+            <span>{{sub}}: </span><span>{{getScore(counselor.evals[i].sub_evals[sub])}}% </span>({{getLevel(getScore(counselor.evals[i].sub_evals[sub]))}})
+          </div>
+        </div>
       </td>
     </tr>
   </table>

@@ -19,6 +19,7 @@ export class EvaluationsComponent implements OnInit {
   options;
   divisions;
   perSession;
+  approver;
 
   constructor(
     private campsService: CampsService,
@@ -27,25 +28,16 @@ export class EvaluationsComponent implements OnInit {
     private router: Router,
     private authGuard: AuthGuard
   ) {}
-  
-
-  getAllCounselors(){
-    // this.campsService.getAllCounselors().subscribe(data => {
-    //   if(this.authService.isUser()){
-    //     this.divisions = Object.keys(data.counselors);
-    //     this.counselors = data.counselors;
-    //   }
-    // });
-  }
 
   getAllCurrent(){
     this.evaluationsService.getCurrentEvals().subscribe(data => {
       this.divisions = [];
       this.counselors = [];
+      console.log(data.output);
       for(let counselor of data.output){
-          if(JSON.parse(localStorage.getItem('user')).type.type == "Leader" && counselor._id.counselor.division){
-            if(counselor._id.counselor.division){
-              for(let leader of counselor._id.counselor.division.leaders){
+          if(this.approver){
+            if(counselor._id.counselor.division && counselor._id.counselor.division.approvers){
+              for(let leader of counselor._id.counselor.division.approvers){
                 if(leader._id == JSON.parse(localStorage.getItem('user'))._id){
                     if(this.divisions.indexOf(counselor._id.counselor.division.name)==-1)  
                       this.divisions.push(counselor._id.counselor.division.name);
@@ -64,6 +56,31 @@ export class EvaluationsComponent implements OnInit {
                   }
               }
             }
+          }
+          else if(JSON.parse(localStorage.getItem('user')).type.type == "Leader" && counselor._id.counselor.division){
+            if(counselor._id.counselor.division){
+              for(let leader of counselor._id.counselor.division.leaders){
+                  
+                if(leader._id == JSON.parse(localStorage.getItem('user'))._id){
+                    console.log('hello world');
+                    if(this.divisions.indexOf(counselor._id.counselor.division.name)==-1)  
+                      this.divisions.push(counselor._id.counselor.division.name);
+                    const c = {
+                      evals:counselor.evaluations,
+                      _id:counselor._id.counselor._id,
+                      first: counselor._id.counselor.first,
+                      last: counselor._id.counselor.last,
+                    }
+                    console.log(counselor._id.counselor.division.name)
+                    if(this.counselors[counselor._id.counselor.division.name])
+                      this.counselors[counselor._id.counselor.division.name].push(c);
+                    else
+                      this.counselors[counselor._id.counselor.division.name] = [c]
+                    break;
+                  }
+              }
+            }
+            console.log(this.counselors);
           }
           else{
             if(counselor._id.counselor.specialty){
@@ -87,7 +104,24 @@ export class EvaluationsComponent implements OnInit {
             }
           }
       }
-      console.log(this.counselors);
+
+      for(var type in this.counselors){
+        for(let counselor of this.counselors[type]){
+          for(let evaluation of counselor.evals){
+            const sub_evals = []
+            for(let answer of evaluation.answers){
+              if(sub_evals[answer.question.byWho.type])
+                sub_evals[answer.question.byWho.type].push(answer);
+              else
+              sub_evals[answer.question.byWho.type] = [answer];
+            }
+            evaluation.sub_evals = []
+            for(let key of Object.keys(sub_evals).sort()){
+              evaluation.sub_evals[key] = sub_evals[key];
+            }
+          }
+        }
+      }
     });
   }
 
@@ -98,6 +132,64 @@ export class EvaluationsComponent implements OnInit {
     });
   }
 
+  userIsApprover(){
+    this.evaluationsService.isApprover().subscribe(data => {
+      console.log(data);
+      this.approver = data.approver;
+    });
+  }
+
+  getClass(evaluation){
+    if(evaluation.approved)
+      return "green";
+    else if(evaluation.submitted)
+      return "yellow";
+    else if(evaluation.started)
+      return "red";
+    else
+      return "";
+  }
+
+  splitSubs(evaluation){
+    const sub_evals = []
+    for(let answer of evaluation.answers){
+      if(sub_evals[answer.question.byWho.type])
+        sub_evals[answer.question.byWho.type].push(answer);
+      else
+      sub_evals[answer.question.byWho.type] = [answer];
+    }
+    evaluation.sub_evals = sub_evals;
+  }
+
+  getSubKeys(evaluation){
+    return Object.keys(evaluation.sub_evals);
+    
+  }
+
+  getScore(answers){
+   var total = 0;
+    for(let answer of answers){
+      total+=answer.numerical
+    }
+    return Math.round(total/(answers.length*this.options.evaluationOpts.high)*100);
+  }
+
+  getLevel(score){
+      if(score >= this.options.evaluationOpts.gold){
+        return "Gold";
+      }
+      else if(score >= this.options.evaluationOpts.silver){
+        return "Silver";
+      }
+      else if(score >= this.options.evaluationOpts.green){
+        return "Green";
+      }
+      else{
+        return "Red";
+      }
+  }
+
+
   ngOnInit() {
     if(this.authGuard.redirectUrl){
       this.messageClass = 'alert alert-danger';
@@ -105,8 +197,10 @@ export class EvaluationsComponent implements OnInit {
       this.previousUrl = this.authGuard.redirectUrl;
       this.authGuard.redirectUrl = undefined;
     }
+    this.userIsApprover();
     this.getAllCurrent();
     this.getOptions();
+    
   }
 
 }

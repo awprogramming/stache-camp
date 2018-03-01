@@ -117,15 +117,18 @@ module.exports = (router) => {
                     { $unwind: '$counselors'},
                     { $unwind: '$counselors.evaluations'},
                     { $project: {'counselors':1}},
-                    { $group : { _id : {counselor:"$counselors",s_id:"$counselors.evaluations.session._id",s_name:"$counselors.evaluations.session.name"},  evaluations:{$push:"$counselors.evaluations"}}},
+                    { $group : { _id : {counselor_id:"$counselors._id",s_id:"$counselors.evaluations.session._id",s_name:"$counselors.evaluations.session.name"},  evaluations:{$push:"$counselors.evaluations"}}},
                     { $match : {"_id.s_id":current_session._id}},
                 ],(err,result)=>{
-                    result.forEach((counselor)=>{
-                        if(counselor._id.counselor.division){
-                            counselor._id.counselor.division = camp.divisions.id(counselor._id.counselor.division._id);
-                        }
+                    Camp.findById(req.decoded.campId,(err,camp)=>{
+                        result.forEach((counselor)=>{
+                            counselor._id.counselor = camp.counselors.id(counselor._id.counselor_id);
+                            if(counselor._id.counselor.division){
+                                counselor._id.counselor.division = camp.divisions.id(counselor._id.counselor.division._id);
+                            }
+                        });
+                        res.json({success:true,output:result});
                     });
-                    res.json({success:true,output:result});
                 });
             }
             else{
@@ -134,15 +137,19 @@ module.exports = (router) => {
                     { $unwind: '$counselors'},
                     { $unwind: '$counselors.evaluations'},
                     { $project: {'counselors':1}},
-                    { $group : { _id : {counselor:"$counselors",s_id:"$counselors.evaluations.session._id",s_name:"$counselors.evaluations.session.name"},  evaluations:{$push:"$counselors.evaluations"}}},
+                    { $group : { _id : {counselor_id:"$counselors._id",s_id:"$counselors.evaluations.session._id",s_name:"$counselors.evaluations.session.name"},  evaluations:{$push:"$counselors.evaluations"}}},
                     { $match : {"_id.s_id":current_session._id}},
                 ],(err,result)=>{
-                    result.forEach((counselor)=>{
-                        if(counselor._id.counselor.specialty){
-                            counselor._id.counselor.specialty = camp.specialties.id(counselor._id.counselor.specialty._id);
-                        }
+                    Camp.findById(req.decoded.campId,(err,camp)=>{
+                        result.forEach((counselor)=>{
+                            counselor._id.counselor = camp.counselors.id(counselor._id.counselor_id);
+                            if(counselor._id.counselor.specialty){
+                                counselor._id.counselor.specialty = camp.specialties.id(counselor._id.counselor.specialty._id);
+                            }
+                        });
+                        res.json({success:true,output:result});
                     });
-                    res.json({success:true,output:result});
+                    
                 });
             }
         });
@@ -174,13 +181,51 @@ module.exports = (router) => {
 
     router.post('/save_eval',(req,res)=>{
         Camp.findById(req.decoded.campId,(err,camp)=>{
-            camp.counselors.id(req.body.counselor._id).evaluations.pull(req.body.evaluation._id);
-            camp.counselors.id(req.body.counselor._id).evaluations.push(req.body.evaluation);
+            camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).started = req.body.evaluation.started;
+            camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).submitted = req.body.evaluation.submitted;
+            camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).approved = req.body.evaluation.approved;
+            camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).additional_notes = req.body.evaluation.additional_notes;
+            for(let answer of req.body.evaluation.answers){
+                camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).answers.pull(answer._id);
+                camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).answers.push(answer);
+
+            }
+            //started,submitted, additional notes;
             camp.save({ validateBeforeSave: false });
             res.json({success:true});
         });
-
     });
+
+    router.post('/add_approver_division',(req,res) => {
+        const toAdd = req.body.toAdd;
+        delete req.body.toAdd;
+        Camp.update({_id:req.decoded.campId,divisions:{$elemMatch:{_id:req.body._id}}},{$push:{"divisions.$.approvers":toAdd}},(err,camp)=>{
+            res.json({success:true});
+        });
+    });
+
+    router.post('/remove_approver_division',(req,res) => {
+        Camp.update({_id:req.decoded.campId,divisions:{$elemMatch:{_id:req.body.division_id}}},{$pull:{"divisions.$.approvers":{_id:req.body.leader_id}}},(err,camp)=>{
+            res.json({success:true});
+        });
+    });
+
+    router.get('/is_approver',(req,res)=>{
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            var approver = false;
+
+            for(let division of camp.divisions){
+                if(division.approvers && division.approvers.id(req.decoded.userId)){
+                    approver = true;
+                    break;
+                }
+            }
+            
+            res.json({success:true,approver:approver});
+        });
+    });
+
+
 
     return router;
 }

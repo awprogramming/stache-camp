@@ -16,6 +16,8 @@ export class EvaluateComponent implements OnInit {
   percentage;
   level;
   saved = false;
+  view;
+  approver;
   private sub: any;
 
   constructor(
@@ -28,7 +30,9 @@ export class EvaluateComponent implements OnInit {
   loadEvaluation(){
     this.evaluationsService.getEvaluation(this.counselorId,this.id).subscribe(data => {
       this.evaluation = data.evaluation;
+      console.log(this.evaluation);
       this.calculate_percentage();
+      this.viewing();
     });
   }
 
@@ -96,13 +100,30 @@ export class EvaluateComponent implements OnInit {
     });
   }
 
+  approve(){
+    this.evaluation.evaluation.approved = true;
+    this.evaluationsService.saveEval(this.evaluation).subscribe(data=>{
+      this.router.navigate(['/evaluations']);
+    });
+  }
+
+  viewing(){
+    this.view = this.options.evaluationOpts.currentEval!=this.evaluation.evaluation.number;
+  }
+
+  userIsApprover(){
+    this.evaluationsService.isApprover().subscribe(data => {
+      this.approver = data.approver;
+    });
+  }
+
   ngOnInit() {
       this.route.paramMap.subscribe(params => {
         this.id = params.get('evaluationId');
         this.counselorId = params.get('counselorId');
+        this.userIsApprover();
         this.getOptions();
         this.loadEvaluation();
-        
       });
   }
 

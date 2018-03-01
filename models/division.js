@@ -7,6 +7,7 @@ const UserSchema = require('./user').schema;
 const divisionSchema = new Schema({
     name: {type:String, required: true},
     leaders: [UserSchema],
+    approvers: [UserSchema],
     gender:{type:String, enum:['male','female'], required: true},
 });
 

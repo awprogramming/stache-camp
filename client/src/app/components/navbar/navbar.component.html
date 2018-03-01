@@ -22,6 +22,7 @@
             <ul class="dropdown-menu" role="menu">
                 <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/evaluations">Current Session Evals</a></li>
                 <li *ngIf="authService.admin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/questions">Questions</a></li>
+                <li *ngIf="authService.admin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/approvers">Approvers</a></li>
             </ul>
         </li>
         <li *ngIf="!authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/login">Login</a></li>

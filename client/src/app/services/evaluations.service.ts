@@ -64,4 +64,23 @@ export class EvaluationsService {
     return this.http.post(this.domain + 'evaluations/save_eval',evaluation,this.options).map(res => res.json());
   }
 
+  addApproverToDivision(division){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'evaluations/add_approver_division',division,this.options).map(res => res.json());
+  }
+
+  removeApproverFromDivision(division_id,leader_id){
+    this.createAuthenticationHeaders();
+    var data = {
+      "division_id":division_id,
+      "leader_id":leader_id
+    }
+    return this.http.post(this.domain + 'evaluations/remove_approver_division',data,this.options).map(res => res.json());
+  }
+
+  isApprover(){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'evaluations/is_approver/',this.options).map(res => res.json());
+  }
+
 }

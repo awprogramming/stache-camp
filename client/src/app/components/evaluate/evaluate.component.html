@@ -6,8 +6,8 @@
     <div class="flex">
       <div class="con-td">
           <p>{{answer.question.content}}</p>
-          <input class="slider" type="range" min="{{options?.evaluationOpts.low}}" max="{{options?.evaluationOpts.high}}" (change)="slider_change($event,answer)" step="1" value="{{answer.numerical}}">
-          <textarea class="full form-control" (focusout)="textarea_change($event,answer)">{{answer.text}}</textarea>
+          <input class="slider" [disabled] = "view || approver" type="range" min="{{options?.evaluationOpts.low}}" max="{{options?.evaluationOpts.high}}" (change)="slider_change($event,answer)" step="1" value="{{answer.numerical}}">
+          <textarea class="full form-control" [disabled] = "view || approver" (focusout)="textarea_change($event,answer)">{{answer.text}}</textarea>
       </div>
       <div class="num-td">
           <span class="numerical">{{answer.numerical}}</span>
@@ -17,7 +17,7 @@
 </div>
 <div>
 <span>Additional Notes</span>
-<textarea class="full form-control" (focusout)="additional_change($event)">{{evaluation?.evaluation.additional_notes}}</textarea>
+<textarea class="full form-control" [disabled] = "view || approver" (focusout)="additional_change($event)">{{evaluation?.evaluation.additional_notes}}</textarea>
 </div>
 
 <div id="filler"></div>
@@ -28,10 +28,17 @@
   <div class="flex">
     <span class="flex-1">Score: {{percentage}}%</span>
     <span class="flex-1">Level: {{level}}</span>
-    <div class="flex-1">
-      <button *ngIf="!saved" class="btn btn-primary" (click) = "save()">Save</button>
-      <span *ngIf="saved">Saved</span>
-      <button class="btn btn-primary" (click) = "submit()">Submit</button>
+    <div class="flex-1" *ngIf="!view">
+      <div *ngIf="!approver">
+        <button *ngIf="!saved" class="btn btn-primary" (click) = "save()">Save</button>
+        <span *ngIf="saved">Saved</span>
+        <button class="btn btn-primary" (click) = "submit()">Submit</button>
+      </div>
+      <div *ngIf="approver">
+        <span *ngIf="!evaluation?.evaluation.submitted">Evaluation Not Yet Submitted</span>
+        <button *ngIf="!evaluation?.evaluation.approved && evaluation?.evaluation?.submitted" class="btn btn-primary" (click) = "approve()">Approve</button>
+        <span *ngIf="evaluation?.evaluation.approved">Approved</span>
+      </div>
     </div>
   </div>
 </div>

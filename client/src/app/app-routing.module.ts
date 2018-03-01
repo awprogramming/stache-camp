@@ -20,6 +20,7 @@ import { ModuleGuard } from './guards/module.guard';
 import { EvaluationsComponent } from './components/evaluations/evaluations.component';
 import { QuestionsComponent } from './components/questions/questions.component';
 import { EvaluateComponent } from './components/evaluate/evaluate.component';
+import { ApproversComponent } from './components/approvers/approvers.component';
 
 const appRoutes: Routes = [
     {
@@ -86,7 +87,15 @@ const appRoutes: Routes = [
     },
     {
         path:'evaluate/:counselorId/:evaluationId',
-        component: EvaluateComponent
+        component: EvaluateComponent,
+        canActivate: [AuthGuard,ModuleGuard],
+        data: {module: 'eval'}
+    },
+    {
+        path: 'approvers',
+        component: ApproversComponent,
+        canActivate: [AuthGuard,ModuleGuard],
+        data: {module: 'eval'}
     },
     {   path: '**', 
         component: DashboardComponent,
