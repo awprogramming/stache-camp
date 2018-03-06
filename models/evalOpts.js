@@ -5,6 +5,7 @@ const QuestionSchema = require('./question').schema;
 
 const evalOptsSchema = new Schema({
     currentEval:{type:Number, default:1, required: true},
+    furthestReached:{type:Number, default:1, required: true},
     perSession: {type:Number, default:3, required: true},
     low: {type:Number, default:0,required:true},
     high: {type:Number, default:5, required:true},

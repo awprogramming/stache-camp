@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute,Router } from '@angular/router';
 import { EvaluationsService } from '../../services/evaluations.service';
 import { CampsService } from '../../services/camps.service';
+import { AuthService } from '../../services/auth.service';
+
 
 @Component({
   selector: 'app-evaluate',
@@ -19,18 +21,19 @@ export class EvaluateComponent implements OnInit {
   view;
   approver;
   private sub: any;
+  type;
 
   constructor(
     private route: ActivatedRoute,
     private evaluationsService: EvaluationsService,
     private campsService: CampsService,
+    private authService: AuthService,
     private router: Router,
   ) {}
 
   loadEvaluation(){
-    this.evaluationsService.getEvaluation(this.counselorId,this.id).subscribe(data => {
+    this.evaluationsService.getEvaluation(this.counselorId,this.id,this.type).subscribe(data => {
       this.evaluation = data.evaluation;
-      console.log(this.evaluation);
       this.calculate_percentage();
       this.viewing();
     });
@@ -108,7 +111,7 @@ export class EvaluateComponent implements OnInit {
   }
 
   viewing(){
-    this.view = this.options.evaluationOpts.currentEval!=this.evaluation.evaluation.number;
+    this.view = this.options.evaluationOpts.currentEval!=this.evaluation.evaluation.number || this.authService.admin();
   }
 
   userIsApprover(){
@@ -116,11 +119,11 @@ export class EvaluateComponent implements OnInit {
       this.approver = data.approver;
     });
   }
-
   ngOnInit() {
       this.route.paramMap.subscribe(params => {
         this.id = params.get('evaluationId');
         this.counselorId = params.get('counselorId');
+        this.type = params.get('type');
         this.userIsApprover();
         this.getOptions();
         this.loadEvaluation();

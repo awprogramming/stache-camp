@@ -67,7 +67,7 @@ export class CampsService {
 
   bulkRegisterCounselor(counselors){
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + 'camps/bulk_add_counselor',counselors,this.options).map(res => res.json());
+    return this.http.post(this.domain + 'camps/bulk_add_counselor/'+this.hasModule('eval'),counselors,this.options).map(res => res.json());
   }
 
   removeCounselor(counselor){

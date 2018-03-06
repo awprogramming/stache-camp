@@ -3,6 +3,7 @@ const User = require('../models/user');
 const config = require('../config/database');
 const bcrypt = require('bcrypt-nodejs');
 const mongoose = require('mongoose');
+const json2csv = require('json2csv');
 
 module.exports = (router) => {
     // router.get('/all_camps',(req,res) =>{
@@ -79,28 +80,35 @@ module.exports = (router) => {
                 res.json({success:false,message:err});
             }
             else{
-                camp.counselors.forEach((counselor)=>{
-                    const evaluation = counselor.evaluations.create({
-                        number: camp.options.evaluationOpts.currentEval,
-                        session: camp.options.session,
-                        started: false,
-                        submitted: false,
-                        approved: false,
-                        answers: []
-                    });
-                    const answers = []
-                    for(let question of camp.options.evaluationOpts.questions){
-                        if(question.type._id.equals(counselor.type._id)){
-                            const answer = {
-                                question:question
-                            };
-                            evaluation.answers.create(answer);
-                            evaluation.answers.push(answer);
+                if(camp.options.evaluationOpts.currentEval > camp.options.evaluationOpts.furthestReached){
+                    camp.options.evaluationOpts.furthestReached = camp.options.evaluationOpts.currentEval;
+                    camp.counselors.forEach((counselor)=>{
+                        for(let session of counselor.sessions){
+                            if(session._id.equals(camp.options.session._id)){
+                                const evaluation = counselor.evaluations.create({
+                                    number: camp.options.evaluationOpts.currentEval,
+                                    session: camp.options.session,
+                                    started: false,
+                                    submitted: false,
+                                    approved: false,
+                                    answers: []
+                                });
+                                const answers = []
+                                for(let question of camp.options.evaluationOpts.questions){
+                                    if(question.type._id.equals(counselor.type._id)){
+                                        const answer = {
+                                            question:question
+                                        };
+                                        evaluation.answers.create(answer);
+                                        evaluation.answers.push(answer);
+                                    }
+                                }
+                                counselor.evaluations.push(evaluation);
+                            }
                         }
-                    }
-                    counselor.evaluations.push(evaluation);
-                });
-                camp.save({ validateBeforeSave: false })
+                    });
+                    camp.save({ validateBeforeSave: false })
+                }
                 res.json({success:true});
             }
         });
@@ -110,6 +118,50 @@ module.exports = (router) => {
         Camp.findById(req.decoded.campId).exec().then((camp)=>{
             const current_session = camp.options.session;
             var type;
+            if(camp.admin._id == req.decoded.userId){
+                Camp.aggregate([
+                    { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
+                    { $unwind: '$counselors'},
+                    { $unwind: '$counselors.evaluations'},
+                    { $project: {'counselors':1}},
+                    { $group : { _id : {counselor_id:"$counselors._id",s_id:"$counselors.evaluations.session._id",s_name:"$counselors.evaluations.session.name"},  evaluations:{$push:"$counselors.evaluations"}}},
+                    { $group : { _id:"$_id.s_id",counselors:{$push:{counselor:"$_id.counselor_id",evaluations:"$evaluations"}}}}
+                ],(err,result)=>{
+                    for(let session of result){
+                        session.session = camp.sessions.id(session._id);
+                        for(let counselor of session.counselors){
+                            counselor.counselor = camp.counselors.id(counselor.counselor);
+                            if(counselor.counselor.division){
+                                counselor.counselor.division = camp.divisions.id(counselor.counselor.division._id);
+                            }
+                            if(counselor.counselor.specialty){
+                                counselor.counselor.specialty = camp.specialties.id(counselor.counselor.specialty._id);
+                            }
+                        }
+                    }
+                    res.json({success:true,output:result});
+                });
+                // Camp.aggregate([
+                //     { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
+                //     { $unwind: '$counselors'},
+                //     { $unwind: '$counselors.evaluations'},
+                //     { $project: {'counselors':1}},
+                //     { $group : { _id : {counselor_id:"$counselors._id",s_id:"$counselors.evaluations.session._id",s_name:"$counselors.evaluations.session.name"},  evaluations:{$push:"$counselors.evaluations"}}},
+                //     { $group : { _id:"$_id.counselor_id",sessions:{$push:{s_id:"$_id.s_id",s_name:"$_id.s_name",evaluations:"$evaluations"}}}}
+                // ],(err,result)=>{
+                //     for(let counselor of result){
+                //         counselor._id.counselor = camp.counselors.id(counselor._id);
+                //         if(counselor._id.counselor.division){
+                //             counselor._id.counselor.division = camp.divisions.id(counselor._id.counselor.division._id);
+                //         }
+                //         if(counselor._id.counselor.specialty){
+                //             counselor._id.counselor.specialty = camp.specialties.id(counselor._id.counselor.specialty._id);
+                //         }
+                //     }
+                //     res.json({success:true,output:result});
+                // });
+            }
+            else{
             var userType = camp.users.id(req.decoded.userId).type.type;
             if(userType == "Leader"){
                 Camp.aggregate([
@@ -152,23 +204,36 @@ module.exports = (router) => {
                     
                 });
             }
+        }
         });
     });
 
-    router.get('/get_eval/:counselorId/:evaluationId',(req,res)=>{
+    router.get('/get_eval/:counselorId/:evaluationId/:type',(req,res)=>{
         Camp.findById(req.decoded.campId,(err,camp)=>{
             if(err){
                 res.json({success:false,message:err});
             }
             else{
                 evaluation = camp.counselors.id(req.params.counselorId).evaluations.id(req.params.evaluationId);
-                userType = camp.users.id(req.decoded.userId).type;
-                answers = []
-                for(let answer of evaluation.answers){
-                    if(answer.question.byWho.equals(userType))
-                        answers.push(answer);
-                }   
-                evaluation.answers = answers;
+                
+                userType = req.params.type?req.params.type:camp.users.id(req.decoded.userId).type;
+                if(camp.admin._id != req.decoded.userId){
+                    answers = []
+                    for(let answer of evaluation.answers){
+                        if(answer.question.byWho.equals(userType))
+                            answers.push(answer);
+                    }   
+                    evaluation.answers = answers;
+                }
+                else{
+                    answers = []
+                    for(let answer of evaluation.answers){
+                        console.log(answer.question.byWho.type);
+                        if(answer.question.byWho.type == userType)
+                            answers.push(answer);
+                    }   
+                    evaluation.answers = answers;
+                }
                 // evaluation.counselor = camp.counselors.id(req.params.counselorId);
                 result = {
                     evaluation:evaluation,
@@ -224,8 +289,6 @@ module.exports = (router) => {
             res.json({success:true,approver:approver});
         });
     });
-
-
 
     return router;
 }

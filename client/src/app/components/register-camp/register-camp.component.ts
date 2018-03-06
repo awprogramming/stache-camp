@@ -73,12 +73,11 @@ export class RegisterCampComponent implements OnInit {
       } else {
         this.messageClass = 'alert alert-success'; // Set bootstrap success class
         this.message = data.message; // Set success message
-        // After 2 seconds, redirect to dashboard page
         setTimeout(() => {
           if(this.previousUrl)
             this.router.navigate([this.previousUrl]);
           else
-            this.router.navigate(['/camps']); // Navigate to dashboard view
+            this.router.navigate(['/camps']); 
         }, 2000);
       }
     });

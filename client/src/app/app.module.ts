@@ -6,7 +6,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { HomeComponent } from './components/home/home.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/login/login.component';
 import { AuthService } from './services/auth.service';
 import { AuthGuard } from './guards/auth.guard';
@@ -36,6 +35,7 @@ import { QuestionsComponent } from './components/questions/questions.component';
 import { HeadStaffTypeDropdownComponent } from './components/head-staff-type-dropdown/head-staff-type-dropdown.component';
 import { EvaluateComponent } from './components/evaluate/evaluate.component';
 import { ApproversComponent } from './components/approvers/approvers.component';
+import { EvalArchiveComponent } from './components/eval-archive/eval-archive.component';
 
 
 @NgModule({
@@ -43,7 +43,6 @@ import { ApproversComponent } from './components/approvers/approvers.component';
     AppComponent,
     NavbarComponent,
     HomeComponent,
-    DashboardComponent,
     LoginComponent,
     RegisterCampComponent,
     CampsComponent,
@@ -63,6 +62,7 @@ import { ApproversComponent } from './components/approvers/approvers.component';
     HeadStaffTypeDropdownComponent,
     EvaluateComponent,
     ApproversComponent,
+    EvalArchiveComponent,
   ],
   imports: [
     BrowserModule,

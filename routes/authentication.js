@@ -182,25 +182,5 @@ module.exports = (router) => {
        }
     });
 
-    router.get('/dashboard', (req,res)=>{
-        Camp.find({users:{$elemMatch:{_id:req.decoded.userId}}},{"users.$":1}, (err,camp)=>{
-            if(err){
-                res.json({success:false,message:err});
-            }else if(!camp.length != 0){
-                SuperUser.findOne({_id:req.decoded.userId}).select('username email').exec((err,superuser)=>{
-                    if(err){
-                        res.json({success:false,message:err});
-                    }else if(!superuser){
-                        res.json({success:false,message:"User not found"});
-                    }else{
-                        res.json({success:true,user:superuser});
-                    }
-                });
-            }else{
-                res.json({success:true,user:camp[0].users[0]});
-            }
-        });
-    });
-
     return router;
 }

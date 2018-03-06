@@ -21,10 +21,12 @@
   },
   "homepage": "https://github.com/awprogramming/stache-camp#readme",
   "dependencies": {
+    "angular2-csv": "^0.2.5",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "express": "^4.16.2",
+    "json2csv": "^4.0.1",
     "jsonwebtoken": "^8.1.0",
     "mongoose": "^4.13.7"
   }

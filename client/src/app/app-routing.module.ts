@@ -1,7 +1,6 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { HomeComponent } from './components/home/home.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterCampComponent } from './components/register-camp/register-camp.component';
 import { CampsComponent } from './components/camps/camps.component';
@@ -23,11 +22,6 @@ import { EvaluateComponent } from './components/evaluate/evaluate.component';
 import { ApproversComponent } from './components/approvers/approvers.component';
 
 const appRoutes: Routes = [
-    {
-        path: 'dashboard',
-        component: DashboardComponent,
-        canActivate: [AuthGuard]
-    },
     {
         path: 'register-camp',
         component: RegisterCampComponent,
@@ -86,7 +80,7 @@ const appRoutes: Routes = [
         data: {module: 'eval'}
     },
     {
-        path:'evaluate/:counselorId/:evaluationId',
+        path:'evaluate/:counselorId/:evaluationId/:type',
         component: EvaluateComponent,
         canActivate: [AuthGuard,ModuleGuard],
         data: {module: 'eval'}
@@ -98,8 +92,8 @@ const appRoutes: Routes = [
         data: {module: 'eval'}
     },
     {   path: '**', 
-        component: DashboardComponent,
-        canActivate:[AuthGuard]
+        component: LoginComponent,
+        canActivate: [NotAuthGuard]
     }
 ];
 

@@ -49,9 +49,9 @@ export class EvaluationsService {
     return this.http.post(this.domain + 'evaluations/change_period',newPeriod,this.options).map(res => res.json());
   }
 
-  getEvaluation(counselorId,evaluationId){
+  getEvaluation(counselorId,evaluationId,type){
     this.createAuthenticationHeaders();
-    return this.http.get(this.domain + 'evaluations/get_eval/'+counselorId+'/'+evaluationId,this.options).map(res => res.json());
+    return this.http.get(this.domain + 'evaluations/get_eval/'+counselorId+'/'+evaluationId+'/'+type,this.options).map(res => res.json());
   }
 
   getCurrentEvals(){

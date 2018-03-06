@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AuthGuard } from '../../guards/auth.guard';
 import { AuthService } from '../../services/auth.service';
 import { EvaluationsService } from '../../services/evaluations.service';
+import { Angular2Csv } from 'angular2-csv/Angular2-csv';
 
 @Component({
   selector: 'app-evaluations',
@@ -20,6 +21,7 @@ export class EvaluationsComponent implements OnInit {
   divisions;
   perSession;
   approver;
+  sessions;
 
   constructor(
     private campsService: CampsService,
@@ -33,7 +35,34 @@ export class EvaluationsComponent implements OnInit {
     this.evaluationsService.getCurrentEvals().subscribe(data => {
       this.divisions = [];
       this.counselors = [];
-      console.log(data.output);
+      if(this.authService.admin()){
+        this.sessions = data.output;
+        for(let session of this.sessions){
+          for(let counselor of session.counselors){
+            if(counselor.evaluations[0] && counselor.evaluations[0].number > 1){
+              counselor.preFiller = Array.from(Array(counselor.evaluations[0].number - 1).keys());
+            }
+            if(counselor.evaluations[counselor.evaluations.length-1].number < this.options.evaluationOpts.perSession){
+              counselor.postFiller = Array.from(Array(this.options.evaluationOpts.perSession - counselor.evaluations[counselor.evaluations.length-1].number).keys());
+            }
+            for(let evaluation of counselor.evaluations){
+              const sub_evals = []
+              for(let answer of evaluation.answers){
+                if(sub_evals[answer.question.byWho.type])
+                  sub_evals[answer.question.byWho.type].push(answer);
+                else
+                sub_evals[answer.question.byWho.type] = [answer];
+              }
+              evaluation.sub_evals = []
+              for(let key of Object.keys(sub_evals).sort()){
+                evaluation.sub_evals[key] = sub_evals[key];
+              }
+            }
+            
+          }
+        }
+      }
+      else{
       for(let counselor of data.output){
           if(this.approver){
             if(counselor._id.counselor.division && counselor._id.counselor.division.approvers){
@@ -60,9 +89,7 @@ export class EvaluationsComponent implements OnInit {
           else if(JSON.parse(localStorage.getItem('user')).type.type == "Leader" && counselor._id.counselor.division){
             if(counselor._id.counselor.division){
               for(let leader of counselor._id.counselor.division.leaders){
-                  
                 if(leader._id == JSON.parse(localStorage.getItem('user'))._id){
-                    console.log('hello world');
                     if(this.divisions.indexOf(counselor._id.counselor.division.name)==-1)  
                       this.divisions.push(counselor._id.counselor.division.name);
                     const c = {
@@ -71,7 +98,6 @@ export class EvaluationsComponent implements OnInit {
                       first: counselor._id.counselor.first,
                       last: counselor._id.counselor.last,
                     }
-                    console.log(counselor._id.counselor.division.name)
                     if(this.counselors[counselor._id.counselor.division.name])
                       this.counselors[counselor._id.counselor.division.name].push(c);
                     else
@@ -80,7 +106,6 @@ export class EvaluationsComponent implements OnInit {
                   }
               }
             }
-            console.log(this.counselors);
           }
           else{
             if(counselor._id.counselor.specialty){
@@ -107,6 +132,12 @@ export class EvaluationsComponent implements OnInit {
 
       for(var type in this.counselors){
         for(let counselor of this.counselors[type]){
+          if(counselor.evals[0] && counselor.evals[0].number > 1){
+            counselor.preFiller = Array.from(Array(counselor.evals[0].number - 1).keys());
+          }
+          if(counselor.evals[counselor.evals.length-1].number < this.options.evaluationOpts.perSession){
+            counselor.postFiller = Array.from(Array(this.options.evaluationOpts.perSession - counselor.evals[counselor.evals.length-1].number).keys());
+          }
           for(let evaluation of counselor.evals){
             const sub_evals = []
             for(let answer of evaluation.answers){
@@ -122,6 +153,7 @@ export class EvaluationsComponent implements OnInit {
           }
         }
       }
+    }
     });
   }
 
@@ -134,7 +166,6 @@ export class EvaluationsComponent implements OnInit {
 
   userIsApprover(){
     this.evaluationsService.isApprover().subscribe(data => {
-      console.log(data);
       this.approver = data.approver;
     });
   }
@@ -163,7 +194,6 @@ export class EvaluationsComponent implements OnInit {
 
   getSubKeys(evaluation){
     return Object.keys(evaluation.sub_evals);
-    
   }
 
   getScore(answers){
@@ -189,6 +219,73 @@ export class EvaluationsComponent implements OnInit {
       }
   }
 
+  export(session_id){
+    var session;
+    for(let sess of this.sessions){
+      if(sess._id==session_id){
+        session = sess;
+        break;
+      }
+    }
+    var data = [];
+
+    var labels = {
+      first:"First",
+      last:"Last"
+    };
+      
+    for(var i = 0; i < this.options.evaluationOpts.perSession;i++)
+      for(let type of this.options.headStaff_types){
+        labels[type.type+(i+1)+" Score"] = type.type+(i+1)+" Score";
+        labels[type.type+(i+1)+" Level"] = type.type+(i+1)+" Level";
+      }
+    
+    data.push(labels);
+
+
+    for(let counselor of session.counselors){
+      var rowObj = {};
+      var count = 0;
+      rowObj["first"] = counselor.counselor.first;
+      rowObj["last"] = counselor.counselor.last;
+      if(counselor.preFiller){
+        for(let pre of counselor.preFiller){
+          count++;
+          for(let type of this.options.headStaff_types){
+            rowObj[type.type+"score"+count] = "-"; 
+            rowObj[type.type+"level"+count] = "-"; 
+          }
+        }
+      }
+      for(let evaluation of counselor.evaluations){
+        console.log(evaluation);
+        count++;
+        for(let type of this.options.headStaff_types){
+          if(evaluation.sub_evals[type.type]){
+            rowObj[type.type+"score"+count] = this.getScore(evaluation.sub_evals[type.type]);
+            rowObj[type.type+"level"+count] = this.getLevel(evaluation.sub_evals[type.type]);
+          }
+          else{
+            rowObj[type.type+"score"+count] = "-"; 
+            rowObj[type.type+"level"+count] = "-"; 
+          }
+          
+        }
+      }
+      if(counselor.postFiller){
+      for(let post of counselor.postFiller){
+          count++;
+          for(let type of this.options.headStaff_types){
+            rowObj[type.type+"score"+count] = "-"; 
+            rowObj[type.type+"level"+count] = "-"; 
+          }
+        }
+      }
+      data.push(rowObj)
+    }
+    
+   new Angular2Csv(data, session.session.name+'_Eval_Report');
+  }
 
   ngOnInit() {
     if(this.authGuard.redirectUrl){

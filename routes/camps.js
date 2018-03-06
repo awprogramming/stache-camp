@@ -218,15 +218,49 @@ module.exports = (router) => {
         // });
     });
 
-    router.post('/bulk_add_counselor',(req,res) => {
-        Camp.update({"_id":req.decoded.campId},{$push:{counselors:{$each:req.body}}}, (err, camp)=>{
-            if(err){
-                res.json({success:false,message:err});
-            }
-            else{
+    router.post('/bulk_add_counselor/:eval',(req,res) => {
+
+        if(req.params.eval){
+            Camp.findById(req.decoded.campId,(err,camp)=>{
+                for(let counselor of req.body){
+                    const newCounselor = camp.counselors.create(counselor);
+                    const evaluation = newCounselor.evaluations.create({
+                        number: camp.options.evaluationOpts.currentEval,
+                        session: camp.options.session,
+                        started: false,
+                        submitted: false,
+                        approved: false,
+                        answers: []
+                    });
+                    const answers = []
+                    for(let question of camp.options.evaluationOpts.questions){
+                        if(question.type._id.equals(newCounselor.type._id)){
+                            const answer = {
+                                question:question
+                            };
+                            evaluation.answers.create(answer);
+                            evaluation.answers.push(answer);
+                        }
+                    }
+                    newCounselor.evaluations.push(evaluation);
+                    camp.counselors.push(newCounselor);
+                }
+                camp.save({ validateBeforeSave: false });
+            })
+            .then((camp)=>{
                 res.json({success:true});
-            }
-        });
+            });
+        }
+        else{
+            Camp.update({"_id":req.decoded.campId},{$push:{counselors:{$each:req.body}}}, (err, camp)=>{
+                if(err){
+                    res.json({success:false,message:err});
+                }
+                else{
+                    res.json({success:true});
+                }
+            });
+        }
     });
 
     router.delete('/remove_counselor/:id', (req, res) => {
@@ -251,7 +285,36 @@ module.exports = (router) => {
                 res.json({success:false,message:err});
             }
             else{
-                camp.counselors.id(req.body.counselor._id).sessions.push(req.body.session)
+                var counselor = camp.counselors.id(req.body.counselor._id);
+                counselor.sessions.push(req.body.session);
+                /***/
+                if(camp.options.evaluationOpts){
+                    const evaluation = counselor.evaluations.create({
+                        number: camp.options.evaluationOpts.currentEval,
+                        session: camp.options.session,
+                        started: false,
+                        submitted: false,
+                        approved: false,
+                        answers: []
+                    });
+                    const answers = []
+                    for(let question of camp.options.evaluationOpts.questions){
+                        if(question.type._id.equals(counselor.type._id)){
+                            const answer = {
+                                question:question
+                            };
+                            evaluation.answers.create(answer);
+                            evaluation.answers.push(answer);
+                        }
+                    }
+                    counselor.evaluations.push(evaluation);
+                }
+                /***/
+                if(counselor.division)
+                    counselor.division.remove();
+                if(counselor.specialty)
+                    counselor.specialty.remove();
+                
                 camp.save({ validateBeforeSave: false });
                 res.json({success: true})
             }
@@ -259,7 +322,6 @@ module.exports = (router) => {
       });
 
     /* DIVISION ROUTES */
-    
 
 
     router.get('/all_divisions',(req,res) =>{
@@ -646,33 +708,10 @@ module.exports = (router) => {
             const newSession = camp.sessions.create(req.body);
             camp.sessions.push(newSession);
             camp.options.session = newSession;
-            /***/
             if(camp.options.evaluationOpts){
                 camp.options.evaluationOpts.currentEval = 1;
-                camp.counselors.forEach((counselor)=>{
-                    const evaluation = counselor.evaluations.create({
-                        number: camp.options.evaluationOpts.currentEval,
-                        session: newSession,
-                        started: false,
-                        submitted: false,
-                        approved: false,
-                        answers: []
-                    });
-                    const answers = []
-                    for(let question of camp.options.evaluationOpts.questions){
-                        if(question.type._id.equals(counselor.type._id)){
-                            const answer = {
-                                question:question
-                            };
-                            evaluation.answers.create(answer);
-                            evaluation.answers.push(answer);
-                        }
-                    }
-                    counselor.evaluations.push(evaluation);
-                });
-                camp.save({ validateBeforeSave: false })
+                camp.options.evaluationOpts.furthestReached = 1;
             }
-            /***/
             camp.save({ validateBeforeSave: false });
             res.json({success:true});
         });
