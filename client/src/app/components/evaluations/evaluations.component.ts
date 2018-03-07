@@ -35,7 +35,9 @@ export class EvaluationsComponent implements OnInit {
     this.evaluationsService.getCurrentEvals().subscribe(data => {
       this.divisions = [];
       this.counselors = [];
+      console.log("CHECKPOINT 1");
       console.log("Type:",this.getType());
+      console.log("CHECKPOINT 2");
       if(this.authService.admin()){
         this.sessions = data.output;
         for(let session of this.sessions){
