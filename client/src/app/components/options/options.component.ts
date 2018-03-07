@@ -25,7 +25,7 @@ export class OptionsComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private campsService: CampsService,
+    public campsService: CampsService,
     public authService: AuthService,
     private evaluationsService: EvaluationsService,
     private router: Router,

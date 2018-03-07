@@ -14,7 +14,6 @@ export class CampsService {
     private authService: AuthService,
     private http: Http
   ) { }
-
   // Function to create headers, add token, to be used in HTTP requests
   createAuthenticationHeaders() {
     this.authService.loadToken(); // Get token so it can be attached to headers
