@@ -108,6 +108,7 @@ module.exports = (router) => {
     });
     
     router.post('/login',(req,res)=>{
+        console.log("test1");
         if (!req.body.email){
             res.json({success:false,message:'No username provided'});
         }
@@ -133,6 +134,7 @@ module.exports = (router) => {
                                 res.json({success:false,message:"Password is not valid"});
                             }
                             else{
+                                console.log("test2");
                                 const token = jwt.sign({userId:superuser._id}, config.secret,{ expiresIn:'100d'});
                                 res.json({success:true,message:"Success",token:token, user:{email:superuser.username,permissions:"superuser",modules:[]}});
                             }
