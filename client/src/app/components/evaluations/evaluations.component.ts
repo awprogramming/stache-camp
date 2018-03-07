@@ -33,6 +33,7 @@ export class EvaluationsComponent implements OnInit {
 
   getAllCurrent(){
     this.evaluationsService.getCurrentEvals().subscribe(data => {
+      console.log(data);
       this.divisions = [];
       this.counselors = [];
       if(this.authService.admin()){
