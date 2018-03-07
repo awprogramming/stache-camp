@@ -56,6 +56,7 @@ export class LoginComponent implements OnInit {
     }
     //Function to send login data to API
     this.authService.login(user).subscribe(data => {
+      
       // Check if response was a success or error
       if (!data.success) {
         this.messageClass = 'alert alert-danger'; // Set bootstrap error class
@@ -71,7 +72,7 @@ export class LoginComponent implements OnInit {
           if(this.previousUrl)
             this.router.navigate([this.previousUrl]);
           else
-            this.router.navigate(['/options']); 
+            this.router.navigate(['/dashboard']); 
         }, 1000);
       }
     });

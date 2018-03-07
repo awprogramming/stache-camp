@@ -39,7 +39,7 @@
         </div>
     </div>
 </div>
-<div *ngIf="authService.admin()">
+<div *ngIf="!authService.admin()">
   <div *ngFor="let division of divisions">
     <h2>{{division}}</h2>
     <table class="table" >
@@ -53,7 +53,7 @@
         <td>{{counselor.last}}</td>
         <td *ngFor="let i of counselor.preFiller"></td>
         <td *ngFor="let eval of counselor.evals">
-          <a [routerLink]="['/evaluate', counselor._id, eval._id]">{{eval.number==options.evaluationOpts.currentEval?"Go":"View"}}</a>
+          <a [routerLink]="['/evaluate', counselor._id, eval._id,getType()]">{{eval.number==options.evaluationOpts.currentEval?"Go":"View"}}</a>
           <div>
             <span>Status: <span [ngClass]="getClass(eval)">&#9679;</span></span>
             <br>

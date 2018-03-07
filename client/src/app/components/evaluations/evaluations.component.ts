@@ -86,7 +86,7 @@ export class EvaluationsComponent implements OnInit {
               }
             }
           }
-          else if(JSON.parse(localStorage.getItem('user')).type.type == "Leader" && counselor._id.counselor.division){
+          else if(this.getType() == "Leader" && counselor._id.counselor.division){
             if(counselor._id.counselor.division){
               for(let leader of counselor._id.counselor.division.leaders){
                 if(leader._id == JSON.parse(localStorage.getItem('user'))._id){
@@ -285,6 +285,10 @@ export class EvaluationsComponent implements OnInit {
     }
     
    new Angular2Csv(data, session.session.name+'_Eval_Report');
+  }
+
+  getType(){
+    return JSON.parse(localStorage.getItem('user')).type.type;
   }
 
   ngOnInit() {

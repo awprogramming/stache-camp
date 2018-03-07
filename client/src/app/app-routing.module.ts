@@ -20,8 +20,14 @@ import { EvaluationsComponent } from './components/evaluations/evaluations.compo
 import { QuestionsComponent } from './components/questions/questions.component';
 import { EvaluateComponent } from './components/evaluate/evaluate.component';
 import { ApproversComponent } from './components/approvers/approvers.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 const appRoutes: Routes = [
+    {
+        path: 'dashboard',
+        component: DashboardComponent,
+        canActivate: [AuthGuard]
+    },
     {
         path: 'register-camp',
         component: RegisterCampComponent,
@@ -65,7 +71,7 @@ const appRoutes: Routes = [
     {
         path: 'options',
         component: OptionsComponent,
-        canActivate: [AuthGuard, AdminGuard]
+        canActivate: [AuthGuard,AdminGuard]
     },
     {
         path:'evaluations',

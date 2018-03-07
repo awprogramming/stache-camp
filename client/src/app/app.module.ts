@@ -36,6 +36,7 @@ import { HeadStaffTypeDropdownComponent } from './components/head-staff-type-dro
 import { EvaluateComponent } from './components/evaluate/evaluate.component';
 import { ApproversComponent } from './components/approvers/approvers.component';
 import { EvalArchiveComponent } from './components/eval-archive/eval-archive.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 
 @NgModule({
@@ -63,6 +64,7 @@ import { EvalArchiveComponent } from './components/eval-archive/eval-archive.com
     EvaluateComponent,
     ApproversComponent,
     EvalArchiveComponent,
+    DashboardComponent,
   ],
   imports: [
     BrowserModule,

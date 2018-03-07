@@ -33,9 +33,11 @@ export class EvaluateComponent implements OnInit {
 
   loadEvaluation(){
     this.evaluationsService.getEvaluation(this.counselorId,this.id,this.type).subscribe(data => {
+      
       this.evaluation = data.evaluation;
       this.calculate_percentage();
       this.viewing();
+      
     });
   }
 

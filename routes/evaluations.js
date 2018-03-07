@@ -220,7 +220,7 @@ module.exports = (router) => {
                 if(camp.admin._id != req.decoded.userId){
                     answers = []
                     for(let answer of evaluation.answers){
-                        if(answer.question.byWho.equals(userType))
+                        if(answer.question.byWho.type==userType)
                             answers.push(answer);
                     }   
                     evaluation.answers = answers;
@@ -228,7 +228,6 @@ module.exports = (router) => {
                 else{
                     answers = []
                     for(let answer of evaluation.answers){
-                        console.log(answer.question.byWho.type);
                         if(answer.question.byWho.type == userType)
                             answers.push(answer);
                     }   
