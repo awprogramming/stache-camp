@@ -35,9 +35,6 @@ export class EvaluationsComponent implements OnInit {
     this.evaluationsService.getCurrentEvals().subscribe(data => {
       this.divisions = [];
       this.counselors = [];
-      console.log("CHECKPOINT 1");
-      console.log("Type:",this.getType());
-      console.log("CHECKPOINT 2");
       if(this.authService.admin()){
         this.sessions = data.output;
         for(let session of this.sessions){
@@ -69,13 +66,17 @@ export class EvaluationsComponent implements OnInit {
       console.log("NOT ADMIN");
       for(let counselor of data.output){
         console.log(counselor);
+        console.log(this.getType() == "leader" && counselor._id.counselor.division);
+        console.log(this.getType() == "leader")
           if(this.approver){
             if(counselor._id.counselor.division && counselor._id.counselor.division.approvers){
               for(let leader of counselor._id.counselor.division.approvers){
                 if(leader._id == JSON.parse(localStorage.getItem('user'))._id){
-                  console.log("CHECKPOINT **");
-                    if(this.divisions.indexOf(counselor._id.counselor.division.name)==-1)  
+                  console.log("CHECKPOINT 1");
+                    if(this.divisions.indexOf(counselor._id.counselor.division.name)==-1){  
+                      console.log("CHECKPOINT 2");
                       this.divisions.push(counselor._id.counselor.division.name);
+                    }
                     const c = {
                       evals:counselor.evaluations,
                       _id:counselor._id.counselor._id,
@@ -83,7 +84,6 @@ export class EvaluationsComponent implements OnInit {
                       last: counselor._id.counselor.last,
                     }
                     if(this.counselors[counselor._id.counselor.division.name])
-                      
                       this.counselors[counselor._id.counselor.division.name].push(c);
                     else
                       this.counselors[counselor._id.counselor.division.name] = [c]
@@ -96,7 +96,7 @@ export class EvaluationsComponent implements OnInit {
             console.log("test");
             if(counselor._id.counselor.division){
               for(let leader of counselor._id.counselor.division.leaders){
-                console.log(leader);
+                console.log(leader._id,JSON.parse(localStorage.getItem('user'))._id);
                 if(leader._id == JSON.parse(localStorage.getItem('user'))._id){
                     if(this.divisions.indexOf(counselor._id.counselor.division.name)==-1)  
                       this.divisions.push(counselor._id.counselor.division.name);
