@@ -114,6 +114,7 @@ export class EvaluateComponent implements OnInit {
 
   viewing(){
     this.view = this.options.evaluationOpts.currentEval!=this.evaluation.evaluation.number || this.authService.admin();
+    console.log(this.view);
   }
 
   userIsApprover(){
