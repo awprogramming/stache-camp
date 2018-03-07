@@ -73,6 +73,7 @@ export class EvaluationsComponent implements OnInit {
             if(counselor._id.counselor.division && counselor._id.counselor.division.approvers){
               for(let leader of counselor._id.counselor.division.approvers){
                 if(leader._id == JSON.parse(localStorage.getItem('user'))._id){
+                  console.log("CHECKPOINT **");
                     if(this.divisions.indexOf(counselor._id.counselor.division.name)==-1)  
                       this.divisions.push(counselor._id.counselor.division.name);
                     const c = {
