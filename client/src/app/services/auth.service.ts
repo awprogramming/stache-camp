@@ -49,6 +49,7 @@ export class AuthService {
 
   // Function to login user
   login(user) {
+    console.log("auth service");
     return this.http.post(this.domain + 'authentication/login', user).map(res => res.json());
   }
 
