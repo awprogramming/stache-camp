@@ -295,8 +295,8 @@ export class EvaluationsComponent implements OnInit {
   }
 
   getType(){
-    console.log(localStorage.getItem('user'));
-    
+    console.log(JSON.parse(localStorage.getItem('user'));
+
     return JSON.parse(localStorage.getItem('user')).type.type;
   }
 
