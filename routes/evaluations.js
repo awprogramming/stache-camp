@@ -163,7 +163,7 @@ module.exports = (router) => {
             }
             else{
             var userType = camp.users.id(req.decoded.userId).type.type;
-            if(userType == "Leader"){
+            if(userType == "leader"){
                 Camp.aggregate([
                     { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
                     { $unwind: '$counselors'},

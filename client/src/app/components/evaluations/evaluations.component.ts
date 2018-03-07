@@ -87,9 +87,11 @@ export class EvaluationsComponent implements OnInit {
               }
             }
           }
-          else if(this.getType() == "Leader" && counselor._id.counselor.division){
+          else if(this.getType() == "leader" && counselor._id.counselor.division){
+            console.log("test");
             if(counselor._id.counselor.division){
               for(let leader of counselor._id.counselor.division.leaders){
+                console.log(leader);
                 if(leader._id == JSON.parse(localStorage.getItem('user'))._id){
                     if(this.divisions.indexOf(counselor._id.counselor.division.name)==-1)  
                       this.divisions.push(counselor._id.counselor.division.name);
