@@ -44,7 +44,7 @@ module.exports = (router) => {
             .then(function(result){
                 const camp = result.camp;
                 const type = result.type;
-                if(result.type.type == "Leader"){
+                if(result.type.type == "leader"){
                     var leaderDivisions = [];
                     for(let division of camp.divisions){
                         for(let leader of division.leaders){
@@ -79,7 +79,7 @@ module.exports = (router) => {
                 }
             })
             .then(function(result){
-                if(result.type.type == "Leader"){
+                if(result.type.type == "leader"){
                     var leaderDivisions = result.ld;
                     var result = result.camp;
                     var counselors = {};
@@ -603,17 +603,8 @@ module.exports = (router) => {
         const toAdd = req.body.toAdd;
         delete req.body.toAdd;
         Camp.update({_id:req.decoded.campId,specialties:{$elemMatch:{_id:req.body._id}}},{$push:{"specialties.$.head_specialists":toAdd}},(err,camp)=>{
-            console.log(camp);
             res.json({success:true});
         });
-        // Camp.update({_id:req.decoded.campId,specialtys:{$elemMatch:{_id:req.body._id}}},{$push:{specialtys:{leaders:req.body}}}, (err,head)=>{
-        //     if(err){
-        //         res.json({success:false,message:err});
-        //     }
-        //     else{
-        //         res.json({success:true});
-        //     }
-        // });
     });
 
     router.post('/remove_head_specialty',(req,res) => {

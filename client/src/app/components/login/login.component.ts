@@ -54,10 +54,8 @@ export class LoginComponent implements OnInit {
       email: this.form.get('username').value, // Username input field
       password: this.form.get('password').value // Password input field
     }
-    console.log(user);
     //Function to send login data to API
     this.authService.login(user).subscribe(data => {
-      console.log("test3",data);
       // Check if response was a success or error
       if (!data.success) {
         this.messageClass = 'alert alert-danger'; // Set bootstrap error class

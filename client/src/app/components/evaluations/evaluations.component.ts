@@ -33,9 +33,9 @@ export class EvaluationsComponent implements OnInit {
 
   getAllCurrent(){
     this.evaluationsService.getCurrentEvals().subscribe(data => {
-      console.log(data);
       this.divisions = [];
       this.counselors = [];
+      console.log("Type:",this.getType());
       if(this.authService.admin()){
         this.sessions = data.output;
         for(let session of this.sessions){
@@ -64,7 +64,9 @@ export class EvaluationsComponent implements OnInit {
         }
       }
       else{
+      console.log("NOT ADMIN");
       for(let counselor of data.output){
+        console.log(counselor);
           if(this.approver){
             if(counselor._id.counselor.division && counselor._id.counselor.division.approvers){
               for(let leader of counselor._id.counselor.division.approvers){

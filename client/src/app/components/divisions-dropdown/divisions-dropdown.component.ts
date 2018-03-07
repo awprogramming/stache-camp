@@ -17,7 +17,6 @@ export class DivisionsDropdownComponent implements OnInit {
 
   populateDivisions(){
     this.campService.getAllDivisions().subscribe(data=>{
-      console.log(data.divisions);
       if(this.gender=="female")
         this.divisions = data.divisions[0].divisions;
       else if(this.gender=="male")

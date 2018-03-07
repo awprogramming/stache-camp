@@ -31,7 +31,6 @@ export class ApproversComponent implements OnInit {
   getAllDivisions(){
     this.campsService.getAllDivisions().subscribe(data => {
       this.divisions = data.divisions;
-      console.log(this.divisions);
     })
   }
 

@@ -139,7 +139,6 @@ export class OptionsComponent implements OnInit {
   getOptions(){
     this.campsService.getOptions().subscribe(data => {
       this.options = data.options
-      console.log(this.options);
     });
   }
 

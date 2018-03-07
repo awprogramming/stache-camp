@@ -150,7 +150,6 @@ export class CounselorsComponent implements OnInit {
             "counselors":[]
           }
           this.sessions.unshift(session);
-          console.log(this.sessions);
         }
         else{
         this.hired = data.output.sessions[0].counselors;
