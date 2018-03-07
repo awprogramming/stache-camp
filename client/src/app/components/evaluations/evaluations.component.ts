@@ -68,6 +68,7 @@ export class EvaluationsComponent implements OnInit {
         console.log(counselor);
         console.log(this.getType() == "leader" && counselor._id.counselor.division);
         console.log(this.getType() == "leader")
+        console.log(this.getType());
           if(this.approver){
             if(counselor._id.counselor.division && counselor._id.counselor.division.approvers){
               for(let leader of counselor._id.counselor.division.approvers){
