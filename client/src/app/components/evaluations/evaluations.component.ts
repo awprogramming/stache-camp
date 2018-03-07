@@ -297,7 +297,7 @@ export class EvaluationsComponent implements OnInit {
   }
 
   getType(){
-    return JSON.parse(localStorage.getItem('user')).type;
+    return JSON.parse(localStorage.getItem('user')).type.type;
   }
 
   ngOnInit() {
