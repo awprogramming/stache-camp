@@ -44,6 +44,7 @@ export class EvaluateComponent implements OnInit {
   getOptions(){
     this.campsService.getOptions().subscribe(data => {
       this.options = data.options
+      this.loadEvaluation();
     });
   }
 
@@ -114,7 +115,6 @@ export class EvaluateComponent implements OnInit {
 
   viewing(){
     this.view = this.options.evaluationOpts.currentEval!=this.evaluation.evaluation.number || this.authService.admin();
-    console.log(this.view);
   }
 
   userIsApprover(){
@@ -129,7 +129,6 @@ export class EvaluateComponent implements OnInit {
         this.type = params.get('type');
         this.userIsApprover();
         this.getOptions();
-        this.loadEvaluation();
       });
   }
 
