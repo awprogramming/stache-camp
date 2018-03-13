@@ -94,13 +94,31 @@ module.exports = (router) => {
                                     answers: []
                                 });
                                 const answers = []
-                                for(let question of camp.options.evaluationOpts.questions){
-                                    if(question.type._id.equals(counselor.type._id)){
-                                        const answer = {
-                                            question:question
-                                        };
-                                        evaluation.answers.create(answer);
-                                        evaluation.answers.push(answer);
+                                var prevAnswers;
+                                if(camp.options.evaluationOpts.currentEval!=1){
+                                    for(let e of counselor.evaluations){
+                                        if(e.number == camp.options.evaluationOpts.currentEval-1 && e.session._id.equals(camp.options.session._id)){
+                                            for(let a of e.answers){
+                                                const answer = {
+                                                    question:a.question,
+                                                    numerical:a.numerical
+                                                };
+                                                evaluation.answers.create(answer);
+                                                evaluation.answers.push(answer);
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                                else{
+                                    for(let question of camp.options.evaluationOpts.questions){
+                                        if(question.type._id.equals(counselor.type._id)){
+                                            const answer = {
+                                                question:question
+                                            };
+                                            evaluation.answers.create(answer);
+                                            evaluation.answers.push(answer);
+                                        }
                                     }
                                 }
                                 counselor.evaluations.push(evaluation);
