@@ -8,6 +8,7 @@ const authentication = require('./routes/authentication')(router);
 const camps = require('./routes/camps')(router);
 const modules = require('./routes/modules')(router);
 const evaluations = require('./routes/evaluations')(router);
+const sports = require('./routes/sports')(router);
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
@@ -31,8 +32,7 @@ app.use('/modules',modules);
 app.use('/camps',camps);
 app.use('/authentication',authentication);
 app.use('/evaluations',evaluations);
-
-
+app.use('/sports',sports);
 
 
 app.get('/', (req, res) =>{

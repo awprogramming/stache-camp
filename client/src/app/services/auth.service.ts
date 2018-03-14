@@ -70,6 +70,7 @@ export class AuthService {
   // // Function to check if user is logged in
   loggedIn() {
     return tokenNotExpired();
+    
   }
 
   superUser(){

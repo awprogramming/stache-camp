@@ -1,0 +1,38 @@
+<div *ngIf="newRoster">
+    <h2 class="page-header">Register Roster</h2>
+    
+    <!-- Custom Success/Error Message -->
+    <div class="row show-hide-message">
+      <div [ngClass]="messageClass">
+        {{ message }}
+      </div>
+    </div>
+    
+    <form [formGroup]="form" (submit)="onRegistrationSubmit()">
+    
+      <div class="form-group">
+        <label for="name">Roster Name</label>
+        <div>
+          <input class="form-control" type="text" name="name" formControlName="name" />
+        </div>
+      </div>
+    
+      <!-- Submit Button -->
+      <input [disabled]="processing" class="btn btn-primary" type="submit" value="Register" />
+      <input class="btn btn-primary" (click) = "cancelAdd()" value="Cancel Add" />
+    </form>
+    </div>
+    
+    <div *ngFor="let specialty of specialties">
+      <h2>{{specialty.name}} <button class="btn btn-primary" (click) = "showAdd(specialty)" *ngIf = "!newRoster">Add</button></h2>
+      <table class="table">
+        <tr>
+          <th>Roster Name</th>
+          <th></th>
+        </tr>
+        <tr *ngFor="let roster of specialty.rosters">
+          <td>{{roster.name}}</td>
+          <td><button class="btn btn-primary"(click) = "remove(specialty,roster)">X</button></td>
+        </tr>
+      </table>
+    </div>

@@ -38,6 +38,8 @@ import { ApproversComponent } from './components/approvers/approvers.component';
 import { EvalArchiveComponent } from './components/eval-archive/eval-archive.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CampersComponent } from './components/campers/campers.component';
+import { RostersComponent } from './components/rosters/rosters.component';
+import { SportsService } from './services/sports.service';
 
 
 @NgModule({
@@ -67,6 +69,7 @@ import { CampersComponent } from './components/campers/campers.component';
     EvalArchiveComponent,
     DashboardComponent,
     CampersComponent,
+    RostersComponent,
   ],
   imports: [
     BrowserModule,
@@ -74,7 +77,7 @@ import { CampersComponent } from './components/campers/campers.component';
     AppRoutingModule,
     ReactiveFormsModule
   ],
-  providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard, AdminOrUserGuard, ModuleGuard,EvaluationsService],
+  providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard, AdminOrUserGuard, ModuleGuard,EvaluationsService,SportsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

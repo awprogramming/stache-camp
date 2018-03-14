@@ -22,6 +22,8 @@ import { EvaluateComponent } from './components/evaluate/evaluate.component';
 import { ApproversComponent } from './components/approvers/approvers.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CampersComponent } from './components/campers/campers.component';
+import { RostersComponent } from './components/rosters/rosters.component';
+
 
 const appRoutes: Routes = [
     {
@@ -102,6 +104,12 @@ const appRoutes: Routes = [
         path: 'campers',
         component: CampersComponent,
         canActivate: [AuthGuard]
+    },
+    {
+        path: 'rosters',
+        component: RostersComponent,
+        canActivate: [AuthGuard,ModuleGuard],
+        data: {module: 'sports'}
     },
     {   path: '**', 
         component: LoginComponent,
