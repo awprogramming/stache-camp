@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt-nodejs');
 const UserSchema = require('./user').schema;
 const ModuleSchema = require('./module').schema;
 const CounselorSchema = require('./counselor').schema;
+const CamperSchema = require('./camper').schema;
 const DivisionSchema = require('./division').schema;
 const SpecialtySchema = require('./specialty').schema;
 const OptionsSchema = require('./options').schema;
@@ -19,9 +20,12 @@ const campSchema = new Schema({
     divisions: [DivisionSchema],
     modules: [ModuleSchema],
     counselors: [CounselorSchema],
+    campers: [CamperSchema],
     specialties: [SpecialtySchema],
     options: OptionsSchema,
     sessions:[SessionSchema]
-});
+}, {
+    usePushEach: true
+  });
 
 module.exports = mongoose.model('Camp',campSchema);

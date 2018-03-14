@@ -21,6 +21,7 @@ import { QuestionsComponent } from './components/questions/questions.component';
 import { EvaluateComponent } from './components/evaluate/evaluate.component';
 import { ApproversComponent } from './components/approvers/approvers.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { CampersComponent } from './components/campers/campers.component';
 
 const appRoutes: Routes = [
     {
@@ -96,6 +97,11 @@ const appRoutes: Routes = [
         component: ApproversComponent,
         canActivate: [AuthGuard,ModuleGuard],
         data: {module: 'eval'}
+    },
+    {
+        path: 'campers',
+        component: CampersComponent,
+        canActivate: [AuthGuard]
     },
     {   path: '**', 
         component: LoginComponent,

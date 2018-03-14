@@ -37,6 +37,7 @@ import { EvaluateComponent } from './components/evaluate/evaluate.component';
 import { ApproversComponent } from './components/approvers/approvers.component';
 import { EvalArchiveComponent } from './components/eval-archive/eval-archive.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { CampersComponent } from './components/campers/campers.component';
 
 
 @NgModule({
@@ -65,6 +66,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     ApproversComponent,
     EvalArchiveComponent,
     DashboardComponent,
+    CampersComponent,
   ],
   imports: [
     BrowserModule,

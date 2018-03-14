@@ -37,7 +37,12 @@ export class CampsComponent implements OnInit {
   }
 
   addModule(camp){
-    this.campsService.activateModule(camp).subscribe(data => {
+    console.log(camp);
+    const toAdd = {
+      _id:camp._id,
+      toAdd:camp.toAdd
+    }
+    this.campsService.activateModule(toAdd).subscribe(data => {
       this.hideAddModule(camp);
       this.getAllCamps();
       // if (!data.success) {

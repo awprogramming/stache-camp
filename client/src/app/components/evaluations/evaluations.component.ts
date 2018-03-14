@@ -63,7 +63,6 @@ export class EvaluationsComponent implements OnInit {
         }
       }
       else{
-      console.log("NOT ADMIN");
       for(let counselor of data.output){
         console.log(counselor);
         console.log(this.getType() == "leader" && counselor._id.counselor.division);
@@ -94,7 +93,6 @@ export class EvaluationsComponent implements OnInit {
             }
           }
           else if(this.getType() == "leader" && counselor._id.counselor.division){
-            console.log("test");
             if(counselor._id.counselor.division){
               for(let leader of counselor._id.counselor.division.leaders){
                 console.log(leader._id,JSON.parse(localStorage.getItem('user'))._id);

@@ -219,11 +219,13 @@ module.exports = (router) => {
     });
 
     router.post('/bulk_add_counselor/:eval',(req,res) => {
-
-        if(req.params.eval){
+        
+        if(req.params.eval==='true'){
             Camp.findById(req.decoded.campId,(err,camp)=>{
                 for(let counselor of req.body){
-                    const newCounselor = camp.counselors.create(counselor);
+                    var newCounselor = camp.counselors.create(counselor);
+                    newCounselor.sessions = [];
+                    newCounselor.sessions.push(camp.options.session);
                     const evaluation = newCounselor.evaluations.create({
                         number: camp.options.evaluationOpts.currentEval,
                         session: camp.options.session,
@@ -252,13 +254,15 @@ module.exports = (router) => {
             });
         }
         else{
-            Camp.update({"_id":req.decoded.campId},{$push:{counselors:{$each:req.body}}}, (err, camp)=>{
-                if(err){
-                    res.json({success:false,message:err});
+            Camp.findById(req.decoded.campId,(err,camp)=>{
+                for(let counselor of req.body){
+                    var newCounselor = camp.counselors.create(counselor);
+                    newCounselor.sessions = [];
+                    newCounselor.sessions.push(camp.options.session);
+                    camp.counselors.push(newCounselor);
                 }
-                else{
-                    res.json({success:true});
-                }
+                camp.save({ validateBeforeSave: false });
+                res.json({success:true});
             });
         }
     });
@@ -388,6 +392,17 @@ module.exports = (router) => {
         });
     });
 
+    router.post('/add_division_camper',(req,res) => {
+        Camp.update({_id:req.decoded.campId,campers:{$elemMatch:{_id:req.body._id}}},{$set:{"campers.$.division":req.body.toAdd}}, (err,camper)=>{
+            if(err){
+                res.json({success:false,message:err});
+            }
+            else{
+                res.json({success:true});
+            }
+        });
+    });
+
     
     /* MODULE ROUTES */
 
@@ -433,17 +448,6 @@ module.exports = (router) => {
                 res.json({success:true});
             }
         });
-
-        // let evalOpts = new EvalOpts();
-
-        // Camp.update({"_id":req.body._id},{$push:{modules:req.body.toAdd},"options.evaluationOpts":evalOpts}, (err)=>{
-        //     if(err){
-        //         res.json({success:false,message:err});
-        //     }
-        //     else{
-        //         res.json({success:true});
-        //     }
-        // });
     });
 
     router.get('/camp_modules',(req,res) =>{
@@ -766,6 +770,156 @@ module.exports = (router) => {
                 res.json({ success: true, message: 'Type deleted!' }); 
             });
         }
+      });
+
+    /* Campers */
+
+    router.get('/all_campers/:permissions',(req,res) =>{
+        if(req.params.permissions == "user"){
+            Camp.findById(req.decoded.campId).exec()
+            .then(function(camp){
+                var type;
+                for(let user of camp.users){
+                    if(user._id == req.decoded.userId)
+                        type = user.type;
+                }
+                var result = {
+                    "type":type,
+                    "camp":camp
+                }
+                return result;
+            })
+            .then(function(result){
+                const camp = result.camp;
+                const type = result.type;
+                if(result.type.type == "leader"){
+                    var leaderDivisions = [];
+                    for(let division of camp.divisions){
+                        for(let leader of division.leaders){
+                            if(leader._id == req.decoded.userId){
+                                leaderDivisions.push(division._id);
+                            }
+                        }
+                    }
+                    //res.json({success:true,counselors:leaderDivisions});
+                    var result = {
+                        "type":type,
+                        "ld":leaderDivisions,
+                        "camp":camp
+                    }
+                    return result;
+                }
+            })
+            .then(function(result){
+                if(result.type.type == "leader"){
+                    var leaderDivisions = result.ld;
+                    var result = result.camp;
+                    var campers = {};
+                    var ctr = 0;
+                    var finished = false;
+                    for(let camper of result.campers){
+                        var enrolled = false;
+                        for(let session of camper.sessions){
+                            if(session._id.equals(result.options.session._id)){
+                                enrolled = true;
+                                break;
+                            }
+                        }
+                        if(enrolled){
+                            for(let division of leaderDivisions){
+                                if(camper.division && camper.division._id.equals(division)){
+                                    if(!(camper.division.name in campers))
+                                        campers[camper.division.name] = []
+                                    campers[camper.division.name].push(camper);
+                                }
+                            }
+                        }
+                    }
+                    return campers;
+                }
+            })
+            .then(function(campers){
+                res.json({success:true,campers:campers});
+            });
+        }
+        else{
+        Camp.findById(req.decoded.campId).exec().then((camp)=>{
+            const current_session = camp.options.session;
+            Camp.aggregate([
+                { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
+                { $unwind: '$campers'},
+                { $unwind: '$campers.sessions'},
+                { $project: {campers:1}},
+                { $group : { _id : {session_id:"$campers.sessions._id",session_name:"$campers.sessions.name"}, campers:{$push:"$campers"}}},
+                
+            ],(err,result)=>{
+                const output = {
+                    "sessions":result,
+                    "cur_session":current_session
+                }
+                res.json({success:true,output:output});
+            });
+        });
+        }
+    });
+
+    router.post('/add_camper',(req,res) => {
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            const sessions = [];
+            sessions.push(camp.options.session);
+            const camper = req.body;
+            camper.sessions = sessions;
+            const newCamper = camp.campers.create(camper);
+            camp.campers.push(newCamper);
+            camp.save({ validateBeforeSave: false });
+        }).then((camp)=>{
+            res.json({success:true});
+        });
+    });
+
+    router.post('/bulk_add_camper',(req,res) => {
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            for(let camper of req.body){
+                var newCamper = camp.campers.create(camper);
+                newCamper.sessions = [];
+                newCamper.sessions.push(camp.options.session);
+                camp.campers.push(newCamper);
+            }
+            camp.save({ validateBeforeSave: false });
+            res.json({success:true});
+        });
+    });
+
+    router.delete('/remove_camper/:id', (req, res) => {
+        if (!req.params.id) {
+          res.json({ success: false, message: 'No id provided' }); 
+        } else {
+
+            Camp.findOneAndUpdate({'_id': req.decoded.campId},{$pull:{campers:{_id:req.params.id}}},(err)=>{
+                if(err){
+                    res.json({ success: false, message: 'Failed to delete' });
+                }
+                else{
+                    res.json({ success: true, message: 'Camper deleted!' }); 
+                }
+            });
+        }
+      });
+
+      router.post('/reenroll',(req,res)=>{
+        Camp.findById(req.decoded.campId, (err, camp)=>{
+            if(err){
+                res.json({success:false,message:err});
+            }
+            else{
+                var camper = camp.campers.id(req.body.camper._id);
+                camper.sessions.push(req.body.session);
+                if(camper.division)
+                    camper.division.remove();
+                camp.save({ validateBeforeSave: false });
+                res.json({success: true})
+            }
+        });
       });
     
     return router;

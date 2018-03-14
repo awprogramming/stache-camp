@@ -101,6 +101,13 @@ export class CampsService {
     return this.http.post(this.domain + 'camps/add_division_counselor',counselor,this.options).map(res => res.json());
   }
 
+  addDivisionToCamper(camper){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/add_division_camper',camper,this.options).map(res => res.json());
+  }
+
+
+
   /* HEAD STAFF */
 
   registerHeadStaff(user) {
@@ -203,5 +210,32 @@ export class CampsService {
   removehType(type){
     this.createAuthenticationHeaders();
     return this.http.delete(this.domain + 'camps/remove_htype/'+type._id,this.options).map(res => res.json());
+  }
+
+  /* CAMPERS */
+  getAllCampers(){
+    this.createAuthenticationHeaders();
+    var permissions = JSON.parse(localStorage.getItem('user')).permissions;
+    return this.http.get(this.domain + 'camps/all_campers/'+permissions,this.options).map(res => res.json());
+  }
+
+  registerCamper(camper){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/add_camper',camper,this.options).map(res => res.json());
+  }
+
+  bulkRegisterCampers(campers){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/bulk_add_camper/',campers,this.options).map(res => res.json());
+  }
+
+  removeCamper(camper){
+    this.createAuthenticationHeaders();
+    return this.http.delete(this.domain + 'camps/remove_camper/'+camper._id,this.options).map(res => res.json());
+  }
+
+  reenroll(camper){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/reenroll',camper,this.options).map(res => res.json());
   }
 }

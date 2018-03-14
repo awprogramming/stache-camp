@@ -6,11 +6,11 @@ import { AuthGuard } from '../../guards/auth.guard';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-counselors',
-  templateUrl: './counselors.component.html',
-  styleUrls: ['./counselors.component.css']
+  selector: 'app-campers',
+  templateUrl: './campers.component.html',
+  styleUrls: ['./campers.component.css']
 })
-export class CounselorsComponent implements OnInit {
+export class CampersComponent implements OnInit {
   messageClass;
   message;
   processing = false;
@@ -19,11 +19,11 @@ export class CounselorsComponent implements OnInit {
   previousUrl;
   newCamp = false;
   bulkAdd = false;
-  counselors;
-  uploaded_counselors;
+  campers;
+  uploaded_campers;
   divisions;
   sessions;
-  hired;
+  enrolled;
   toAddType;
   options;
 
@@ -41,24 +41,22 @@ export class CounselorsComponent implements OnInit {
     this.form = this.formBuilder.group({
       first: ['', Validators.required],
       last:['', Validators.required],
-      gender: ['', Validators.required],
-      type: ['',Validators.required]
+      gender: ['', Validators.required]
     });
     this.bulkAddForm = this.formBuilder.group({
-      counselor_file:['']
+      camper_file:['']
     });
   }
 
   onRegistrationSubmit() {
     this.processing = true;
-    const counselor = {
+    const camper = {
       first: this.form.get('first').value,
       last: this.form.get('last').value,
       gender: this.form.get('gender').value,
-      type: this.toAddType
     }
   
-    this.campsService.registerCounselor(counselor).subscribe(data => {
+    this.campsService.registerCamper(camper).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
         this.message = data.message;
@@ -71,7 +69,7 @@ export class CounselorsComponent implements OnInit {
             this.router.navigate([this.previousUrl]);
           else{
             this.newCamp = false;
-            this.getAllCounselors();
+            this.getAllCampers();
           }
         }, 2000);
       }
@@ -81,8 +79,8 @@ export class CounselorsComponent implements OnInit {
   fileUploaded(event: any) {
     const file = event.srcElement.files[0];
     var myReader:FileReader = new FileReader();
-    var counselors = [];
-    var types = this.options.counselor_types;
+    var campers = [];
+    var types = this.options.camper_types;
     var session = this.options.session;
     myReader.onloadend = function(e){
       // you can perform an action with readed data here
@@ -93,29 +91,21 @@ export class CounselorsComponent implements OnInit {
           skip = false;
         else{
           var vals = line.split(',');
-          const counselor = {
+          const camper = {
             first: vals[0],
             last: vals[1],
             gender: vals[2],
-            type:  vals[3],
-            sessions: [session]
           }
-          for(let type of types){
-            if(type.type == vals[3]){
-              counselor.type = type
-              break;
-            }
-          }
-          counselors.push(counselor);
+          campers.push(camper);
         }
       }
     }
     myReader.readAsText(file);
-    this.uploaded_counselors = counselors;
+    this.uploaded_campers = campers;
 }
 
   onBulkUploadSubmit(){
-    this.campsService.bulkRegisterCounselor(this.uploaded_counselors).subscribe(data => {
+    this.campsService.bulkRegisterCampers(this.uploaded_campers).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
         this.message = data.message;
@@ -127,20 +117,19 @@ export class CounselorsComponent implements OnInit {
           this.router.navigate([this.previousUrl]);
         else{
           this.newCamp = false;
-          this.getAllCounselors();
+          this.getAllCampers();
         }
       }
     });
   }
 
-  getAllCounselors(){
-    this.campsService.getAllCounselors().subscribe(data => {
+  getAllCampers(){
+    this.campsService.getAllCampers().subscribe(data => {
       if(this.authService.isUser()){
-        this.divisions = Object.keys(data.counselors);
-        this.counselors = data.counselors;
+        this.divisions = Object.keys(data.campers);
+        this.campers = data.campers;
       }
       if(this.authService.admin()){
-        console.log(data);
         this.sessions = data.output.sessions;
         if(data.output.sessions[0]._id.session_id!=data.output.cur_session._id){
           const session = {
@@ -148,22 +137,22 @@ export class CounselorsComponent implements OnInit {
               "session_id":data.output.cur_session._id,
               "session_name":data.output.cur_session.name
             },
-            "counselors":[]
+            "campers":[]
           }
           this.sessions.unshift(session);
         }
         else{
-        this.hired = data.output.sessions[0].counselors;
+        this.enrolled = data.output.sessions[0].campers;
 
         for(var i = 1; i < this.sessions.length; i++){
-          for(let counselor of this.sessions[i].counselors){
-            for(let h of this.hired)
-              if(h._id == counselor._id)
-                counselor.hired = true;
+          for(let camper of this.sessions[i].campers){
+            for(let h of this.enrolled)
+              if(h._id == camper._id)
+                camper.enrolled = true;
           }
         }
       }
-      } 
+      }
     });
   }
 
@@ -173,8 +162,8 @@ export class CounselorsComponent implements OnInit {
     });
   }
 
-  remove(counselor){
-    this.campsService.removeCounselor(counselor).subscribe(data => {
+  remove(camper){
+    this.campsService.removeCamper(camper).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
         this.message = data.message;
@@ -182,14 +171,14 @@ export class CounselorsComponent implements OnInit {
       } else {
         this.messageClass = 'alert alert-success';
         this.message = data.message;
-        this.getAllCounselors();
+        this.getAllCampers();
       }
     });
   }
 
-  addDivision(counselor){
-    this.campsService.addDivisionToCounselor(counselor).subscribe(data => {
-      this.getAllCounselors();
+  addDivision(camper){
+    this.campsService.addDivisionToCamper(camper).subscribe(data => {
+      this.getAllCampers();
     });
   }
 
@@ -199,7 +188,7 @@ export class CounselorsComponent implements OnInit {
 
   addSpecialty(counselor){
     this.campsService.addSpecialtyToCounselor(counselor).subscribe(data => {
-      this.getAllCounselors();
+      this.getAllCampers();
     });
   }
 
@@ -227,16 +216,16 @@ export class CounselorsComponent implements OnInit {
     this.bulkAdd = false;
   }
 
-  rehire(c){
-    const counselor = {
-      "counselor": c,
+  reenroll(c){
+    const camper = {
+      "camper": c,
       "session":{
         "_id":this.sessions[0]._id.session_id,
         "name":this.sessions[0]._id.session_name
       }
     }
-    this.campsService.rehire(counselor).subscribe(data => {
-      this.getAllCounselors();
+    this.campsService.reenroll(camper).subscribe(data => {
+      this.getAllCampers();
     });
   }
 
@@ -247,7 +236,7 @@ export class CounselorsComponent implements OnInit {
       this.previousUrl = this.authGuard.redirectUrl;
       this.authGuard.redirectUrl = undefined;
     }
-    this.getAllCounselors();
+    this.getAllCampers();
     this.getOptions();
   }
 

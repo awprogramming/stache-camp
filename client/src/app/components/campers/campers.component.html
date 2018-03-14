@@ -1,0 +1,137 @@
+<div *ngIf="newCamp">
+    <h2 class="page-header">Register Camper</h2>
+    
+    <!-- Custom Success/Error Message -->
+    <div class="row show-hide-message">
+      <div [ngClass]="messageClass">
+        {{ message }}
+      </div>
+    </div>
+    
+    <!-- Login Form -->
+    <form [formGroup]="form" (submit)="onRegistrationSubmit()">
+    
+      <div class="form-group">
+        <label for="first">First Name</label>
+        <div>
+          <input class="form-control" type="text" name="first" formControlName="first" />
+        </div>
+      </div>
+    
+      <div class="form-group">
+        <label for="last">Last Name</label>
+        <div>
+          <input class="form-control" type="text" name="last" formControlName="last" />
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="gender">Gender</label>
+        <div>
+          <div>
+            <input class="form-check-input" formControlName="gender" type="radio" name="gender" value="male">
+            <label class="form-check-label">Male</label>
+          </div>
+          <div>
+              <input class="form-check-input" formControlName="gender" type="radio" name="gender" value="female">
+              <label class="form-check-label">Female</label>
+          </div>
+        </div>
+      </div>
+    
+      <!-- Submit Button -->
+      <input class="btn btn-primary" type="submit" value="Register" />
+      <input class="btn btn-primary" (click) = "cancelAdd()" value="Cancel Add" />
+    </form>
+</div>
+
+<div *ngIf="bulkAdd">
+    <h2 class="page-header">Bulk Upload Campers</h2>
+    <!-- Custom Success/Error Message -->
+    <div class="row show-hide-message">
+      <div [ngClass]="messageClass">
+        {{ message }}
+      </div>
+    </div>
+    
+    <form [formGroup]="bulkAddForm" (submit)="onBulkUploadSubmit()">
+    
+      <div class="form-group">
+        <label for="camper_file">Camper CSV File</label>
+        <div>
+          <input class="form-control" type="file" (change)="fileUploaded($event)" name="camper_file" formControlName="camper_file" />
+        </div>
+      </div>
+      <!-- Submit Button -->
+      <input class="btn btn-primary" type="submit" value="Upload" />
+      <input class="btn btn-primary" (click) = "cancelBulkAdd()" value="Cancel Add" />
+    </form>
+</div>
+
+    
+    <button class="btn btn-primary" (click) = "showAdd()" *ngIf = "!newCamp && authService.admin()">Add</button>
+    
+    <button class="btn btn-primary" (click) = "showBulkAdd()" *ngIf = "!bulkAdd && authService.admin()">Upload camper CSV File</button>
+    
+    <div *ngIf="authService.admin()">
+        <div class="panel with-nav-tabs">
+            <div class="panel-heading">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item" [ngClass] = "{'active':i==0}" *ngFor="let session of sessions; let i = index">
+                          <a  class="nav-link" id="{{session._id.session_name}}-tab" data-toggle="tab" href="#{{session._id.session_name}}" role="tab" attr.aria-controls="{{session._id.session_name}}" aria-selected="true">{{session._id.session_name}}</a>
+                        </li>
+                    </ul>
+            </div>
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div *ngFor="let session of sessions; let i = index" [ngClass] = "{'in active':i==0}" class="tab-pane fade" id="{{session._id.session_name}}">
+                        <h2>{{session._id.session_name}}</h2>
+                        <table class="table" >
+                            <tr>
+                              <th>First</th>
+                              <th>Last</th>
+                              <th>Gender</th>
+                              <th>Division</th>
+                              <th *ngIf="i!=0"></th>
+                              <th *ngIf="i==0"></th>
+                            </tr>
+                            <tr *ngFor="let camper of session.campers">
+                              <td>{{camper.first}}</td>
+                              <td>{{camper.last}}</td>
+                              <td>{{camper.gender}}</td>
+                              <td *ngIf="camper.division ">{{camper.division.name}}</td>
+                              <td *ngIf="!camper.division">
+                                <app-divisions-dropdown *ngIf="i==0" (selectedChanged) = "preAdd($event,camper)" [gender]="camper.gender"></app-divisions-dropdown>
+                                <button *ngIf="i==0" class="btn btn-primary" (click) = "addDivision(camper)">Add</button>
+                              </td>
+                        
+                              <td *ngIf="i!=0 && camper.enrolled">Enrolled</td>
+                              <td *ngIf="i!=0 && !camper.enrolled">
+                                  <button class="btn btn-primary" (click) = "reenroll(camper)">Re-enrole</button>
+                              </td>
+                              <td *ngIf="i==0"><button class="btn btn-primary" (click) = "remove(camper)">X</button></td>
+                            </tr>
+                          </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="authService.isUser()">
+      <div *ngFor="let division of divisions">
+      <h2>{{division}}</h2>
+      <table class="table" >
+          <tr>
+            <th>First</th>
+            <th>Last</th>
+            <th>Gender</th>
+          </tr>
+          <tr *ngFor="let camper of campers[division]">
+            <td>{{camper.first}}</td>
+            <td>{{camper.last}}</td>
+            <td>{{camper.gender}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    
