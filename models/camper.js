@@ -11,7 +11,7 @@ const camperSchema = new Schema({
     gender: {type:String, enum:['male','female'], required: true},
     division: {type:DivisionSchema},
     sessions:[SessionSchema],
-    meds: [MedsSchema]
+    meds: MedsSchema
 });
 
 module.exports = mongoose.model('Camper',camperSchema);

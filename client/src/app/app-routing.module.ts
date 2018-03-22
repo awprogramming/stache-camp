@@ -24,6 +24,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CampersComponent } from './components/campers/campers.component';
 import { RostersComponent } from './components/rosters/rosters.component';
 import { RosterComponent } from './components/roster/roster.component';
+import { MedsComponent } from './components/meds/meds.component';
 
 
 const appRoutes: Routes = [
@@ -117,6 +118,12 @@ const appRoutes: Routes = [
         component: RosterComponent,
         canActivate: [AuthGuard,ModuleGuard],
         data: {module: 'sports'}
+    },
+    {
+        path: 'meds',
+        component: MedsComponent,
+        canActivate: [AuthGuard,ModuleGuard],
+        data: {module: 'meds'}
     },
     {   path: '**', 
         component: LoginComponent,
