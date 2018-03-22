@@ -863,44 +863,6 @@ module.exports = (router) => {
         }
     });
 
-    router.get('/get_division_campers/:divisionId/:sessionId',(req,res) => {
-        Camp.aggregate([
-            { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
-            { $unwind: '$campers'},
-            { $project: {campers:1}},
-            { $unwind: '$campers.sessions'},
-            { $group : {
-                _id : {s_id:"$campers.sessions._id",d_id:"$campers.division._id",d_name:"$campers.divison.name"}, 
-                campers:{$push:"$campers"}
-               }
-           },
-            { $group : {
-                _id : "$_id.s_id",
-                divisions: {
-                    $push:{
-                        d_id: "$_id.d_id",
-                        d_name: "$_id.d_name",
-                        campers:"$campers"}
-                    }
-                } 
-            },
-        ],(err,result)=>{
-            var success = false;
-            for(let session of result){
-                if(session._id.equals(req.params.sessionId)){
-                    for(let division of session.divisions){
-                        if(division.d_id.equals(req.params.divisionId)){
-                            success = true;
-                            res.json({success:success,division:division});
-                        }
-                    }
-                }
-            }
-            if(!success)
-                res.json({success:success});
-        });
-    });
-
     router.post('/add_camper',(req,res) => {
         Camp.findById(req.decoded.campId,(err,camp)=>{
             const sessions = [];

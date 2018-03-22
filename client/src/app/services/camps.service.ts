@@ -238,9 +238,4 @@ export class CampsService {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + 'camps/reenroll',camper,this.options).map(res => res.json());
   }
-
-  get_division_campers(divisionId,sessionId){
-    this.createAuthenticationHeaders();
-    return this.http.get(this.domain + 'camps/get_division_campers/'+divisionId+"/"+sessionId,this.options).map(res => res.json());
-  }
 }

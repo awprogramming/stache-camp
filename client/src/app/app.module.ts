@@ -40,8 +40,6 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CampersComponent } from './components/campers/campers.component';
 import { RostersComponent } from './components/rosters/rosters.component';
 import { SportsService } from './services/sports.service';
-import { RosterComponent } from './components/roster/roster.component';
-import { CamperSelectorComponent } from './components/camper-selector/camper-selector.component';
 
 
 @NgModule({
@@ -72,8 +70,6 @@ import { CamperSelectorComponent } from './components/camper-selector/camper-sel
     DashboardComponent,
     CampersComponent,
     RostersComponent,
-    RosterComponent,
-    CamperSelectorComponent,
   ],
   imports: [
     BrowserModule,

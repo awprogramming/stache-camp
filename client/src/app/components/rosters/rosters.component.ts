@@ -18,11 +18,7 @@ export class RostersComponent implements OnInit {
   newRoster = false;
   rosters;
   specialties;
-  toAddTo;
-  divisions;
-  d_keys;
-  keys;
-  internal;
+  toAddTo
 
   constructor(
     private formBuilder: FormBuilder,
@@ -43,8 +39,7 @@ export class RostersComponent implements OnInit {
     this.processing = true;
     const roster = {
       name: this.form.get('name').value,
-      specialty: this.toAddTo,
-      internal: this.internal
+      specialty: this.toAddTo
     }
   
     this.sportsService.registerRoster(roster).subscribe(data => {
@@ -69,38 +64,22 @@ export class RostersComponent implements OnInit {
     });
   }
 
-  remove(sd,roster,internal){
-    if(internal){
-      this.sportsService.removeInternalRoster(sd,roster).subscribe(data => {
-        if (!data.success) {
-          this.messageClass = 'alert alert-danger';
-          this.message = data.message;
-          this.processing = false;
-        } else {
-          this.messageClass = 'alert alert-success';
-          this.message = data.message;
-          this.getAllRosters();
-        }
-      });
-    }
-    else{
-      this.sportsService.removeRoster(sd,roster).subscribe(data => {
-        if (!data.success) {
-          this.messageClass = 'alert alert-danger';
-          this.message = data.message;
-          this.processing = false;
-        } else {
-          this.messageClass = 'alert alert-success';
-          this.message = data.message;
-          this.getAllRosters();
-        }
-      });
-    }
+  remove(specialty,roster){
+    this.sportsService.removeRoster(specialty,roster).subscribe(data => {
+      if (!data.success) {
+        this.messageClass = 'alert alert-danger';
+        this.message = data.message;
+        this.processing = false;
+      } else {
+        this.messageClass = 'alert alert-success';
+        this.message = data.message;
+        this.getAllRosters();
+      }
+    });
   }
 
-  showAdd(specialty, internal) {
+  showAdd(specialty) {
     this.toAddTo = specialty;
-    this.internal = internal;
     this.newRoster = true;
   }
 
@@ -108,30 +87,10 @@ export class RostersComponent implements OnInit {
     this.newRoster = false;
   }
 
-  getType(){
-    return JSON.parse(localStorage.getItem('user')).type.type;
-  }
-
   getAllRosters(){
-    
-    if(this.getType() == "Head Specialist"){
-      this.sportsService.getAllRosters().subscribe(data => {
-        this.specialties = data.specialties
-      });
-    }
-    else{
-      this.sportsService.getLeaderRosters().subscribe(data => {
-        this.divisions = data.rosters;
-        if(this.divisions){
-          console.log(this.divisions);
-          this.d_keys = Object.keys(this.divisions);
-          this.keys = []
-          for(let key of this.d_keys){
-            this.keys[key] = Object.keys(this.divisions[key]["specialties"]);
-          }
-        }
-      });
-    }
+    this.sportsService.getAllRosters().subscribe(data => {
+      this.specialties = data.specialties
+    })
   }
 
   ngOnInit() {

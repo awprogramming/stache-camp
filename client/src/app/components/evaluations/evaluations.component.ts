@@ -64,11 +64,17 @@ export class EvaluationsComponent implements OnInit {
       }
       else{
       for(let counselor of data.output){
+        console.log(counselor);
+        console.log(this.getType() == "leader" && counselor._id.counselor.division);
+        console.log(this.getType() == "leader")
+        console.log(this.getType());
           if(this.approver){
             if(counselor._id.counselor.division && counselor._id.counselor.division.approvers){
               for(let leader of counselor._id.counselor.division.approvers){
                 if(leader._id == JSON.parse(localStorage.getItem('user'))._id){
+                  console.log("CHECKPOINT 1");
                     if(this.divisions.indexOf(counselor._id.counselor.division.name)==-1){  
+                      console.log("CHECKPOINT 2");
                       this.divisions.push(counselor._id.counselor.division.name);
                     }
                     const c = {
@@ -89,6 +95,7 @@ export class EvaluationsComponent implements OnInit {
           else if(this.getType() == "leader" && counselor._id.counselor.division){
             if(counselor._id.counselor.division){
               for(let leader of counselor._id.counselor.division.leaders){
+                console.log(leader._id,JSON.parse(localStorage.getItem('user'))._id);
                 if(leader._id == JSON.parse(localStorage.getItem('user'))._id){
                     if(this.divisions.indexOf(counselor._id.counselor.division.name)==-1)  
                       this.divisions.push(counselor._id.counselor.division.name);
@@ -258,6 +265,7 @@ export class EvaluationsComponent implements OnInit {
         }
       }
       for(let evaluation of counselor.evaluations){
+        console.log(evaluation);
         count++;
         for(let type of this.options.headStaff_types){
           if(evaluation.sub_evals[type.type]){

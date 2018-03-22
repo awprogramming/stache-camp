@@ -35,49 +35,9 @@ export class SportsService {
     return this.http.delete(this.domain + 'sports/remove_roster/'+specialty._id+'/'+roster._id,this.options).map(res => res.json());
   }
 
-  removeInternalRoster(division,roster){
-    this.createAuthenticationHeaders();
-    return this.http.delete(this.domain + 'sports/remove_internal_roster/'+division+'/'+roster._id,this.options).map(res => res.json());
-  }
-
   getAllRosters() {
     this.createAuthenticationHeaders();
     return this.http.get(this.domain + 'sports/all_rosters' ,this.options).map(res => res.json());
-  }
-
-  getRoster(specialtyId,rosterId){
-    this.createAuthenticationHeaders();
-    return this.http.get(this.domain + 'sports/get_roster/'+specialtyId+'/'+rosterId,this.options).map(res => res.json());
-  }
-
-  getInternalRoster(divisionId,rosterId){
-    this.createAuthenticationHeaders();
-    return this.http.get(this.domain + 'sports/get_internal_roster/'+divisionId+'/'+rosterId,this.options).map(res => res.json());
-  }
-
-  addCamperToRoster(ids){
-    this.createAuthenticationHeaders();
-    return this.http.post(this.domain + 'sports/add_camper_to_roster',ids,this.options).map(res => res.json());
-  }
-
-  addCamperToInternalRoster(ids){
-    this.createAuthenticationHeaders();
-    return this.http.post(this.domain + 'sports/add_camper_to_internal_roster',ids,this.options).map(res => res.json());
-  }
-
-  removeCamperFromRoster(ids){
-    this.createAuthenticationHeaders();
-    return this.http.post(this.domain + 'sports/remove_camper_from_roster',ids,this.options).map(res => res.json());
-  }
-
-  removeCamperFromInternalRoster(ids){
-    this.createAuthenticationHeaders();
-    return this.http.post(this.domain + 'sports/remove_camper_from_internal_roster',ids,this.options).map(res => res.json());
-  }
-
-  getLeaderRosters(){
-    this.createAuthenticationHeaders();
-    return this.http.get(this.domain + 'sports/get_leader_rosters',this.options).map(res => res.json());
   }
 
 }
