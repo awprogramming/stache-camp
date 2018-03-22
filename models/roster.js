@@ -1,14 +1,13 @@
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-const Schema = mongoose.Schema;
-const CamperSchema = require('./camper').schema;
+const Schema = mongoose.Schema, ObjectId = Schema.ObjectId;
 const SessionSchema = require('./session').schema;
 
 
 
 const rosterSchema = new Schema({
     name: {type:String, required: true},
-    campers: [CamperSchema],
+    campers: [ObjectId],
     session: SessionSchema
 });
 

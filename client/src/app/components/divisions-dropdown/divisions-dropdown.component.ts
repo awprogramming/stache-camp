@@ -8,7 +8,12 @@ import { CampsService } from '../../services/camps.service';
   styleUrls: ['./divisions-dropdown.component.css']
 })
 export class DivisionsDropdownComponent implements OnInit {
-  @Input() gender: String;
+  _gender;
+  @Input() 
+    set gender(gender: string){
+        this._gender = gender;
+        this.populateDivisions();
+    }
   @Output() selectedChanged = new EventEmitter();
   divisions;
   constructor(
@@ -17,9 +22,9 @@ export class DivisionsDropdownComponent implements OnInit {
 
   populateDivisions(){
     this.campService.getAllDivisions().subscribe(data=>{
-      if(this.gender=="female")
+      if(this._gender=="female")
         this.divisions = data.divisions[0].divisions;
-      else if(this.gender=="male")
+      else if(this._gender=="male")
         this.divisions = data.divisions[1].divisions;
       
       this.selectedChanged.emit(this.divisions[0]);

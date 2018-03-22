@@ -23,6 +23,7 @@ import { ApproversComponent } from './components/approvers/approvers.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CampersComponent } from './components/campers/campers.component';
 import { RostersComponent } from './components/rosters/rosters.component';
+import { RosterComponent } from './components/roster/roster.component';
 
 
 const appRoutes: Routes = [
@@ -108,6 +109,12 @@ const appRoutes: Routes = [
     {
         path: 'rosters',
         component: RostersComponent,
+        canActivate: [AuthGuard,ModuleGuard],
+        data: {module: 'sports'}
+    },
+    {
+        path:'roster/:sdId/:rosterId/:internal',
+        component: RosterComponent,
         canActivate: [AuthGuard,ModuleGuard],
         data: {module: 'sports'}
     },

@@ -1,0 +1,15 @@
+#camper-selector,.half{
+    float:left;
+    width: 50%;
+    padding: 10px;
+    border: thick solid black;
+    border-radius: 30px;
+}
+
+.full{
+    padding: 10px;
+    border: thick solid black;
+    border-radius: 30px;
+}
+
+
