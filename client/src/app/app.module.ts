@@ -44,6 +44,7 @@ import { RosterComponent } from './components/roster/roster.component';
 import { CamperSelectorComponent } from './components/camper-selector/camper-selector.component';
 import { MedsComponent } from './components/meds/meds.component';
 import { MedsService } from './services/meds.service';
+import { DietaryComponent } from './components/dietary/dietary.component';
 
 
 @NgModule({
@@ -77,6 +78,7 @@ import { MedsService } from './services/meds.service';
     RosterComponent,
     CamperSelectorComponent,
     MedsComponent,
+    DietaryComponent,
   ],
   imports: [
     BrowserModule,

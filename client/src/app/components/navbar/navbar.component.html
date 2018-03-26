@@ -14,7 +14,7 @@
             <ul class="dropdown-menu" role="menu">
                 <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/campers">Campers</a></li>
                 <li *ngIf="authService.loggedIn() && campsService.hasModule('meds')" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/meds">Meds</a></li>
-                
+                <li *ngIf="authService.loggedIn() && campsService.hasModule('meds')" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/dietary">Dietary</a></li>
             </ul>
         </li>
 

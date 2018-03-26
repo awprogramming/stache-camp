@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const DivisionSchema = require('./division').schema;
 const SessionSchema = require('./session').schema;
 const MedsSchema = require('./meds').schema;
+const DietarySchema = require('./dietary').schema;
 
 const camperSchema = new Schema({
     first: {type:String, required: true},
@@ -11,7 +12,8 @@ const camperSchema = new Schema({
     gender: {type:String, enum:['male','female'], required: true},
     division: {type:DivisionSchema},
     sessions:[SessionSchema],
-    meds: MedsSchema
+    meds: MedsSchema,
+    dietary: DietarySchema
 });
 
 module.exports = mongoose.model('Camper',camperSchema);

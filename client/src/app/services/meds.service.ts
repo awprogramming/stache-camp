@@ -45,5 +45,25 @@ export class MedsService {
     return this.http.post(this.domain + 'meds/remove_med',data,this.options).map(res => res.json());
   }
 
+  addAllergy(camper){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'meds/add_allergy',camper,this.options).map(res => res.json());
+  }
+
+  removeAllergy(data){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'meds/remove_allergy',data,this.options).map(res => res.json());
+  }
+
+  addOtherDietary(camper){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'meds/add_other_dietary',camper,this.options).map(res => res.json());
+  }
+
+  removeOtherDietary(data){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'meds/remove_other_dietary',data,this.options).map(res => res.json());
+  }
+
 
 }
