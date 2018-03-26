@@ -40,11 +40,6 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CampersComponent } from './components/campers/campers.component';
 import { RostersComponent } from './components/rosters/rosters.component';
 import { SportsService } from './services/sports.service';
-import { RosterComponent } from './components/roster/roster.component';
-import { CamperSelectorComponent } from './components/camper-selector/camper-selector.component';
-import { MedsComponent } from './components/meds/meds.component';
-import { MedsService } from './services/meds.service';
-import { DietaryComponent } from './components/dietary/dietary.component';
 
 
 @NgModule({
@@ -75,10 +70,6 @@ import { DietaryComponent } from './components/dietary/dietary.component';
     DashboardComponent,
     CampersComponent,
     RostersComponent,
-    RosterComponent,
-    CamperSelectorComponent,
-    MedsComponent,
-    DietaryComponent,
   ],
   imports: [
     BrowserModule,
@@ -86,7 +77,7 @@ import { DietaryComponent } from './components/dietary/dietary.component';
     AppRoutingModule,
     ReactiveFormsModule
   ],
-  providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard, AdminOrUserGuard, ModuleGuard,EvaluationsService,SportsService,MedsService],
+  providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard, AdminOrUserGuard, ModuleGuard,EvaluationsService,SportsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

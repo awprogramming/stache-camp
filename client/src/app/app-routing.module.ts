@@ -23,9 +23,6 @@ import { ApproversComponent } from './components/approvers/approvers.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CampersComponent } from './components/campers/campers.component';
 import { RostersComponent } from './components/rosters/rosters.component';
-import { RosterComponent } from './components/roster/roster.component';
-import { MedsComponent } from './components/meds/meds.component';
-import { DietaryComponent } from './components/dietary/dietary.component';
 
 
 const appRoutes: Routes = [
@@ -113,24 +110,6 @@ const appRoutes: Routes = [
         component: RostersComponent,
         canActivate: [AuthGuard,ModuleGuard],
         data: {module: 'sports'}
-    },
-    {
-        path:'roster/:sdId/:rosterId/:internal',
-        component: RosterComponent,
-        canActivate: [AuthGuard,ModuleGuard],
-        data: {module: 'sports'}
-    },
-    {
-        path: 'meds',
-        component: MedsComponent,
-        canActivate: [AuthGuard,ModuleGuard],
-        data: {module: 'meds'}
-    },
-    {
-        path: 'dietary',
-        component: DietaryComponent,
-        canActivate: [AuthGuard,ModuleGuard],
-        data: {module: 'meds'}
     },
     {   path: '**', 
         component: LoginComponent,
