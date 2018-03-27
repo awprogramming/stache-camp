@@ -21,6 +21,17 @@
   },
   "homepage": "https://github.com/awprogramming/stache-camp#readme",
   "dependencies": {
+    "@angular/animations": "^5.2.9",
+    "@angular/common": "^5.2.9",
+    "@angular/compiler": "^5.2.9",
+    "@angular/compiler-cli": "^5.2.9",
+    "@angular/core": "^5.2.9",
+    "@angular/forms": "^5.2.9",
+    "@angular/http": "^5.2.9",
+    "@angular/platform-browser": "^5.2.9",
+    "@angular/platform-browser-dynamic": "^5.2.9",
+    "@angular/platform-server": "^5.2.9",
+    "@angular/router": "^5.2.9",
     "angular2-csv": "^0.2.5",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.2",
@@ -28,6 +39,8 @@
     "express": "^4.16.2",
     "json2csv": "^4.0.1",
     "jsonwebtoken": "^8.1.0",
-    "mongoose": "^4.13.7"
+    "mongoose": "^4.13.7",
+    "rxjs": "^5.5.8",
+    "typescript": "^2.4.2"
   }
 }
