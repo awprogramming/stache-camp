@@ -46,6 +46,10 @@ import { MedsComponent } from './components/meds/meds.component';
 import { MedsService } from './services/meds.service';
 import { DietaryComponent } from './components/dietary/dietary.component';
 
+//calendar
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CalendarModule } from 'angular-calendar';
+
 
 @NgModule({
   declarations: [
@@ -84,7 +88,10 @@ import { DietaryComponent } from './components/dietary/dietary.component';
     BrowserModule,
     HttpModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    //calendar
+    BrowserAnimationsModule,
+    CalendarModule.forRoot()
   ],
   providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard, AdminOrUserGuard, ModuleGuard,EvaluationsService,SportsService,MedsService],
   bootstrap: [AppComponent]
