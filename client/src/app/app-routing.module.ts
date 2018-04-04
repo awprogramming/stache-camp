@@ -26,6 +26,9 @@ import { RostersComponent } from './components/rosters/rosters.component';
 import { RosterComponent } from './components/roster/roster.component';
 import { MedsComponent } from './components/meds/meds.component';
 import { DietaryComponent } from './components/dietary/dietary.component';
+import { CalendarComponent } from './components/calendar/calendar.component';
+import { GameCalendarComponent } from './components/game-calendar/game-calendar.component';
+import { GameComponent } from './components/game/game.component';
 
 
 const appRoutes: Routes = [
@@ -117,6 +120,18 @@ const appRoutes: Routes = [
     {
         path:'roster/:sdId/:rosterId/:internal',
         component: RosterComponent,
+        canActivate: [AuthGuard,ModuleGuard],
+        data: {module: 'sports'}
+    },
+    {
+        path:'calendar',
+        component: GameCalendarComponent,
+        canActivate: [AuthGuard,ModuleGuard],
+        data: {module: 'sports'}
+    },
+    {
+        path:'game/:id',
+        component: GameComponent,
         canActivate: [AuthGuard,ModuleGuard],
         data: {module: 'sports'}
     },

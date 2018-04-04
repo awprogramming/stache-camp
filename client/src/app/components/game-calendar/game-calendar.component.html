@@ -1,0 +1,42 @@
+<app-calendar (selection)="dateSelected($event)" (changeVisible)="getGames($event)" [events] = "games"></app-calendar>
+<div *ngIf="selectedDate">
+  <h2>{{selectedDate.day}} {{getMonthName(selectedDate.date.month)}} {{selectedDate.date.day}}, {{selectedDate.date.year}}</h2>
+  <button class="btn btn-primary" *ngIf="authService.admin()" (click)="scheduler=true">Schedule Game</button>
+  <div *ngIf="scheduler">
+    <app-timepicker (selection)="timeSelected($event)"></app-timepicker>
+    <app-specialties-dropdown (selectedChanged)="specialtySelected($event)"></app-specialties-dropdown>
+    
+    <form [formGroup]="form" (submit)="onScheduleSubmit()">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <div>
+          <input class="form-control" type="text" name="name" formControlName="name" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Location</label>
+        <div>
+          <input class="form-control" type="text" name="location" formControlName="location" />
+        </div>
+      </div>
+
+      <div class="form-group">
+          <label for="opponent">Opponent</label>
+          <div>
+            <input class="form-control" type="text" name="opponent" formControlName="opponent" />
+          </div>
+        </div>
+      <input class="btn btn-primary" type="submit" value="Schedule" />
+    </form>
+  </div>
+  <div *ngIf="selectedDate?.date.events">
+    <div *ngFor="let game of selectedDate.date.events">
+      <h2>{{displayTime(game.date)}} ({{game.specialty.name}})</h2>
+      <h3>{{game.name}}</h3>
+      <p>vs. {{game.opponent}}</p>
+      <p>@ {{game.location}}</p>
+      <a class="btn btn-primary" [routerLink]="['/game', game._id]">View Game</a>
+    </div>
+  </div>
+</div>

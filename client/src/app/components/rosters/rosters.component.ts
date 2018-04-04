@@ -123,7 +123,6 @@ export class RostersComponent implements OnInit {
       this.sportsService.getLeaderRosters().subscribe(data => {
         this.divisions = data.rosters;
         if(this.divisions){
-          console.log(this.divisions);
           this.d_keys = Object.keys(this.divisions);
           this.keys = []
           for(let key of this.d_keys){

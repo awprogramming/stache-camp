@@ -55,7 +55,6 @@ module.exports = (router) => {
             var med = {
                 name: req.body.toAdd
             }
-            console.log(camper.meds);
             var toAdd = camper.meds.other.create(med);
             camper.meds.other.push(toAdd);
             camp.save({ validateBeforeSave: false });
@@ -65,7 +64,6 @@ module.exports = (router) => {
     });
 
     router.post('/remove_med/',(req,res) => {
-        console.log("hello world");
         Camp.findById(req.decoded.campId, (err, camp)=>{
             var camper = camp.campers.id(req.body.camper._id);
             camper.meds.other.pull(req.body.med._id);
@@ -88,7 +86,6 @@ module.exports = (router) => {
             var allergy = {
                 name: req.body.toAddAllergy
             }
-            console.log(camper.dietary);
             var toAdd = camper.dietary.allergies.create(allergy);
             camper.dietary.allergies.push(toAdd);
             camp.save({ validateBeforeSave: false });

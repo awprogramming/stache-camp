@@ -39,6 +39,7 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Sports<b class="caret"></b></a>
             <ul class="dropdown-menu" role="menu">
                 <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/rosters">Rosters</a></li>
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/calendar">Calendar</a></li>
             </ul>
         </li>
         <li *ngIf="!authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/login">Login</a></li>

@@ -93,4 +93,8 @@ export class AuthService {
       return false;
   }
 
+  userType(){
+    return JSON.parse(localStorage.getItem('user')).type.type;
+  }
+
 }

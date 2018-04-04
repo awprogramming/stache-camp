@@ -11,7 +11,8 @@ module.exports = (router) => {
                 var division = camp.divisions.id(req.body.specialty);
                 const roster = {
                     name:req.body.name,
-                    campers:[]
+                    campers:[],
+                    session:camp.options.session
                 };
                 division.rosters.create(roster);
                 division.rosters.push(roster);
@@ -22,7 +23,8 @@ module.exports = (router) => {
                 var specialty = camp.specialties.id(req.body.specialty._id);
                 const roster = {
                     name:req.body.name,
-                    campers:[]
+                    campers:[],
+                    session:camp.options.session
                 };
                 specialty.rosters.create(roster);
                 specialty.rosters.push(roster);
@@ -44,6 +46,19 @@ module.exports = (router) => {
                 }
             }
             res.send({success:true, specialties:specialties});
+        });
+    });
+
+    router.get('/specialty_rosters/:specialtyId',(req,res) =>{
+        Camp.findById(req.decoded.campId, (err, camp)=>{
+
+            var spec_rosters = camp.specialties.id(req.params.specialtyId).rosters;
+            rosters = [];
+            for(let roster of spec_rosters){
+                if(roster.session._id.equals(camp.options.session._id))
+                    rosters.push(roster);
+            }
+            res.send({success:true, rosters:rosters});
         });
     });
 
@@ -80,7 +95,6 @@ module.exports = (router) => {
                 res.json({success:false,message:err});
             }
             else{
-                console.log(req.params.divisionId);
                 roster = camp.divisions.id(req.params.divisionId).rosters.id(req.params.rosterId);
                 for(var i = 0; i < roster.campers.length; i++){
                     roster.campers[i] = camp.campers.id(roster.campers[i]);
@@ -229,6 +243,151 @@ module.exports = (router) => {
         // });
     });
 
+    router.post('/schedule_game',(req,res) => {
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            var game = camp.games.create(req.body);
+            camp.games.push(game);
+            camp.save({ validateBeforeSave: false });
+            res.send({success:true,game:game});
+        });
+    });
+
+    router.get('/get_month_games/:month/:year/:type',(req,res) => {
+        Camp.aggregate([
+            { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
+            { $unwind: '$games'},
+            { $project: {games:1}},
+            { $sort: {'games.date':1}},
+        ]).exec().then((gamesList)=>{
+            var games = [];
+            Camp.findById(req.decoded.campId,(err,camp)=>{
+                for(let game of gamesList){
+                    if(game.games.date.getMonth() == req.params.month && game.games.date.getFullYear() == req.params.year){
+                        if(req.params.type == "admin")
+                            games.push(game.games);  
+                        else if(req.params.type == "Head Specialist"){
+                            for(let hs of game.games.specialty.head_specialists){
+                                if(hs._id == req.decoded.userId){
+                                    games.push(game.games);
+                                    break;
+                                }
+                            }   
+                        } 
+                        else if(req.params.type == "leader"){
+                            if(game.games.rosterId){
+                                var roster = camp.specialties.id(game.games.specialty._id).rosters.id(game.games.rosterId);
+                                console.log(roster);
+                                for(let camper of roster.campers){
+                                    var pushed = false;
+                                    division = camp.campers.id(camper).division;
+                                    for(let leader of division.leaders){
+                                        if(leader._id == req.decoded.userId)
+                                            games.push(game.games);
+                                            pushed = true;
+                                            break;
+                                    }
+                                    if(pushed)
+                                        break;
+                                }
+                            }
+                        }  
+                    }
+                }
+                res.send({success:true,games:games});
+            })
+        })
+    });
+
+    router.get('/get_game/:id',(req,res) => {
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            var game = camp.games.id(req.params.id);
+            var campers = [];
+            var coaches = [];
+            var refs = [];
+            if(game.rosterId){
+                game.roster = camp.specialties.id(game.specialty._id).rosters.id(game.rosterId);
+                
+                for(let camper of game.roster.campers){
+                    campers.push(camp.campers.id(camper));
+                }
+                game.roster.campers = campers;
+            }
+            if(game.coachIds){
+                for(let counselor of game.coachIds){
+                    coaches.push(camp.counselors.id(counselor));
+                }
+            }
+            if(game.refIds){
+                for(let counselor of game.refIds){
+                    refs.push(camp.counselors.id(counselor));
+                }
+            }
+            res.send({success:true,game:game,coaches:coaches,refs:refs,campers:campers});
+        });
+    });
+
+    router.post('/add_roster_to_game',(req,res)=>{
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            var game = camp.games.id(req.body.gameId);
+            game.rosterId = req.body.roster;
+            camp.save({ validateBeforeSave: false });
+            res.send({success:true});
+        });
+    });
+    router.post('/remove_roster_from_game',(req,res)=>{
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            var game = camp.games.id(req.body.gameId);
+            game.rosterId = undefined;
+            camp.save({ validateBeforeSave: false });
+            res.send({success:true});
+        });
+    });
+
+    router.post('/add_coach_to_game',(req,res)=>{
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            var game = camp.games.id(req.body.gameId);
+            game.coachIds.push(req.body.coachId);
+            camp.save({ validateBeforeSave: false });
+            res.send({success:true});
+        });
+    });
+
+    router.post('/remove_coach_from_game',(req,res)=>{
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            var game = camp.games.id(req.body.gameId);
+            for(var i = 0; i < game.coachIds.length; i++){
+                if(game.coachIds[i] == req.body.coachId){
+                    game.coachIds.splice(i,1);
+                    break;
+                }
+            }
+            camp.save({ validateBeforeSave: false });
+            res.send({success:true});
+        });
+    });
+
+    router.post('/add_ref_to_game',(req,res)=>{
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            var game = camp.games.id(req.body.gameId);
+            game.refIds.push(req.body.refId);
+            camp.save({ validateBeforeSave: false });
+            res.send({success:true});
+        });
+    });
+
+    router.post('/remove_ref_from_game',(req,res)=>{
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            var game = camp.games.id(req.body.gameId);
+            for(var i = 0; i < game.refIds.length; i++){
+                if(game.refIds[i] == req.body.refId){
+                    game.refIds.splice(i,1);
+                    break;
+                }
+            }
+            camp.save({ validateBeforeSave: false });
+            res.send({success:true});
+        });
+    });
 
 
     return router;

@@ -106,6 +106,11 @@ export class CampsService {
     return this.http.post(this.domain + 'camps/add_division_camper',camper,this.options).map(res => res.json());
   }
 
+  get_division_counselors(divisionId,sessionId){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'camps/get_division_counselors/'+divisionId+"/"+sessionId,this.options).map(res => res.json());
+  }
+
 
 
   /* HEAD STAFF */

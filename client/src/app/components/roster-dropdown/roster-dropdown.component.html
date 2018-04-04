@@ -1,0 +1,3 @@
+<select (change) = "handleChange($event);">
+  <option *ngFor="let roster of rosters; index as i" value="{{i}}">{{roster.name}}</option>
+</select>  

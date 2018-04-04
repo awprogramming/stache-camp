@@ -94,7 +94,6 @@ export class MedsComponent implements OnInit {
   }
 
   removeMed(med,camper){
-    console.log("hjello world");
     var data = {
       med:med,
       camper:camper

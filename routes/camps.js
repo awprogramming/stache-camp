@@ -325,6 +325,44 @@ module.exports = (router) => {
         });
       });
 
+      router.get('/get_division_counselors/:divisionId/:sessionId',(req,res) => {
+        Camp.aggregate([
+            { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
+            { $unwind: '$counselors'},
+            { $project: {counselors:1}},
+            { $unwind: '$counselors.sessions'},
+            { $group : {
+                _id : {s_id:"$counselors.sessions._id",d_id:"$counselors.division._id",d_name:"$counselors.divison.name"}, 
+                counselors:{$push:"$counselors"}
+               }
+           },
+            { $group : {
+                _id : "$_id.s_id",
+                divisions: {
+                    $push:{
+                        d_id: "$_id.d_id",
+                        d_name: "$_id.d_name",
+                        counselors:"$counselors"}
+                    }
+                } 
+            },
+        ],(err,result)=>{
+            var success = false;
+            for(let session of result){
+                if(session._id.equals(req.params.sessionId)){
+                    for(let division of session.divisions){
+                        if(division.d_id.equals(req.params.divisionId)){
+                            success = true;
+                            res.json({success:success,division:division});
+                        }
+                    }
+                }
+            }
+            if(!success)
+                res.json({success:success});
+        });
+    });
+
     /* DIVISION ROUTES */
 
 

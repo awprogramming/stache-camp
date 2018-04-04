@@ -1,7 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule} from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -45,10 +47,16 @@ import { CamperSelectorComponent } from './components/camper-selector/camper-sel
 import { MedsComponent } from './components/meds/meds.component';
 import { MedsService } from './services/meds.service';
 import { DietaryComponent } from './components/dietary/dietary.component';
-
-//calendar
+import { CalendarComponent } from './components/calendar/calendar.component';
+//calendar stuff
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CalendarModule } from 'angular-calendar';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { TimepickerComponent } from './components/timepicker/timepicker.component';
+import { GameCalendarComponent } from './components/game-calendar/game-calendar.component';
+import { GameComponent } from './components/game/game.component';
+import { RosterDropdownComponent } from './components/roster-dropdown/roster-dropdown.component';
+import { CounselorSelectorComponent } from './components/counselor-selector/counselor-selector.component';
 
 
 @NgModule({
@@ -83,17 +91,25 @@ import { CalendarModule } from 'angular-calendar';
     CamperSelectorComponent,
     MedsComponent,
     DietaryComponent,
+    CalendarComponent,
+    TimepickerComponent,
+    GameCalendarComponent,
+    GameComponent,
+    RosterDropdownComponent,
+    CounselorSelectorComponent,
+
   ],
   imports: [
     BrowserModule,
     HttpModule,
+    HttpClientModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    //calendar
+    NgbModule.forRoot(),
     BrowserAnimationsModule,
-    CalendarModule.forRoot()
+    CalendarModule.forRoot(),
   ],
-  providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard, AdminOrUserGuard, ModuleGuard,EvaluationsService,SportsService,MedsService],
+  providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard, AdminOrUserGuard, ModuleGuard,EvaluationsService,SportsService,MedsService,HttpClient,],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

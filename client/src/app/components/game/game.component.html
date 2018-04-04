@@ -1,0 +1,42 @@
+<div *ngIf="game">
+  <h2>{{game.name}}</h2>
+  <h3>{{displayDateTime(game.date)}}</h3>
+  <h3>@ {{game.location}}</h3>
+  <h3>Against {{game.opponent}}</h3>
+  <div *ngIf="game.rosterId">
+    <h3>Roster <button *ngIf="authService.userType() =='Head Specialist'" class="btn btn-primary" (click)="removeRoster()">Remove Roster</button></h3>
+    <ul>
+      <li *ngFor="let camper of campers">{{camper.first}} {{camper.last}}</li>
+    </ul>
+  </div>
+  <div *ngIf="!game.rosterId">
+    <app-roster-dropdown (selectedChanged) ="rosterSelected($event)" [specialtyId]="game.specialty._id"></app-roster-dropdown>
+    <button class="btn btn-primary" (click)="addRoster()">Add Roster</button>
+  </div>
+  <div *ngIf="coaches.length == 0">
+    <h4>No Coaches Selected</h4>
+  </div>
+  <div *ngIf="coaches.length > 0">
+      <h4>Coaches</h4>
+      <ul>
+        <li *ngFor="let coach of coaches">{{coach.first}} {{coach.last}} <button class="btn btn-primary" (click)="removeCoachFromGame(coach)">x</button></li>
+      </ul>
+  </div>
+  <div *ngIf="authService.userType() =='leader'">
+    <h4>Select Coach</h4>
+    <app-counselor-selector [exclude] = "exclude" (selection)="addCoachToGame($event)"></app-counselor-selector>
+  </div>
+  <div *ngIf="refs.length == 0">
+    <h4>No Refs Selected</h4>
+  </div>
+  <div *ngIf="refs.length > 0">
+      <h4>Refs</h4>
+      <ul>
+        <li *ngFor="let ref of refs">{{ref.first}} {{ref.last}} <button class="btn btn-primary" (click)="removeRefFromGame(ref)">x</button></li>
+      </ul>
+  </div>
+  <div *ngIf="authService.userType() =='leader'">
+    <h4>Select Ref</h4>
+    <app-counselor-selector [exclude] = "exclude" (selection)="addRefToGame($event)"></app-counselor-selector>
+  </div>
+</div>

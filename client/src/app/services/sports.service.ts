@@ -45,6 +45,10 @@ export class SportsService {
     return this.http.get(this.domain + 'sports/all_rosters' ,this.options).map(res => res.json());
   }
 
+  getSpecialtyRosters(specialtyId){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'sports/specialty_rosters/'+specialtyId ,this.options).map(res => res.json());
+  }
   getRoster(specialtyId,rosterId){
     this.createAuthenticationHeaders();
     return this.http.get(this.domain + 'sports/get_roster/'+specialtyId+'/'+rosterId,this.options).map(res => res.json());
@@ -79,5 +83,76 @@ export class SportsService {
     this.createAuthenticationHeaders();
     return this.http.get(this.domain + 'sports/get_leader_rosters',this.options).map(res => res.json());
   }
+
+  scheduleGame(game){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'sports/schedule_game',game,this.options).map(res => res.json());
+  }
+
+  getMonthGames(date,type){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'sports/get_month_games/'+date.month+'/'+date.year+'/'+type,this.options).map(res => res.json());
+  }
+
+  getGame(id){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'sports/get_game/'+id,this.options).map(res => res.json());
+  }
+
+  addRosterToGame(gameId,roster){
+    var data = {
+      gameId:gameId,
+      roster:roster
+    }
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'sports/add_roster_to_game',data,this.options).map(res => res.json());
+  }
+
+  removeRosterFromGame(gameId){
+    var data = {
+      gameId:String(gameId)
+    }
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'sports/remove_roster_from_game',data,this.options).map(res => res.json());
+  }
+
+  addCoachToGame(gameId,coachId){
+    var data = {
+      gameId:gameId,
+      coachId: coachId
+    }
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'sports/add_coach_to_game',data,this.options).map(res => res.json());
+  }
+
+  removeCoachFromGame(gameId,coachId){
+    var data = {
+      gameId:gameId,
+      coachId: coachId
+    }
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'sports/remove_coach_from_game',data,this.options).map(res => res.json());
+  }
+
+  addRefToGame(gameId,refId){
+    var data = {
+      gameId:gameId,
+      refId: refId
+    }
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'sports/add_ref_to_game',data,this.options).map(res => res.json());
+  }
+
+  removeRefFromGame(gameId,refId){
+    var data = {
+      gameId:gameId,
+      refId: refId
+    }
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'sports/remove_ref_from_game',data,this.options).map(res => res.json());
+  }
+
+  
+
 
 }

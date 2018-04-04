@@ -48,7 +48,7 @@ export class RosterComponent implements OnInit {
       r_id:this.id,
       sd_id:this.sd_id
     };
-    if(this.internal){
+    if(this.internal=="true"){
       this.sportsService.addCamperToInternalRoster(ids).subscribe(data => {   
         this.loadRoster();
       });
@@ -72,7 +72,7 @@ export class RosterComponent implements OnInit {
       r_id:this.id,
       sd_id:this.sd_id
     }
-    if(this.internal){
+    if(this.internal=="true"){
       this.sportsService.removeCamperFromInternalRoster(ids).subscribe(data => {   
         this.loadRoster();
       });
@@ -89,9 +89,7 @@ export class RosterComponent implements OnInit {
   }
 
   isViewing(){
-    console.log(this.internal);
     this.viewing = (this.getType() != "Head Specialist") && (this.internal != "true");
-    console.log(this.viewing);
   }
 
   ngOnInit() {

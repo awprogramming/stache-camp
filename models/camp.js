@@ -10,6 +10,8 @@ const DivisionSchema = require('./division').schema;
 const SpecialtySchema = require('./specialty').schema;
 const OptionsSchema = require('./options').schema;
 const SessionSchema = require('./session').schema;
+const GameSchema = require('./game').schema;
+
 
 
 
@@ -23,7 +25,8 @@ const campSchema = new Schema({
     campers: [CamperSchema],
     specialties: [SpecialtySchema],
     options: OptionsSchema,
-    sessions:[SessionSchema]
+    sessions:[SessionSchema],
+    games: [GameSchema]
 }, {
     usePushEach: true
   });
