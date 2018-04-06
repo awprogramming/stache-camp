@@ -13,6 +13,10 @@ const meds = require('./routes/meds')(router);
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+
+require('./cron');
+
+
 mongoose.Promise = global.Promise;
 mongoose.connect(config.uri, (err) => {
     if(err){

@@ -29,7 +29,8 @@ export class GameCalendarComponent implements OnInit {
     this.form = this.formBuilder.group({
       location: ['', Validators.required],
       opponent: ['', Validators.required],
-      name: ['',Validators.required]
+      name: ['',Validators.required],
+      needsLunch: ['',Validators.required],
     });
   }
 
@@ -47,8 +48,10 @@ export class GameCalendarComponent implements OnInit {
       location: this.form.get('location').value,
       opponent: this.form.get('opponent').value,
       date: date,
-      specialty: this.selectedSpecialty
+      specialty: this.selectedSpecialty,
+      needsLunch: this.form.get('needsLunch').value,
     }
+
     this.sportsService.scheduleGame(game).subscribe((data)=>{
       this.scheduler = false;
       this.getGames(this.monthView);

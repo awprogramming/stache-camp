@@ -10,6 +10,7 @@ const gameSchema = new Schema({
     date: Date,
     location: String,
     opponent: String,
+    needsLunch: Boolean,
     specialty: SpecialtySchema,
     rosterId: String,
     coachIds:[String],
