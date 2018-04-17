@@ -27,7 +27,6 @@ module.exports = (router) => {
 
     router.get('/all_counselors/:permissions',(req,res) =>{
         if(req.params.permissions == "user"){
-            
             Camp.findById(req.decoded.campId).exec()
             .then(function(camp){
                 var type;
@@ -172,6 +171,53 @@ module.exports = (router) => {
         }
     });
 
+    router.get('/all_lifeguards',(req,res) =>{
+            Camp.findById(req.decoded.campId).exec()
+            .then(function(camp){
+                    var hsSpecialties = [];
+                    for(let specialty of camp.specialties){
+                        if(specialty.name == 'Lifeguard'){
+                            hsSpecialties.push(specialty._id);
+                            break;
+                        }
+                    }
+                    var result = {
+                        "hsS": hsSpecialties,
+                        "camp":camp
+                    }
+                    return result;
+            })
+            .then(function(result){
+                var hsSpecialties = result.hsS;
+                var result = result.camp;
+                var counselors = {};
+                var ctr = 0;
+                var finished = false;
+                for(let counselor of result.counselors){
+                    var hired = false;
+                    for(let session of counselor.sessions){
+                        if(session._id.equals(result.options.session._id)){
+                            hired = true;
+                            break;
+                        }
+                    }
+                    if(hired){
+                        for(let specialty of hsSpecialties){
+                            if(counselor.type.type == "specialist" && counselor.specialty && counselor.specialty._id.equals(specialty)){
+                                if(!(counselor.specialty.name in counselors))
+                                    counselors[counselor.specialty.name] = []
+                                counselors[counselor.specialty.name].push(counselor);
+                            }
+                        }
+                    }
+                }
+                return counselors;
+            })
+            .then(function(counselors){
+                res.json({success:true,lifeguards:counselors});
+            });
+    });
+
     router.post('/add_counselor',(req,res) => {
         Camp.findById(req.decoded.campId,(err,camp)=>{
             const sessions = [];
@@ -253,6 +299,7 @@ module.exports = (router) => {
                 res.json({success:true});
             });
         }
+        // else if(req.body.)
         else{
             Camp.findById(req.decoded.campId,(err,camp)=>{
                 for(let counselor of req.body){
@@ -393,7 +440,7 @@ module.exports = (router) => {
     });
 
     router.post('/register_division',(req,res) => {
-        Camp.update({"_id":req.decoded.campId},{$push:{divisions:{$each:[{name:req.body.name,gender:'male'},{name:req.body.name,gender:'female'}]}}}, (err, camp)=>{
+        Camp.update({"_id":req.decoded.campId},{$push:{divisions:{$each:[{name:req.body.name,grade:req.body.grade,gender:'male'},{name:req.body.name,grade:req.body.grade,gender:'female'}]}}}, (err, camp)=>{
             if(err){
                 res.json({success:false,message:err});
             }
@@ -901,6 +948,48 @@ module.exports = (router) => {
         }
     });
 
+    router.get('/get_all_division_campers/',(req,res) => { //FOR CURRENT SESSION
+        Camp.findById(req.decoded.campId).exec().then((camp)=>{
+            const current_session = camp.options.session;
+            Camp.aggregate([
+                { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
+                { $unwind: '$campers'},
+                { $project: {campers:1}},
+                { $unwind: '$campers.sessions'},
+                { $group : {
+                    _id : {s_id:"$campers.sessions._id",d_id:"$campers.division._id",d_name:"$campers.divison.name"}, 
+                    campers:{$push:"$campers"}
+                }
+            },
+                { $group : {
+                    _id : "$_id.s_id",
+                    divisions: {
+                        $push:{
+                            d_id: "$_id.d_id",
+                            d_name: "$_id.d_name",
+                            campers:"$campers"}
+                        }
+                    } 
+                },
+            ],(err,result)=>{
+                for(let session of result){
+                    console.log(session._id,current_session._id);
+                    if(session._id.equals(current_session._id)){
+                        for(let division of session.divisions){
+                            if(!division.d_id){
+                                division.d_id = {name:"No Assigned Division"};
+                            }
+                            else{
+                                division.d_id = camp.divisions.id(division.d_id);
+                            }
+                        }
+                        res.json({success:true,output:session});
+                    }
+                }
+            });
+        });
+    });
+
     router.get('/get_division_campers/:divisionId/:sessionId',(req,res) => {
         Camp.aggregate([
             { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
@@ -939,6 +1028,13 @@ module.exports = (router) => {
         });
     });
 
+    router.get('/get_camper/:camperId',(req,res)=>{
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            res.json({success:true,camper:camp.campers.id(req.params.camperId)});
+        });
+
+    });
+
     router.post('/add_camper',(req,res) => {
         Camp.findById(req.decoded.campId,(err,camp)=>{
             const sessions = [];
@@ -955,11 +1051,40 @@ module.exports = (router) => {
 
     router.post('/bulk_add_camper',(req,res) => {
         Camp.findById(req.decoded.campId,(err,camp)=>{
-            for(let camper of req.body){
-                var newCamper = camp.campers.create(camper);
-                newCamper.sessions = [];
-                newCamper.sessions.push(camp.options.session);
-                camp.campers.push(newCamper);
+            if(camp.hasModule("swim")){
+                for(let camper of req.body){
+                    var newCamper = camp.campers.create(camper.camper);
+                    newCamper.sessions = [];
+                    newCamper.sessions.push(camp.options.session);
+                    newCamper.divison = camp.getDivisionByName(camper.divisionName);
+                    var level = parseInt(camper.cSwimOpts.rcLevel);
+                    var complete = false;
+                    if(!Number.isInteger(level)){
+                        if(camper.cSwimOpts.rcLevel.substring(0,3)=="ARC"){
+                            level = parseInt(camper.cSwimOpts.rcLevel.substring(3));
+                        }
+                        else if(camper.cSwimOpts.rcLevel.substring(0,2)=="NS"){
+                            level = parseInt(camper.cSwimOpts.rcLevel.substring(2));
+                        }
+                        else{
+                            level = undefined;
+                        }
+                    }
+                    for(let l of camp.options.swimOpts.swimLevels){
+                        if(l.rcLevel == level){
+                           newCamper.cSwimOpts.currentLevel = l;
+                        }
+                    }
+                    camp.campers.push(newCamper);
+                }
+            }
+            else{
+                for(let camper of req.body){
+                    var newCamper = camp.campers.create(camper);
+                    newCamper.sessions = [];
+                    newCamper.sessions.push(camp.options.session);
+                    camp.campers.push(newCamper);
+                }
             }
             camp.save({ validateBeforeSave: false });
             res.json({success:true});

@@ -1,0 +1,42 @@
+<div *ngIf="authService.admin() && session">  
+  <div *ngFor="let division of session.divisions">
+    <h2>{{division.d_id.name}}</h2>
+    <table class="table table-hover" >
+      <thead>
+        <tr>
+          <th>First</th>
+          <th>Last</th>
+          <th>Red Cross Level</th>
+          <th>Swim Bracelet</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let camper of division.campers" (click)="goToStats(camper)">
+          <td>{{camper.first}}</td>
+          <td>{{camper.last}}</td>
+          <td>{{camper.cSwimOpts.currentLevel?.rcLevel}}</td>
+          <td>{{camper.cSwimOpts.bracelet}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div *ngIf="authService.isUser() && divisions">
+  <div *ngFor="let division of divisions">
+  <h2>{{division}}</h2>
+  <table class="table table-hover" >
+      <tr>
+        <th>First</th>
+        <th>Last</th>
+        <th>Gender</th>
+      </tr>
+      <tr *ngFor="let camper of campers[division]" (click)="goToStats(camper)">
+        <td>{{camper.first}}</td>
+        <td>{{camper.last}}</td>
+        <td>{{camper.gender}}</td>
+      </tr>
+    </table>
+  </div>
+</div>
+    

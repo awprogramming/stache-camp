@@ -1,0 +1,30 @@
+<form [formGroup]="form" (submit)="createSwimLevelSubmit()">
+  <div class="form-group">
+      <label for="num">Level Number</label>
+      <div>
+        <input class="form-control" type="text" name="num" formControlName="num" />
+      </div>
+    </div>
+  <div class="form-group">
+    <label for="name">Name</label>
+    <div>
+      <input class="form-control" type="text" name="name" formControlName="name" />
+    </div>
+  </div>
+  
+
+  <!-- Submit Button -->
+  <input class="btn btn-primary" type="submit" value="Register" />
+  <input class="btn btn-primary" (click) = "cancelAdd()" value="Cancel Add" />
+</form>
+
+<table class="table" >
+  <tr>
+    <th>Level</th>
+    <th></th>
+  </tr>
+  <tr *ngFor="let level of levels">
+    <td>Red Cross Level {{level.rcLevel}} - {{level.name}}</td>
+    <td><a class="btn btn-primary" [routerLink]="['/swim-level',level._id]">View</a><button class="btn btn-primary" (click) = "removeLevel(level._id)">X</button></td>
+  </tr>
+</table>

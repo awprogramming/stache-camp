@@ -60,6 +60,11 @@ export class CampsService {
     return this.http.get(this.domain + 'camps/all_counselors/'+permissions,this.options).map(res => res.json());
   }
 
+  getAllLifeguards(){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'camps/all_lifeguards',this.options).map(res => res.json());
+  }
+
   registerCounselor(counselor){
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + 'camps/add_counselor',counselor,this.options).map(res => res.json());
@@ -79,6 +84,7 @@ export class CampsService {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + 'camps/rehire',counselor,this.options).map(res => res.json());
   }
+
 
   /* DIVISIONS */
   getAllDivisions(){
@@ -247,5 +253,15 @@ export class CampsService {
   get_division_campers(divisionId,sessionId){
     this.createAuthenticationHeaders();
     return this.http.get(this.domain + 'camps/get_division_campers/'+divisionId+"/"+sessionId,this.options).map(res => res.json());
+  }
+
+  get_all_division_campers(){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'camps/get_all_division_campers/',this.options).map(res => res.json());
+  }
+  
+  getCamper(camperId){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'camps/get_camper/'+camperId,this.options).map(res => res.json());
   }
 }

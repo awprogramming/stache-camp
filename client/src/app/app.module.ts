@@ -57,7 +57,15 @@ import { GameCalendarComponent } from './components/game-calendar/game-calendar.
 import { GameComponent } from './components/game/game.component';
 import { RosterDropdownComponent } from './components/roster-dropdown/roster-dropdown.component';
 import { CounselorSelectorComponent } from './components/counselor-selector/counselor-selector.component';
-
+import { LifeguardComponent } from './components/lifeguard/lifeguard.component';
+import { LifeguardDropdownComponent } from './components/lifeguard-dropdown/lifeguard-dropdown.component';
+import { SwimGroupsComponent } from './components/swim-groups/swim-groups.component';
+import { SwimService } from './services/swim.service';
+import { SwimGroupComponent } from './components/swim-group/swim-group.component';
+import { SwimStatsComponent } from './components/swim-stats/swim-stats.component';
+import { SwimLevelsComponent } from './components/swim-levels/swim-levels.component';
+import { SwimLevelComponent } from './components/swim-level/swim-level.component';
+import { SwimStatComponent } from './components/swim-stat/swim-stat.component';
 
 @NgModule({
   declarations: [
@@ -97,6 +105,14 @@ import { CounselorSelectorComponent } from './components/counselor-selector/coun
     GameComponent,
     RosterDropdownComponent,
     CounselorSelectorComponent,
+    LifeguardComponent,
+    LifeguardDropdownComponent,
+    SwimGroupsComponent,
+    SwimGroupComponent,
+    SwimStatsComponent,
+    SwimLevelsComponent,
+    SwimLevelComponent,
+    SwimStatComponent,
 
   ],
   imports: [
@@ -109,7 +125,7 @@ import { CounselorSelectorComponent } from './components/counselor-selector/coun
     BrowserAnimationsModule,
     CalendarModule.forRoot(),
   ],
-  providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard, AdminOrUserGuard, ModuleGuard,EvaluationsService,SportsService,MedsService,HttpClient,],
+  providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard, AdminOrUserGuard, ModuleGuard,EvaluationsService,SportsService,MedsService,HttpClient,SwimService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

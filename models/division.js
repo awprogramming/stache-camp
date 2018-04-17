@@ -7,6 +7,7 @@ const RosterSchema = require('./roster').schema;
 
 const divisionSchema = new Schema({
     name: {type:String, required: true},
+    grade: {type:Number},
     leaders: [UserSchema],
     approvers: [UserSchema],
     gender:{type:String, enum:['male','female'], required: true},

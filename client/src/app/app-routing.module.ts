@@ -29,6 +29,12 @@ import { DietaryComponent } from './components/dietary/dietary.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { GameCalendarComponent } from './components/game-calendar/game-calendar.component';
 import { GameComponent } from './components/game/game.component';
+import { SwimGroupsComponent } from './components/swim-groups/swim-groups.component';
+import { SwimGroupComponent } from './components/swim-group/swim-group.component';
+import { SwimStatsComponent } from './components/swim-stats/swim-stats.component';
+import { SwimStatComponent } from './components/swim-stat/swim-stat.component';
+import { SwimLevelsComponent } from './components/swim-levels/swim-levels.component';
+import { SwimLevelComponent } from './components/swim-level/swim-level.component';
 
 
 const appRoutes: Routes = [
@@ -134,6 +140,42 @@ const appRoutes: Routes = [
         component: GameComponent,
         canActivate: [AuthGuard,ModuleGuard],
         data: {module: 'sports'}
+    },
+    {
+        path:'swim-groups',
+        component: SwimGroupsComponent,
+        canActivate: [AuthGuard,ModuleGuard],
+        data: {module: 'swim'}
+    },
+    {
+        path:'swim-group/:groupId',
+        component: SwimGroupComponent,
+        canActivate: [AuthGuard,ModuleGuard],
+        data: {module: 'swim'}
+    },
+    {
+        path:'swim-stats',
+        component: SwimStatsComponent,
+        canActivate: [AuthGuard,ModuleGuard],
+        data: {module: 'swim'}
+    },
+    {
+        path:'swim-stat/:camperId',
+        component: SwimStatComponent,
+        canActivate: [AuthGuard,ModuleGuard],
+        data: {module: 'swim'}
+    },
+    {
+        path:'swim-levels',
+        component: SwimLevelsComponent,
+        canActivate: [AuthGuard,ModuleGuard],
+        data: {module: 'swim'}
+    },
+    {
+        path:'swim-level/:levelId',
+        component: SwimLevelComponent,
+        canActivate: [AuthGuard,ModuleGuard],
+        data: {module: 'swim'}
     },
     {
         path: 'meds',

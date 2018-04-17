@@ -1,0 +1,3 @@
+<select (change) = "handleChange($event);" class="form-control" name="headStaff-type" >
+  <option *ngFor="let lifeguard of lifeguards; index as i" value="{{i}}">{{lifeguard.first}} {{lifeguard.last}}</option>
+</select>

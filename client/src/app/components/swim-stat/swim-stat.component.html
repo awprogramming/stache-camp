@@ -1,0 +1,13 @@
+<div *ngIf="camper?.cSwimOpts.currentLevel">
+    <h1>Red Cross Level {{camper.cSwimOpts.currentLevel.rcLevel}} - {{camper.cSwimOpts.currentLevel.name}}</h1>
+    <h3>Animals:</h3>
+    <div *ngFor="let animal of camper.cSwimOpts.currentLevel.animals">
+      <h4>{{animal.name}}</h4>
+      <ul>
+        <li *ngFor="let skill of animal.skills">
+          {{skill.skill}}
+          <input type="checkbox" [checked]="skill.completed" (change)="checkSkill($event,animal._id,skill._id)">
+        </li>  
+      </ul>
+    </div>
+  </div>

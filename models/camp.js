@@ -11,8 +11,7 @@ const SpecialtySchema = require('./specialty').schema;
 const OptionsSchema = require('./options').schema;
 const SessionSchema = require('./session').schema;
 const GameSchema = require('./game').schema;
-
-
+const SwimGroupSchema = require('./swimGroup').schema;
 
 
 const campSchema = new Schema({
@@ -26,9 +25,29 @@ const campSchema = new Schema({
     specialties: [SpecialtySchema],
     options: OptionsSchema,
     sessions:[SessionSchema],
-    games: [GameSchema]
+    games: [GameSchema],
+    swimGroups: [SwimGroupSchema]
 }, {
     usePushEach: true
   });
+
+
+campSchema.methods.hasModule = function(mod){
+    for(let m of this.modules){
+        if(m.short_name == mod){
+            return true;
+        }
+    }
+    return undefined;
+}
+
+campSchema.methods.getDivisionByName = function(div){
+    for(let division of this.divisions){
+        if(division.name == div){
+            return division;
+        }
+    }
+    return false;
+}
 
 module.exports = mongoose.model('Camp',campSchema);

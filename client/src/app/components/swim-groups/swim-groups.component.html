@@ -1,0 +1,28 @@
+<form [formGroup]="form" (submit)="createSwimGroupSubmit()">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <div>
+      <input class="form-control" type="text" name="name" formControlName="name" />
+    </div>
+  </div>
+
+  <label for="lifeguard">Lifeguard</label>
+  <app-lifeguard-dropdown (selectedChanged)="preAddLifeguard($event)"></app-lifeguard-dropdown>
+
+  <!-- Submit Button -->
+  <input class="btn btn-primary" type="submit" value="Register" />
+  <input class="btn btn-primary" (click) = "cancelAdd()" value="Cancel Add" />
+</form>
+
+<table class="table" >
+  <tr>
+    <th>Name</th>
+    <th>Lifeguard</th>
+    <th></th>
+  </tr>
+  <tr *ngFor="let group of groups">
+    <td>{{group.data.name}}</td>
+    <td>{{group.lifeguard.first}} {{group.lifeguard.last}}</td>
+    <td><a class="btn btn-primary" [routerLink]="['/swim-group',group.data._id]">View</a><button class="btn btn-primary" (click) = "removeGroup(group.data._id)">X</button></td>
+  </tr>
+</table>

@@ -42,6 +42,14 @@
                 <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/calendar">Calendar</a></li>
             </ul>
         </li>
+        <li *ngIf="authService.loggedIn() && campsService.hasModule('swim')" class="nav-item dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Swim<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu">
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/swim-groups">Swim Groups</a></li>
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/swim-stats">Camper Stats</a></li>
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/swim-levels">Swim Levels</a></li>
+            </ul>
+        </li>
         <li *ngIf="!authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/login">Login</a></li>
         <li *ngIf="authService.admin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/options">Options</a></li>
         <li *ngIf="authService.loggedIn()"><a href="#" (click)="onLogoutClick()" >Logout</a></li>

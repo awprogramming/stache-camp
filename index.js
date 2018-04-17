@@ -10,6 +10,7 @@ const modules = require('./routes/modules')(router);
 const evaluations = require('./routes/evaluations')(router);
 const sports = require('./routes/sports')(router);
 const meds = require('./routes/meds')(router);
+const swim = require('./routes/swim')(router);
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
@@ -39,6 +40,7 @@ app.use('/authentication',authentication);
 app.use('/evaluations',evaluations);
 app.use('/sports',sports);
 app.use('/meds',meds);
+app.use('/swim',swim);
 
 
 app.get('/', (req, res) =>{

@@ -82,6 +82,8 @@ export class CampersComponent implements OnInit {
     var campers = [];
     var types = this.options.camper_types;
     var session = this.options.session;
+    var cs = this.campsService;
+    var c = this;
     myReader.onloadend = function(e){
       // you can perform an action with readed data here
       var lines = myReader.result.split('\r');
@@ -91,17 +93,48 @@ export class CampersComponent implements OnInit {
           skip = false;
         else{
           var vals = line.split(',');
-          const camper = {
-            first: vals[0],
-            last: vals[1],
-            gender: vals[2],
+          var data;
+          if(cs.hasModule("swim")){
+            
+            data = {
+              divisionName:vals[0],
+              camper:{
+                  first: vals[2],
+                  last: vals[1],
+                  gender: vals[3],
+                  grade: c.gradeConversion(vals[4]),
+                  p1Name: vals[5],
+                  p1Email: vals[6],
+                  p2Name: vals[7],
+                  p2Email: vals[8],
+                  cSwimOpts: {
+                    bracelet: vals[11]
+                  },
+              },
+              cSwimOpts: {
+                rcLevel: vals[9],
+                swimAnimal: vals[10],
+              },
+            }
           }
-          campers.push(camper);
+          else{
+            data = {
+              first: vals[0],
+              last: vals[1],
+              gender: vals[2],
+            }
+          }
+          campers.push(data);
         }
       }
     }
     myReader.readAsText(file);
     this.uploaded_campers = campers;
+}
+
+gradeConversion(grade){
+  var grades = ["k","1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th"];
+  return grades.indexOf(grade);
 }
 
   onBulkUploadSubmit(){
@@ -131,24 +164,26 @@ export class CampersComponent implements OnInit {
       }
       if(this.authService.admin()){
         this.sessions = data.output.sessions;
-        if(data.output.sessions[0]._id.session_id!=data.output.cur_session._id){
-          const session = {
-            "_id": {
-              "session_id":data.output.cur_session._id,
-              "session_name":data.output.cur_session.name
-            },
-            "campers":[]
+        if(data.output && data.output.sessions.length > 0){
+          if(data.output.sessions[0]._id.session_id!=data.output.cur_session._id){
+            const session = {
+              "_id": {
+                "session_id":data.output.cur_session._id,
+                "session_name":data.output.cur_session.name
+              },
+              "campers":[]
+            }
+            this.sessions.unshift(session);
           }
-          this.sessions.unshift(session);
-        }
-        else{
-        this.enrolled = data.output.sessions[0].campers;
+          else{
+          this.enrolled = data.output.sessions[0].campers;
 
-        for(var i = 1; i < this.sessions.length; i++){
-          for(let camper of this.sessions[i].campers){
-            for(let h of this.enrolled)
-              if(h._id == camper._id)
-                camper.enrolled = true;
+          for(var i = 1; i < this.sessions.length; i++){
+            for(let camper of this.sessions[i].campers){
+              for(let h of this.enrolled)
+                if(h._id == camper._id)
+                  camper.enrolled = true;
+            }
           }
         }
       }

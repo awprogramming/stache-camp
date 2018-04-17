@@ -73,7 +73,7 @@
     
     <button class="btn btn-primary" (click) = "showBulkAdd()" *ngIf = "!bulkAdd && authService.admin()">Upload camper CSV File</button>
     
-    <div *ngIf="authService.admin()">
+    <div *ngIf="authService.admin() && sessions">
         <div class="panel with-nav-tabs">
             <div class="panel-heading">
                     <ul class="nav nav-tabs">
@@ -117,7 +117,7 @@
             </div>
         </div>
     </div>
-    <div *ngIf="authService.isUser()">
+    <div *ngIf="authService.isUser() && divisions">
       <div *ngFor="let division of divisions">
       <h2>{{division}}</h2>
       <table class="table" >

@@ -29,14 +29,16 @@ export class DivisionsComponent implements OnInit {
 
   createForm() {
     this.form = this.formBuilder.group({
-      name: ['', Validators.required]
+      name: ['', Validators.required],
+      grade: ['', Validators.required],
     });
   }
 
   onRegistrationSubmit() {
     this.processing = true;
     const division = {
-      name: this.form.get('name').value
+      name: this.form.get('name').value,
+      grade: this.form.get('grade').value
     }
   
     this.campsService.registerDivision(division).subscribe(data => {

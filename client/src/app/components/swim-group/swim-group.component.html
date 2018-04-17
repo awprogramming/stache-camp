@@ -1,0 +1,9 @@
+
+<div *ngIf="swimGroup && swimGroup.data">
+  <h1>{{swimGroup.data.name}}</h1>
+  <h2>{{swimGroup.lifeguard.first}} {{swimGroup.lifeguard.last}}</h2>
+  <h3>Campers:</h3>
+  <ul>
+    <li *ngFor="let camper of swimGroup.campers">{{camper.first}} {{camper.last}}</li>
+  </ul>
+</div>

@@ -1,0 +1,28 @@
+
+<div *ngIf="swimLevel">
+  <h1>Red Cross Level {{swimLevel.rcLevel}} - {{swimLevel.name}}</h1>
+  <h3>Animals:</h3>
+  <button class="btn btn-primary" (click) = 'addAnimal = true' *ngIf="!addAnimal">Add Animal</button>
+  <div *ngIf="addAnimal">
+    <form [formGroup]="form" (submit)="createAnimalSubmit()">
+      <div class="form-group">
+        <label for="aName">Animal Name</label>
+        <div>
+          <input class="form-control" type="text" name="aName" formControlName="aName" />
+        </div>
+      </div>
+    
+      <!-- Submit Button -->
+      <input class="btn btn-primary" type="submit" value="Register" />
+      <input class="btn btn-primary" (click) = "addAnimal = false" value="Cancel Add" />
+    </form>
+  </div>
+  <div *ngFor="let animal of swimLevel.animals">
+    <h4>{{animal.name}}</h4>
+    <ul>
+      <li *ngFor="let skill of animal.skills">{{skill.skill}}</li>  
+    </ul>
+    <input class="form-control" type="text" (input)="preAddSkill($event,animal)"/>
+    <button class="btn btn-primary" (click)="addSkill(animal)">Add Skill</button> 
+  </div>
+</div>
