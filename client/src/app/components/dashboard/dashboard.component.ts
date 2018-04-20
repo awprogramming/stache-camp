@@ -27,6 +27,9 @@ export class DashboardComponent implements OnInit {
       if(this.campsService.hasModule('eval')){
         this.router.navigate(['/evaluations']);
       }
+      else if(this.campsService.hasModule('swim')){
+        this.router.navigate(['/swim-groups']);
+      }
       else{
         this.router.navigate(['/dashboard']);
       }

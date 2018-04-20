@@ -17,6 +17,7 @@ export class SwimLevelComponent implements OnInit {
   swimLevel;
   options;
   addAnimal = false;
+  exitSkill;
 
   constructor(
     private route: ActivatedRoute,
@@ -63,9 +64,19 @@ export class SwimLevelComponent implements OnInit {
   preAddSkill(e,animal){
     animal.addSkill = e.target.value;
   }
-  
+
   addSkill(animal){
     this.swimService.registerAnimalSkill(this.id,animal).subscribe(data => {
+      this.loadSwimLevel();
+     });
+  }
+
+  preAddExitSkill(e){
+    this.exitSkill = e.target.value;
+  }
+
+  addExitSkill(){
+    this.swimService.registerExitSkill(this.id,this.exitSkill).subscribe(data => {
       this.loadSwimLevel();
      });
   }

@@ -1,9 +1,27 @@
-
+<app-back-button></app-back-button>
 <div *ngIf="swimGroup && swimGroup.data">
   <h1>{{swimGroup.data.name}}</h1>
   <h2>{{swimGroup.lifeguard.first}} {{swimGroup.lifeguard.last}}</h2>
   <h3>Campers:</h3>
-  <ul>
-    <li *ngFor="let camper of swimGroup.campers">{{camper.first}} {{camper.last}}</li>
-  </ul>
+  <table class="table table-hover" >
+    <thead>
+      <tr>
+        <th>First</th>
+        <th>Last</th>
+        <th>Red Cross Level</th>
+        <th>Swim Bracelet</th>
+        <th *ngIf="this.authService.userType() != 'lifeguard'"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let camper of swimGroup.campers">
+        <td (click)="goToStats(camper)">{{camper.first}}</td>
+        <td (click)="goToStats(camper)">{{camper.last}}</td>
+        <td (click)="goToStats(camper)">{{camper.cSwimOpts.currentLevel?.rcLevel}}</td>
+        <td (click)="goToStats(camper)">{{camper.cSwimOpts.bracelet}}</td>
+        <td *ngIf="this.authService.userType() != 'lifeguard'"><button class="btn btn-primary" (click)="removeFromGroup(camper)">x</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <app-camper-selector *ngIf="this.authService.userType() != 'lifeguard'" [exclude]="exclude" (selection)="addToGroup($event)"></app-camper-selector>
 </div>

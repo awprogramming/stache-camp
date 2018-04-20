@@ -61,7 +61,7 @@ export class CamperSelectorComponent implements OnInit {
           for(let camper of data.division.campers){
             var add = true
             for(let exclude of this._exclude){
-              if(camper._id == exclude._id){
+              if(exclude && camper._id == exclude._id){
                 add = false;
                 break;
               }

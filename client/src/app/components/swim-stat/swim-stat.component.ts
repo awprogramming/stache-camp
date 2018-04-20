@@ -11,6 +11,7 @@ import { SwimService } from '../../services/swim.service';
 export class SwimStatComponent implements OnInit {
   id;
   camper;
+  toAddLevel;
 
   constructor(
     private route: ActivatedRoute,
@@ -32,12 +33,27 @@ export class SwimStatComponent implements OnInit {
     });
   }
 
-  levelComplete(){
-    this.swimService.levelComplete(this.id).subscribe(data=>{
+  checkExitSkill(e,skill_id){
+    this.swimService.checkExitSkill(this.id,skill_id,e.target.checked).subscribe(data=>{
       console.log("done");
     });
   }
-  
+
+  levelComplete(){
+    this.swimService.levelComplete(this.id).subscribe(data=>{
+      this.loadStat();
+    });
+  }
+
+  preAddLevel(level){
+    this.toAddLevel = level;
+  }
+
+  levelSet(){
+    this.swimService.setLevel(this.id,this.toAddLevel).subscribe(data=>{
+      this.loadStat();
+    });
+  }
   ngOnInit() {
       this.route.paramMap.subscribe(params => {
         this.id = params.get('camperId');

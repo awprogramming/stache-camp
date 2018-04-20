@@ -25,4 +25,11 @@
     <input class="form-control" type="text" (input)="preAddSkill($event,animal)"/>
     <button class="btn btn-primary" (click)="addSkill(animal)">Add Skill</button> 
   </div>
+  <h4>Exit Skills</h4>
+  <ul>
+    <li *ngFor="let skill of swimLevel.exitSkills">{{skill.skill}}</li>  
+  </ul>
+  <input class="form-control" type="text" (input)="preAddExitSkill($event,animal)"/>
+  <button class="btn btn-primary" (click)="addExitSkill(animal)">Add Skill</button> 
+
 </div>

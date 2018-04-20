@@ -67,7 +67,8 @@ const userSchema = new Schema({
     password: {type:String, required: true, validate: passwordValidators},
     first:{type:String, required:true},
     last:{type:String, required:true},
-    type:HeadStaffTypeSchema
+    type:HeadStaffTypeSchema,
+    counselorRef: String
 });
 
 

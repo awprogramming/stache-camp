@@ -142,6 +142,12 @@ const appRoutes: Routes = [
         data: {module: 'sports'}
     },
     {
+        path:'register-lifeguard',
+        component: CounselorsComponent,
+        canActivate: [AuthGuard,ModuleGuard],
+        data: {module: 'swim',lgReg:true}
+    },
+    {
         path:'swim-groups',
         component: SwimGroupsComponent,
         canActivate: [AuthGuard,ModuleGuard],

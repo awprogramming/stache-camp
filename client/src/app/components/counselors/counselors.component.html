@@ -7,8 +7,6 @@
         {{ message }}
       </div>
     </div>
-    
-    <!-- Login Form -->
     <form [formGroup]="form" (submit)="onRegistrationSubmit()">
     
       <div class="form-group">
@@ -39,10 +37,26 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="type">Type</label>
-        <div>
-            <app-counselor-types-dropdown (selectedChanged) = "preAddType($event,type)"></app-counselor-types-dropdown>
+      <div *ngIf="lgReg">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <div>
+              <input class="form-control" type="text" name="email" formControlName="email" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div>
+              <input class="form-control" type="password" name="password" formControlName="password" />
+            </div>
+          </div>
+        </div>
+      <div *ngIf="!lgReg">
+        <div class="form-group">
+          <label for="type">Type</label>
+          <div>
+              <app-counselor-types-dropdown (selectedChanged) = "preAddType($event,type)"></app-counselor-types-dropdown>
+          </div>
         </div>
       </div>
     

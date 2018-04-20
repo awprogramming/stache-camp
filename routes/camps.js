@@ -973,7 +973,6 @@ module.exports = (router) => {
                 },
             ],(err,result)=>{
                 for(let session of result){
-                    console.log(session._id,current_session._id);
                     if(session._id.equals(current_session._id)){
                         for(let division of session.divisions){
                             if(!division.d_id){
@@ -1016,7 +1015,7 @@ module.exports = (router) => {
             for(let session of result){
                 if(session._id.equals(req.params.sessionId)){
                     for(let division of session.divisions){
-                        if(division.d_id.equals(req.params.divisionId)){
+                        if(division.d_id && division.d_id.equals(req.params.divisionId)){
                             success = true;
                             res.json({success:success,division:division});
                         }

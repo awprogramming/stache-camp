@@ -1,13 +1,33 @@
+<app-back-button></app-back-button>
 <div *ngIf="camper?.cSwimOpts.currentLevel">
-    <h1>Red Cross Level {{camper.cSwimOpts.currentLevel.rcLevel}} - {{camper.cSwimOpts.currentLevel.name}}</h1>
-    <h3>Animals:</h3>
-    <div *ngFor="let animal of camper.cSwimOpts.currentLevel.animals">
-      <h4>{{animal.name}}</h4>
-      <ul>
-        <li *ngFor="let skill of animal.skills">
-          {{skill.skill}}
-          <input type="checkbox" [checked]="skill.completed" (change)="checkSkill($event,animal._id,skill._id)">
-        </li>  
-      </ul>
-    </div>
+  <h1>{{camper.first}} {{camper.last}}</h1>
+  <h1>Red Cross Level {{camper.cSwimOpts.currentLevel.rcLevel}} - {{camper.cSwimOpts.currentLevel.name}}</h1>
+  <h3>Animals:</h3>
+  <div *ngFor="let animal of camper.cSwimOpts.currentLevel.animals">
+    <h4>{{animal.name}}</h4>
+    <ul>
+      <li *ngFor="let skill of animal.skills">
+        {{skill.skill}}
+        <input type="checkbox" [checked]="skill.completed" [disabled]="camper.cSwimOpts.currentLevel.completed" (change)="checkSkill($event,animal._id,skill._id)">
+      </li>  
+    </ul>
   </div>
+  <h4>Exit Skills</h4>
+    <ul>
+      <li *ngFor="let skill of camper.cSwimOpts.currentLevel.exitSkills">
+        {{skill.skill}}
+        <input type="checkbox" [checked]="skill.completed" [disabled]="camper.cSwimOpts.currentLevel.completed" (change)="checkExitSkill($event,skill._id)">
+      </li>  
+    </ul>
+  <button class="btn btn-primary" *ngIf="!camper.cSwimOpts.currentLevel.completed" (click)="levelComplete()">Level Complete</button>
+</div>
+<div *ngIf="!camper?.cSwimOpts.currentLevel">
+    <app-swim-level-dropdown (selectedChanged) = "preAddLevel($event)" [all]="false"></app-swim-level-dropdown>
+    <button class="btn btn-primary" (click)="levelSet()">Set Level</button>
+</div>
+<div *ngIf="camper?.cSwimOpts?.completedLevels">
+  <h1>Archive</h1>
+  <div *ngFor="let level of camper.cSwimOpts.completedLevels">
+      <h2>Red Cross Level {{level.rcLevel}} - {{level.name}} completed in {{level.sessionCompleted.name}}</h2>
+  </div>
+</div>

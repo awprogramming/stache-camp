@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { CampsService } from '../../services/camps.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthGuard } from '../../guards/auth.guard';
 import { AuthService } from '../../services/auth.service';
+import { SwimService } from '../../services/swim.service';
 
 @Component({
   selector: 'app-counselors',
@@ -26,21 +27,28 @@ export class CounselorsComponent implements OnInit {
   hired;
   toAddType;
   options;
+  lgReg;
 
   constructor(
     private formBuilder: FormBuilder,
     private campsService: CampsService,
     public authService: AuthService,
+    public swimService: SwimService,
     private router: Router,
+    private route:ActivatedRoute,
     private authGuard: AuthGuard
   ) { 
+    this.lgReg = route.snapshot.data['lgReg'];
     this.createForm();
+    
   }
 
   createForm() {
     this.form = this.formBuilder.group({
       first: ['', Validators.required],
       last:['', Validators.required],
+      email: ['', Validators.required],
+      password: ['', Validators.required],
       gender: ['', Validators.required],
       type: ['',Validators.required]
     });
@@ -50,32 +58,62 @@ export class CounselorsComponent implements OnInit {
   }
 
   onRegistrationSubmit() {
-    this.processing = true;
-    const counselor = {
-      first: this.form.get('first').value,
-      last: this.form.get('last').value,
-      gender: this.form.get('gender').value,
-      type: this.toAddType
-    }
-  
-    this.campsService.registerCounselor(counselor).subscribe(data => {
-      if (!data.success) {
-        this.messageClass = 'alert alert-danger';
-        this.message = data.message;
-        this.processing = false;
-      } else {
-        this.messageClass = 'alert alert-success';
-        this.message = data.message;
-        setTimeout(() => {
-          if(this.previousUrl)
-            this.router.navigate([this.previousUrl]);
-          else{
-            this.newCamp = false;
-            this.getAllCounselors();
-          }
-        }, 2000);
+    if(this.lgReg){
+      const counselor = {
+        first: this.form.get('first').value,
+        last: this.form.get('last').value,
+        gender: this.form.get('gender').value,
+        email: this.form.get('email').value,
+        password: this.form.get('password').value
       }
-    });
+    
+      this.swimService.registerLifeguard(counselor).subscribe(data => {
+        if (!data.success) {
+          this.messageClass = 'alert alert-danger';
+          this.message = data.message;
+          this.processing = false;
+        } else {
+          this.messageClass = 'alert alert-success';
+          this.message = data.message;
+          setTimeout(() => {
+            if(this.previousUrl)
+              this.router.navigate([this.previousUrl]);
+            else{
+              this.newCamp = false;
+              this.getAllCounselors();
+            }
+          }, 2000);
+        }
+        this.getAllCounselors();
+      });
+    }
+    else{
+      const counselor = {
+        first: this.form.get('first').value,
+        last: this.form.get('last').value,
+        gender: this.form.get('gender').value,
+        type: this.toAddType
+      }
+    
+      this.campsService.registerCounselor(counselor).subscribe(data => {
+        if (!data.success) {
+          this.messageClass = 'alert alert-danger';
+          this.message = data.message;
+          this.processing = false;
+        } else {
+          this.messageClass = 'alert alert-success';
+          this.message = data.message;
+          setTimeout(() => {
+            if(this.previousUrl)
+              this.router.navigate([this.previousUrl]);
+            else{
+              this.newCamp = false;
+              this.getAllCounselors();
+            }
+          }, 2000);
+        }
+      });
+    }
   }
 
   fileUploaded(event: any) {

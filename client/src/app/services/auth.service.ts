@@ -86,6 +86,7 @@ export class AuthService {
     else
       return false;
   }
+  
   isUser(){
     if(this.loggedIn())
       return JSON.parse(localStorage.getItem('user')).permissions == 'user';

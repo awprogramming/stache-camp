@@ -14,6 +14,7 @@ export class SwimGroupComponent implements OnInit {
   counselorId;
   swimGroup;
   options;
+  exclude = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -26,7 +27,31 @@ export class SwimGroupComponent implements OnInit {
   loadSwimGroup(){
     this.swimService.getSwimGroup(this.id).subscribe(data => {
       this.swimGroup = data.group;
+      this.exclude = [];
+      this.fillExclude();
     });
+  }
+
+  fillExclude(){
+    this.swimService.inGroups().subscribe(data => {
+      this.exclude = data.campers;
+    });
+  }
+
+  addToGroup(camper){
+    this.swimService.addToSwimGroup(this.id,camper._id).subscribe(data => {
+      this.loadSwimGroup();
+    });
+  }
+
+  removeFromGroup(camper){
+    this.swimService.removeFromSwimGroup(this.id,camper._id).subscribe(data => {
+      this.loadSwimGroup();
+    });
+  }
+
+  goToStats(camper){
+    this.router.navigate(['/swim-stat/'+camper._id]);
   }
 
   getOptions(){

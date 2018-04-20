@@ -1,0 +1,4 @@
+<select (change) = "handleChange($event);" class="form-control" name="level" >
+  <option *ngIf="all" value="all">All</option>
+  <option *ngFor="let level of levels; index as i" value="{{i}}">{{level.rcLevel}} - {{level.name}}</option>
+</select>
