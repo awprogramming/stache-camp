@@ -36,7 +36,7 @@ module.exports = (router) => {
             var result = [];
             var user = camp.users.id(req.decoded.userId);
             for(let group of camp.swimGroups){
-                console.log("text 2:routes/swim");
+                console.log("test 2:routes/swim");
                 console.log(group);
                 if(group.sessionId == camp.options.session._id){
                     console.log("test 3:routes/swim");
@@ -56,9 +56,9 @@ module.exports = (router) => {
                     }
                 }
                 }
+                console.log("test 4:routes/swim");
+                console.log(result);
             }
-            console.log("test 4:routes/swim");
-            console.log(result);
             res.json({success:true,groups:result});
         });
     });
