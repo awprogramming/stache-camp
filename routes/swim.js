@@ -163,6 +163,8 @@ module.exports = (router) => {
                                 }
                                 if(campers.length > 0){
                                     groupCount++;
+                                    console.log("test2:routes/swim");
+                                    console.log(groupCount);
                                     groupName = name+groupCount;
                                     let newGroup =  new SwimGroup({
                                         name:groupName,
@@ -174,7 +176,8 @@ module.exports = (router) => {
                                 }
                             }
                         }
-                        
+                        console.log("test3:routes/swim");
+                        console.log(camp.swimGroups);
                         camp.save({ validateBeforeSave: false });
                         res.json({success:true});
                     }
