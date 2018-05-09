@@ -90,6 +90,7 @@ module.exports = (router) => {
     });
 
     router.post('/generate_groups/',(req,res) => {
+        console.log("test1:routes/swim");
         Camp.findById(req.decoded.campId).exec().then((camp)=>{
             const current_session = camp.options.session;
             Camp.aggregate([

@@ -42042,7 +42042,6 @@ var CampsService = (function () {
     CampsService.prototype.hasModule = function (hmod) {
         for (var _i = 0, _a = JSON.parse(localStorage.getItem('user')).modules; _i < _a.length; _i++) {
             var mod = _a[_i];
-            console.log(mod);
             if (hmod == mod.short_name)
                 return true;
         }
@@ -42677,6 +42676,7 @@ var SwimService = (function () {
         return this.http.post(this.domain + 'swim/register_group', group, this.options).map(function (res) { return res.json(); });
     };
     SwimService.prototype.autoGenerateGroups = function () {
+        console.log("test1:service");
         this.createAuthenticationHeaders();
         return this.http.post(this.domain + 'swim/generate_groups', {}, this.options).map(function (res) { return res.json(); });
     };
