@@ -45,7 +45,9 @@ export class CampsService {
   }
 
   hasModule(hmod){
+    
     for(let mod of JSON.parse(localStorage.getItem('user')).modules){
+      console.log(mod);
       if(hmod == mod.short_name)
         return true
     }
