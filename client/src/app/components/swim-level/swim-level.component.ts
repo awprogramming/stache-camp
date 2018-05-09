@@ -14,6 +14,7 @@ export class SwimLevelComponent implements OnInit {
   id;
   counselorId;
   form: FormGroup;
+  xy:FormGroup;
   swimLevel;
   options;
   addAnimal = false;
@@ -34,6 +35,11 @@ export class SwimLevelComponent implements OnInit {
     this.form = this.formBuilder.group({
       aName: ['', Validators.required],
     });
+
+    this.xy = this.formBuilder.group({
+      x: ['', Validators.required],
+      y: ['', Validators.required],
+    });
   }
 
   createAnimalSubmit(){
@@ -41,15 +47,30 @@ export class SwimLevelComponent implements OnInit {
     var swimAnimal = {
       name: this.form.get('aName').value,
     }
-
     this.swimService.registerSwimAnimal(this.id,swimAnimal).subscribe(data => {
+     this.loadSwimLevel();
+    });
+  }
+
+  xySubmit(animal,skill){
+    var pos = {
+      x: this.xy.get('x').value,
+      y: this.xy.get('y').value
+    }
+    var data = {
+      level:this.id,
+      animal:animal,
+      skill:skill,
+      pos:pos
+    }
+    this.swimService.xySetAnimal(data).subscribe(data => {
+     this.xy.reset();
      this.loadSwimLevel();
     });
   }
 
   loadSwimLevel(){
     this.swimService.getSwimLevel(this.id).subscribe(data => {
-      console.log(data);
       this.swimLevel = data.level;
     });
   }
@@ -79,6 +100,18 @@ export class SwimLevelComponent implements OnInit {
     this.swimService.registerExitSkill(this.id,this.exitSkill).subscribe(data => {
       this.loadSwimLevel();
      });
+  }
+
+  removeAnimalSkill(animalId,skillId){
+    this.swimService.removeAnimalSkill(this.id,animalId,skillId).subscribe(data => {
+      this.loadSwimLevel();
+    });
+  }
+
+  removeExitSkill(skillId){
+    this.swimService.removeExitSkill(this.id,skillId).subscribe(data => {
+      this.loadSwimLevel();
+    });
   }
   ngOnInit() {
       this.route.paramMap.subscribe(params => {

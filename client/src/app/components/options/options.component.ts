@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AuthGuard } from '../../guards/auth.guard';
 import { AuthService } from '../../services/auth.service';
 import { EvaluationsService } from '../../services/evaluations.service';
+import { SwimService } from '../../services/swim.service';
 
 @Component({
   selector: 'app-options',
@@ -28,6 +29,7 @@ export class OptionsComponent implements OnInit {
     public campsService: CampsService,
     public authService: AuthService,
     private evaluationsService: EvaluationsService,
+    private swimService: SwimService,
     private router: Router,
     private authGuard: AuthGuard
   ) {
@@ -135,10 +137,19 @@ export class OptionsComponent implements OnInit {
     });
   }
 
+  changeAGMax(e){
+    if(e.target.value >= 1){
+      this.swimService.changeAGMax(e.target.value).subscribe(data => {
+        this.getOptions();
+      });
+    }
+  }
+
 
   getOptions(){
     this.campsService.getOptions().subscribe(data => {
       this.options = data.options
+      console.log(this.options.swimOpts.agMax);
     });
   }
 

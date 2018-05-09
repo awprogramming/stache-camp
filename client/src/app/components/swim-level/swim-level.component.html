@@ -1,4 +1,4 @@
-
+<app-back-button></app-back-button>
 <div *ngIf="swimLevel">
   <h1>Red Cross Level {{swimLevel.rcLevel}} - {{swimLevel.name}}</h1>
   <h3>Animals:</h3>
@@ -19,15 +19,25 @@
   </div>
   <div *ngFor="let animal of swimLevel.animals">
     <h4>{{animal.name}}</h4>
-    <ul>
-      <li *ngFor="let skill of animal.skills">{{skill.skill}}</li>  
-    </ul>
+    <table class="table">
+      <tr *ngFor="let skill of animal.skills">
+        <td>{{skill.skill}}</td>
+        <td *ngIf="skill.pdfLoc">({{skill.pdfLoc.x}},{{skill.pdfLoc.y}})</td>
+        <td *ngIf="!skill.pdfLoc">
+          <form [formGroup]="xy" (submit)="xySubmit(animal._id,skill._id)">
+              <label for="x">X: </label><input class="form-control" type="text" name="x" formControlName="x" />
+              <label for="y">Y: </label><input class="form-control" type="text" name="y" formControlName="y" />
+              <input class="btn btn-primary" type="submit" value="Submit" />
+          </form>
+        </td>
+        <td><button class="btn btn-primary remove" (click)="removeAnimalSkill(animal._id,skill._id)">X</button></td>  
+    </table>
     <input class="form-control" type="text" (input)="preAddSkill($event,animal)"/>
     <button class="btn btn-primary" (click)="addSkill(animal)">Add Skill</button> 
   </div>
   <h4>Exit Skills</h4>
   <ul>
-    <li *ngFor="let skill of swimLevel.exitSkills">{{skill.skill}}</li>  
+    <li *ngFor="let skill of swimLevel.exitSkills">{{skill.skill}}<button class="btn btn-primary remove" (click)="removeExitSkill(skill._id)">X</button> </li>
   </ul>
   <input class="form-control" type="text" (input)="preAddExitSkill($event,animal)"/>
   <button class="btn btn-primary" (click)="addExitSkill(animal)">Add Skill</button> 

@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 const SwimLevelSchema = require('./swimLevel').schema;
 
 const swimOptsSchema = new Schema({
-    swimLevels: [SwimLevelSchema]
+    swimLevels: [SwimLevelSchema],
+    agMax: Number
 });
 
 module.exports = mongoose.model('SwimOpts',swimOptsSchema);

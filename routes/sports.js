@@ -276,7 +276,6 @@ module.exports = (router) => {
                         else if(req.params.type == "leader"){
                             if(game.games.rosterId){
                                 var roster = camp.specialties.id(game.games.specialty._id).rosters.id(game.games.rosterId);
-                                console.log(roster);
                                 for(let camper of roster.campers){
                                     var pushed = false;
                                     division = camp.campers.id(camper).division;

@@ -86,3 +86,9 @@
     <input class="btn btn-primary" type="submit" value="Submit" />
   </form>
 </div>
+
+<div *ngIf="campsService.hasModule('swim')">
+  <h2>Swim Options</h2>
+  <h3>Auto-Generation Max Campers</h3>
+  <input class="form-control" type="number" name="ag-max-swim" min=1 (input)="changeAGMax($event)" [value]="options?.swimOpts.agMax">
+</div>

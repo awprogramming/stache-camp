@@ -30,7 +30,7 @@ export class DivisionsComponent implements OnInit {
   createForm() {
     this.form = this.formBuilder.group({
       name: ['', Validators.required],
-      grade: ['', Validators.required],
+      // grade: ['', Validators.required],
     });
   }
 
@@ -38,7 +38,7 @@ export class DivisionsComponent implements OnInit {
     this.processing = true;
     const division = {
       name: this.form.get('name').value,
-      grade: this.form.get('grade').value
+      // grade: this.form.get('grade').value
     }
   
     this.campsService.registerDivision(division).subscribe(data => {
@@ -53,6 +53,7 @@ export class DivisionsComponent implements OnInit {
             this.router.navigate([this.previousUrl]);
           else{
             this.newCamp = false;
+            this.form.reset();
             this.getAllDivisions();
           }
       }

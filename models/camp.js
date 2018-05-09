@@ -41,9 +41,9 @@ campSchema.methods.hasModule = function(mod){
     return undefined;
 }
 
-campSchema.methods.getDivisionByName = function(div){
+campSchema.methods.getDivisionByName = function(div,gender){
     for(let division of this.divisions){
-        if(division.name == div){
+        if(division.name == div && division.gender == gender){
             return division;
         }
     }

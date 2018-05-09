@@ -164,6 +164,24 @@ module.exports = (router) => {
         }
     });
 
+    router.get('/get_swim_group/:campId/:id',(req,res) => {
+        Camp.findById(req.params.campId, (err,camp)=>{
+            var data = camp.swimGroups.id(req.params.id);
+            console.log(data);
+            var lifeguard = camp.counselors.id(data.lifeguardId);
+            var campers = [];
+            for(let camperId of data.camperIds){
+                campers.push(camp.campers.id(camperId));
+            }
+            var result = {
+                data:data,
+                lifeguard:lifeguard,
+                campers:campers
+            }
+            res.json({success:true,group:result});
+        });
+    });
+
     router.use((req,res,next)=>{
        const token = req.headers['authorization'];
        if(!token){

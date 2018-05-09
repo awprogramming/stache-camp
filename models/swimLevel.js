@@ -12,7 +12,25 @@ const swimLevelSchema = new Schema({
     completed: Boolean,
     sessionCompleted: SessionSchema,
     animals: [SwimAnimalSchema],
-    exitSkills: [SkillSchema]
+    exitSkills: [SkillSchema],
+    pdfLocs:{
+        name: {
+            x: Number,
+            y: Number
+        },
+        date: {
+            x: Number,
+            y: Number
+        },
+        instructor: {
+            x: Number,
+            y: Number
+        },
+        group: {
+            x: Number,
+            y: Number
+        }
+    }
 });
 
 module.exports = mongoose.model('SwimLevel',swimLevelSchema);

@@ -12,10 +12,16 @@ export class DivisionsDropdownComponent implements OnInit {
   @Input() 
     set gender(gender: string){
         this._gender = gender;
-        this.populateDivisions();
+        //this.populateDivisions();
     }
+  _divisions;
+    @Input() 
+      set divisions(divisions: Array<object>){
+          this._divisions = divisions;
+          if(this._divisions)
+            this.selectedChanged.emit(this._divisions[0]);
+      }
   @Output() selectedChanged = new EventEmitter();
-  divisions;
   constructor(
     private campService: CampsService
   ) { }
@@ -27,17 +33,16 @@ export class DivisionsDropdownComponent implements OnInit {
       else if(this._gender=="male")
         this.divisions = data.divisions[1].divisions;
       
-      this.selectedChanged.emit(this.divisions[0]);
+      this.selectedChanged.emit(this._divisions[0]);
     });
-    
   }
 
   handleChange(e){
-    this.selectedChanged.emit(this.divisions[e.target.value]);
+    this.selectedChanged.emit(this._divisions[e.target.value]);
   }
 
   ngOnInit() {
-    this.populateDivisions();
+    //this.populateDivisions();
   }
 
 }

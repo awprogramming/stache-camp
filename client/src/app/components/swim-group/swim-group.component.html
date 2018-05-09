@@ -1,7 +1,26 @@
 <app-back-button></app-back-button>
 <div *ngIf="swimGroup && swimGroup.data">
   <h1>{{swimGroup.data.name}}</h1>
-  <h2>{{swimGroup.lifeguard.first}} {{swimGroup.lifeguard.last}}</h2>
+  <div *ngIf="swimGroup.lifeguard">
+    <h2>{{swimGroup.lifeguard.first}} {{swimGroup.lifeguard.last}}</h2><button class="btn btn-primary" *ngIf="this.authService.userType() != 'lifeguard'" (click)="removeLifeguard()">X</button>
+  </div>
+  <div *ngIf="!swimGroup.lifeguard">
+    <h2>Assign Lifeguard</h2>
+    <app-lifeguard-dropdown (selectedChanged)="preAssignLifeguard($event)"></app-lifeguard-dropdown>
+    <button class="btn btn-primary" (click)="assignLifeguard()">Assign</button>
+  </div>
+  <button class="btn btn-primary" (click)="generateReports()" *ngIf="authService.userType() != 'lifeguard'">Generate Reports</button>
+  <div *ngIf="generating">
+    <div *ngFor="let camper of swimGroup.campers" [id]="camper._id" class="report" (click)="goToReport(camper._id)">
+      <img [src]="'./assets/'+camper.cSwimOpts.currentLevel.rcLevel+'.jpg'">
+      <span [id]="'name-'+camper.cSwimOpts.currentLevel.rcLevel">{{camper.first}} {{camper.last}}</span>
+      <span [id]="'date-'+camper.cSwimOpts.currentLevel.rcLevel">{{displayDate()}}</span>
+      <span [id]="'instructor-'+camper.cSwimOpts.currentLevel.rcLevel">{{swimGroup.lifeguard?.first}} {{swimGroup.lifeguard?.last}}</span>
+      <span [id]="'group-'+camper.cSwimOpts.currentLevel.rcLevel">{{swimGroup.data.name}}</span>
+      <span *ngFor="let skill of completedSkills(camper.cSwimOpts.currentLevel)" [id]="generateSkillClass(camper.cSwimOpts.currentLevel.rcLevel,skill)">&#10004;</span>
+    </div>
+    <button class="btn btn-primary" (click)="sendReports()">Send Reports</button>
+  </div>
   <h3>Campers:</h3>
   <table class="table table-hover" >
     <thead>

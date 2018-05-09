@@ -1,3 +1,4 @@
+<button class="btn btn-primary" (click)="generateGroups()" *ngIf="authService.userType() != 'lifeguard'">Auto-Generate Groups</button>
 <form [formGroup]="form" (submit)="createSwimGroupSubmit()" *ngIf="authService.userType() != 'lifeguard'">
   <div class="form-group">
     <label for="name">Name</label>
@@ -22,7 +23,7 @@
   </tr>
   <tr *ngFor="let group of groups">
     <td>{{group.data.name}}</td>
-    <td>{{group.lifeguard.first}} {{group.lifeguard.last}}</td>
+    <td>{{group.lifeguard?.first}} {{group.lifeguard?.last}}</td>
     <td><a class="btn btn-primary" [routerLink]="['/swim-group',group.data._id]">View</a><button class="btn btn-primary" (click) = "removeGroup(group.data._id)">X</button></td>
   </tr>
 </table>

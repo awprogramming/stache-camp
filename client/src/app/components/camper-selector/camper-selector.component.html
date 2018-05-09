@@ -3,7 +3,7 @@
   <option value="male">Boys</option>
   <option value="female">Girls</option>
 </select>
-<app-divisions-dropdown (selectedChanged) = "divisionChange($event)" [gender] = gender></app-divisions-dropdown>
+<app-divisions-dropdown (selectedChanged) = "divisionChange($event)" [gender] = gender [divisions]="divisions"></app-divisions-dropdown>
 <div class="camper" *ngFor="let camper of campers; let i = index">
   <span>{{camper.first}} {{camper.last}}</span>
   <button class="btn btn-primary" (click) = "camperSelected(i)">+</button>

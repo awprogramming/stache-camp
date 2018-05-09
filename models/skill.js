@@ -4,7 +4,11 @@ const Schema = mongoose.Schema;
 
 const skillSchema = new Schema({
     skill: String,
-    completed:Boolean
+    completed:Boolean,
+    pdfLoc: {
+        x:Number,
+        y:Number
+    }
 });
 
 module.exports = mongoose.model('Skill',skillSchema);

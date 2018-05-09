@@ -26,6 +26,7 @@ export class CampersComponent implements OnInit {
   enrolled;
   toAddType;
   options;
+  dropdownDivisions;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -95,27 +96,28 @@ export class CampersComponent implements OnInit {
           var vals = line.split(',');
           var data;
           if(cs.hasModule("swim")){
-            
+            var fname = vals[0].split('\n')[1];
             data = {
-              divisionName:vals[0],
+              divisionName:vals[4],
               camper:{
-                  first: vals[2],
+                  first: fname,
                   last: vals[1],
                   gender: vals[3],
-                  grade: c.gradeConversion(vals[4]),
+                  grade: vals[2],
                   p1Name: vals[5],
                   p1Email: vals[6],
                   p2Name: vals[7],
                   p2Email: vals[8],
                   cSwimOpts: {
-                    bracelet: vals[11]
+                    bracelet: vals[10]
                   },
               },
               cSwimOpts: {
-                rcLevel: vals[9],
-                swimAnimal: vals[10],
+                rcLevel: vals[9]
               },
             }
+            if(fname != "")
+              campers.push(data);
           }
           else{
             data = {
@@ -123,8 +125,8 @@ export class CampersComponent implements OnInit {
               last: vals[1],
               gender: vals[2],
             }
+            campers.push(data);
           }
-          campers.push(data);
         }
       }
     }
@@ -138,7 +140,40 @@ gradeConversion(grade){
 }
 
   onBulkUploadSubmit(){
-    this.campsService.bulkRegisterCampers(this.uploaded_campers).subscribe(data => {
+    var divisions = Math.ceil(this.uploaded_campers.length/20);
+    for(var i = 0; i < divisions; i++){
+      if(i+1==divisions)
+        this.bulkHelper(this.uploaded_campers.slice(i*20));
+      else
+        this.bulkHelper(this.uploaded_campers.slice(i*20,i*20+19));
+    }
+    
+    
+  }
+
+  populateDivisions(){
+    this.campsService.getAllDivisions().subscribe(data=>{
+      this.dropdownDivisions = data;
+      // if(this._gender=="female")
+      //   this.divisions = data.divisions[0].divisions;
+      // else if(this._gender=="male")
+      //   this.divisions = data.divisions[1].divisions;
+      
+      // this.selectedChanged.emit(this.divisions[0]);
+    });
+  }
+
+  divGenders(gender){
+    if(gender.toLowerCase()=="female"){
+      return this.dropdownDivisions.divisions[0].divisions;
+      
+    }
+    else if(gender.toLowerCase()=="male")
+      return this.dropdownDivisions.divisions[1].divisions;
+  }
+
+  bulkHelper(subset){
+    this.campsService.bulkRegisterCampers(subset).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
         this.message = data.message;
@@ -155,7 +190,6 @@ gradeConversion(grade){
       }
     });
   }
-
   getAllCampers(){
     this.campsService.getAllCampers().subscribe(data => {
       if(this.authService.isUser()){
@@ -271,6 +305,7 @@ gradeConversion(grade){
       this.previousUrl = this.authGuard.redirectUrl;
       this.authGuard.redirectUrl = undefined;
     }
+    this.populateDivisions();
     this.getAllCampers();
     this.getOptions();
   }

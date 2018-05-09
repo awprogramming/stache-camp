@@ -62,6 +62,12 @@ export class SwimGroupsComponent implements OnInit {
     });
   }
 
+  generateGroups(){
+    this.swimService.autoGenerateGroups().subscribe(data => {
+      this.getGroups();
+    });
+  }
+
   getOptions(){
     this.campsService.getOptions().subscribe(data => {
       this.options = data.options

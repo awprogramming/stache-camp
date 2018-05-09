@@ -1055,20 +1055,11 @@ module.exports = (router) => {
                     var newCamper = camp.campers.create(camper.camper);
                     newCamper.sessions = [];
                     newCamper.sessions.push(camp.options.session);
-                    newCamper.divison = camp.getDivisionByName(camper.divisionName);
-                    var level = parseInt(camper.cSwimOpts.rcLevel);
+                    var newDivision = camp.getDivisionByName(camper.divisionName.trim(),newCamper.gender.toLowerCase());
+                    if(newDivision)
+                    newCamper.division = newDivision;
+                    var level = camper.cSwimOpts.rcLevel;
                     var complete = false;
-                    if(!Number.isInteger(level)){
-                        if(camper.cSwimOpts.rcLevel.substring(0,3)=="ARC"){
-                            level = parseInt(camper.cSwimOpts.rcLevel.substring(3));
-                        }
-                        else if(camper.cSwimOpts.rcLevel.substring(0,2)=="NS"){
-                            level = parseInt(camper.cSwimOpts.rcLevel.substring(2));
-                        }
-                        else{
-                            level = undefined;
-                        }
-                    }
                     for(let l of camp.options.swimOpts.swimLevels){
                         if(l.rcLevel == level){
                            newCamper.cSwimOpts.currentLevel = l;

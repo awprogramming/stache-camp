@@ -45,9 +45,19 @@ export class SwimService {
     return this.http.post(this.domain + 'swim/register_group',group,this.options).map(res => res.json());
   }
 
+  autoGenerateGroups(){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'swim/generate_groups',{},this.options).map(res => res.json());
+  }
+
   getSwimGroup(id){
     this.createAuthenticationHeaders();
     return this.http.get(this.domain + 'swim/get_swim_group/'+ id,this.options).map(res => res.json());
+  }
+
+  getSwimGroupGuest(campId,id){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'authentication/get_swim_group/'+campId+'/'+id,this.options).map(res => res.json());
   }
 
   addToSwimGroup(groupId,camperId){
@@ -125,6 +135,30 @@ export class SwimService {
     return this.http.post(this.domain + 'swim/register_exit_skill',data,this.options).map(res => res.json());
   }
 
+  xySetAnimal(data){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'swim/xy_set_animal',data,this.options).map(res => res.json());
+  }
+
+  removeAnimalSkill(levelId,animalId,skillId){
+    var data = {
+      levelId:levelId,
+      animalId:animalId,
+      skillId:skillId
+    }
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'swim/remove_animal_skill',data,this.options).map(res => res.json());
+  }
+
+  removeExitSkill(levelId,skillId){
+    var data = {
+      levelId:levelId,
+      skillId:skillId
+    }
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'swim/remove_exit_skill',data,this.options).map(res => res.json());
+  }
+
   checkSkill(camperId,animalId,skillId,checked){
     var data = {
       camperId:camperId,
@@ -155,6 +189,35 @@ export class SwimService {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + 'swim/register_lifeguard',counselor,this.options).map(res => res.json());
   }
+
+  changeAGMax(newMax){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'swim/change_AG_max',{newMax:newMax},this.options).map(res => res.json());
+  }
   
+  assignLifeguard(groupId,lifeguard){
+    var data = {
+      groupId:groupId,
+      lifeguard:lifeguard
+    }
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'swim/assign_lifeguard',data,this.options).map(res => res.json());
+  }
+
+  removeLifeguard(groupId){
+    var data = {
+      groupId:groupId,
+    }
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'swim/remove_lifeguard',data,this.options).map(res => res.json());
+  }
+
+  sendReports(groupId){
+    var data = {
+      groupId:groupId,
+    }
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'swim/send_reports',data,this.options).map(res => res.json());
+  }
 
 }

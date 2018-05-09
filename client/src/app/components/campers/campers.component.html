@@ -101,7 +101,7 @@
                               <td>{{camper.gender}}</td>
                               <td *ngIf="camper.division ">{{camper.division.name}}</td>
                               <td *ngIf="!camper.division">
-                                <app-divisions-dropdown *ngIf="i==0" (selectedChanged) = "preAdd($event,camper)" [gender]="camper.gender"></app-divisions-dropdown>
+                                <app-divisions-dropdown *ngIf="i==0" (selectedChanged) = "preAdd($event,camper)" [gender]="camper.gender" [divisions]="divGenders(camper.gender)"></app-divisions-dropdown>
                                 <button *ngIf="i==0" class="btn btn-primary" (click) = "addDivision(camper)">Add</button>
                               </td>
                         

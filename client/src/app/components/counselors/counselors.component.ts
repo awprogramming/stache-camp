@@ -23,6 +23,7 @@ export class CounselorsComponent implements OnInit {
   counselors;
   uploaded_counselors;
   divisions;
+  dropdownDivisions;
   sessions;
   hired;
   toAddType;
@@ -276,6 +277,26 @@ export class CounselorsComponent implements OnInit {
       this.getAllCounselors();
     });
   }
+  populateDivisions(){
+    this.campsService.getAllDivisions().subscribe(data=>{
+      this.dropdownDivisions = data;
+      // if(this._gender=="female")
+      //   this.divisions = data.divisions[0].divisions;
+      // else if(this._gender=="male")
+      //   this.divisions = data.divisions[1].divisions;
+      
+      // this.selectedChanged.emit(this.divisions[0]);
+    });
+  }
+
+  divGenders(gender){
+    if(gender.toLowerCase()=="female"){
+      return this.dropdownDivisions.divisions[0].divisions;
+      
+    }
+    else if(gender.toLowerCase()=="male")
+      return this.dropdownDivisions.divisions[1].divisions;
+  }
 
   ngOnInit() {
     if(this.authGuard.redirectUrl){
@@ -284,6 +305,7 @@ export class CounselorsComponent implements OnInit {
       this.previousUrl = this.authGuard.redirectUrl;
       this.authGuard.redirectUrl = undefined;
     }
+    this.populateDivisions();
     this.getAllCounselors();
     this.getOptions();
   }

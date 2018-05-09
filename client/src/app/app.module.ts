@@ -68,6 +68,7 @@ import { SwimLevelComponent } from './components/swim-level/swim-level.component
 import { SwimStatComponent } from './components/swim-stat/swim-stat.component';
 import { SwimLevelDropdownComponent } from './components/swim-level-dropdown/swim-level-dropdown.component';
 import { BackButtonComponent } from './components/back-button/back-button.component';
+import { SwimReportComponent } from './components/swim-report/swim-report.component';
 
 @NgModule({
   declarations: [
@@ -117,6 +118,7 @@ import { BackButtonComponent } from './components/back-button/back-button.compon
     SwimStatComponent,
     SwimLevelDropdownComponent,
     BackButtonComponent,
+    SwimReportComponent,
 
   ],
   imports: [

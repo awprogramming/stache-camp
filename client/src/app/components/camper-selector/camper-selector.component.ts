@@ -22,6 +22,7 @@ export class CamperSelectorComponent implements OnInit {
   gender = "male";
   division
   campers;
+  dropdownDivisions;
   constructor(
     private campService: CampsService
   ) { }
@@ -32,7 +33,10 @@ export class CamperSelectorComponent implements OnInit {
   }
 
   genderChange(e){
+
     this.gender = e;
+    this.divisions = this.divGenders();
+    this.divGenders();
     this.populateDivision(this.division);
   }
 
@@ -48,12 +52,28 @@ export class CamperSelectorComponent implements OnInit {
     });
   }
 
-  populateDivision(divisonId){
+  populateDivisions(){
+    this.campService.getAllDivisions().subscribe(data=>{
+      this.dropdownDivisions = data;
+      this.divisions = this.dropdownDivisions.divisions[1].divisions;
+      this.populateDivision(this.divisions[0]._id);
+    });
+  }
+
+  divGenders(){
+      if(this.gender.toLowerCase()=="female"){
+        return this.dropdownDivisions.divisions[0].divisions;
+      }
+      else if(this.gender.toLowerCase()=="male")
+        return this.dropdownDivisions.divisions[1].divisions;
+  }
+
+  populateDivision(divisionId){
     if(!this.options){
       this.getOptions()
     }
     else{
-      this.campService.get_division_campers(divisonId,this.options.session._id).subscribe(data => {
+      this.campService.get_division_campers(divisionId,this.options.session._id).subscribe(data => {
         if(data.success == false)
           this.campers = [];
         else{
@@ -76,6 +96,7 @@ export class CamperSelectorComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.populateDivisions();
   }
 
 }
