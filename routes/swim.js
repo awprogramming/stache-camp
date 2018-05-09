@@ -38,7 +38,7 @@ module.exports = (router) => {
                 if(group.sessionId == camp.options.session._id){
                    var lifeguard = camp.counselors.id(group.lifeguardId);
                    console.log("Lifeguard"+lifeguard);
-                   if(lifeguard){
+                   //if(lifeguard){
                     g = {
                         data:group,
                         lifeguard:lifeguard
@@ -51,7 +51,7 @@ module.exports = (router) => {
                    else{
                         result.push(g);
                     }
-                }
+                //}
                 }
                 
             }
