@@ -26,6 +26,7 @@ export class SwimService {
   }
 
   allGroups(){
+    console.log("test 1: service");
     this.createAuthenticationHeaders();
     return this.http.get(this.domain + 'swim/all_groups',this.options).map(res => res.json()); 
   }
@@ -46,7 +47,6 @@ export class SwimService {
   }
 
   autoGenerateGroups(){
-    console.log("test1:service");
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + 'swim/generate_groups',{},this.options).map(res => res.json());
   }

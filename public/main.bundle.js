@@ -42661,6 +42661,7 @@ var SwimService = (function () {
         });
     };
     SwimService.prototype.allGroups = function () {
+        console.log("test 1: service");
         this.createAuthenticationHeaders();
         return this.http.get(this.domain + 'swim/all_groups', this.options).map(function (res) { return res.json(); });
     };
@@ -42677,7 +42678,6 @@ var SwimService = (function () {
         return this.http.post(this.domain + 'swim/register_group', group, this.options).map(function (res) { return res.json(); });
     };
     SwimService.prototype.autoGenerateGroups = function () {
-        console.log("test1:service");
         this.createAuthenticationHeaders();
         return this.http.post(this.domain + 'swim/generate_groups', {}, this.options).map(function (res) { return res.json(); });
     };

@@ -31,11 +31,15 @@ module.exports = (router) => {
     });
 
     router.get('/all_groups',(req,res) => {
+        console.log("text 1:routes/swim");
         Camp.findById(req.decoded.campId, (err,camp)=>{
             var result = [];
             var user = camp.users.id(req.decoded.userId);
             for(let group of camp.swimGroups){
+                console.log("text 2:routes/swim");
+                console.log(group);
                 if(group.sessionId == camp.options.session._id){
+                    console.log("test 3:routes/swim");
                    var lifeguard = camp.counselors.id(group.lifeguardId);
                    if(lifeguard){
                     g = {
@@ -90,7 +94,6 @@ module.exports = (router) => {
     });
 
     router.post('/generate_groups/',(req,res) => {
-        console.log("test1:routes/swim");
         Camp.findById(req.decoded.campId).exec().then((camp)=>{
             const current_session = camp.options.session;
             Camp.aggregate([
@@ -163,7 +166,6 @@ module.exports = (router) => {
                                 }
                                 if(campers.length > 0){
                                     groupCount++;
-                                    console.log("test2:routes/swim");
                                     console.log(groupCount);
                                     groupName = name+groupCount;
                                     let newGroup =  new SwimGroup({
@@ -176,8 +178,6 @@ module.exports = (router) => {
                                 }
                             }
                         }
-                        console.log("test3:routes/swim");
-                        console.log(camp.swimGroups);
                         camp.save({ validateBeforeSave: false });
                         res.json({success:true});
                     }
