@@ -57,6 +57,8 @@ module.exports = (router) => {
                 }
                 }
             }
+            console.log("test 4:routes/swim");
+            console.log(result);
             res.json({success:true,groups:result});
         });
     });
