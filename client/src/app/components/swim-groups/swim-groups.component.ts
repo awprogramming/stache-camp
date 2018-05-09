@@ -40,6 +40,7 @@ export class SwimGroupsComponent implements OnInit {
 
   getGroups(){
     this.swimService.allGroups().subscribe(data => {
+      console.log(data.groups);
       this.groups = data.groups;
     });
   }

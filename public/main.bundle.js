@@ -40641,6 +40641,7 @@ var SwimGroupsComponent = (function () {
     SwimGroupsComponent.prototype.getGroups = function () {
         var _this = this;
         this.swimService.allGroups().subscribe(function (data) {
+            console.log(data.groups);
             _this.groups = data.groups;
         });
     };
