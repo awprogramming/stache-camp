@@ -31,16 +31,13 @@ module.exports = (router) => {
     });
 
     router.get('/all_groups',(req,res) => {
-        console.log("text 1:routes/swim");
         Camp.findById(req.decoded.campId, (err,camp)=>{
             var result = [];
             var user = camp.users.id(req.decoded.userId);
             for(let group of camp.swimGroups){
-                console.log("test 2:routes/swim");
-                console.log(group);
                 if(group.sessionId == camp.options.session._id){
-                    console.log("test 3:routes/swim");
                    var lifeguard = camp.counselors.id(group.lifeguardId);
+                   console.log("Lifeguard"+lifeguard);
                    if(lifeguard){
                     g = {
                         data:group,
@@ -56,8 +53,7 @@ module.exports = (router) => {
                     }
                 }
                 }
-                console.log("test 4:routes/swim");
-                console.log(result);
+                
             }
             res.json({success:true,groups:result});
         });
