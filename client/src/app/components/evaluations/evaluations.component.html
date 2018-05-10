@@ -26,8 +26,10 @@
                             <div>
                               <span>Status: <span [ngClass]="getClass(eval)">&#9679;</span></span>
                               <br>
-                              <div *ngFor="let sub of getSubKeys(eval)">
-                                  <a [routerLink]="['/evaluate', counselor.counselor._id,eval._id,sub]"><span>{{sub}}: </span><span>{{getScore(eval.sub_evals[sub])}}% </span>({{getLevel(getScore(eval.sub_evals[sub]))}})</a>
+                              <div *ngIf="eval.sub_evals">
+                                <div *ngFor="let sub of getSubKeys(eval)">
+                                    <a [routerLink]="['/evaluate', counselor.counselor._id,eval._id,sub]"><span>{{sub}}: </span><span>{{getScore(eval.sub_evals[sub])}}% </span>({{getLevel(getScore(eval.sub_evals[sub]))}})</a>
+                                </div>
                               </div>
                             </div>
                           </td>
