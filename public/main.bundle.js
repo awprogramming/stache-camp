@@ -36707,6 +36707,7 @@ var CounselorsComponent = (function () {
             }
             if (_this.authService.admin()) {
                 _this.sessions = data.output.sessions;
+                console.log(data.output);
                 if (data.output.sessions[0]._id.session_id != data.output.cur_session._id) {
                     var session = {
                         "_id": {

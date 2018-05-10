@@ -180,6 +180,7 @@ export class CounselorsComponent implements OnInit {
       }
       if(this.authService.admin()){
         this.sessions = data.output.sessions;
+        console.log(data.output);
         if(data.output.sessions[0]._id.session_id!=data.output.cur_session._id){
           const session = {
             "_id": {
