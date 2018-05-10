@@ -37773,6 +37773,7 @@ var EvaluationsComponent = (function () {
         this.campsService.getOptions().subscribe(function (data) {
             _this.options = data.options;
             _this.perSession = Array.from(Array(data.options.evaluationOpts.perSession).keys());
+            _this.getAllCurrent();
         });
     };
     EvaluationsComponent.prototype.userIsApprover = function () {
@@ -37906,7 +37907,6 @@ var EvaluationsComponent = (function () {
             this.authGuard.redirectUrl = undefined;
         }
         this.userIsApprover();
-        this.getAllCurrent();
         this.getOptions();
     };
     EvaluationsComponent = __decorate([
@@ -41911,7 +41911,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var AuthService = (function () {
     function AuthService(http) {
         this.http = http;
-        this.domain = ""; // Production;
+        //domain = ""; // Production;
+        this.domain = "http://localhost:8080/";
     }
     // Function to create headers, add token, to be used in HTTP requests
     AuthService.prototype.createAuthenticationHeaders = function () {

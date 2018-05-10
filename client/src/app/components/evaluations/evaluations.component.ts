@@ -165,6 +165,7 @@ export class EvaluationsComponent implements OnInit {
     this.campsService.getOptions().subscribe(data => {
       this.options = data.options;
       this.perSession = Array.from(Array(data.options.evaluationOpts.perSession).keys());
+      this.getAllCurrent();
     });
   }
 
@@ -303,7 +304,6 @@ export class EvaluationsComponent implements OnInit {
       this.authGuard.redirectUrl = undefined;
     }
     this.userIsApprover();
-    this.getAllCurrent();
     this.getOptions();
     
   }
