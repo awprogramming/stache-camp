@@ -22,6 +22,7 @@ export class EvaluationsComponent implements OnInit {
   perSession;
   approver;
   sessions;
+  ready = false;
 
   constructor(
     private campsService: CampsService,
@@ -155,6 +156,7 @@ export class EvaluationsComponent implements OnInit {
         }
       }
     }
+    this.ready = true;
     });
   }
 
@@ -194,7 +196,7 @@ export class EvaluationsComponent implements OnInit {
   }
 
   getSubKeys(evaluation){
-    
+
     return Object.keys(evaluation.sub_evals);
   }
 
