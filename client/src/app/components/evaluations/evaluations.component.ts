@@ -34,9 +34,11 @@ export class EvaluationsComponent implements OnInit {
 
   getAllCurrent(){
     this.evaluationsService.getCurrentEvals().subscribe(data => {
+      console.log("Test 1");
       this.divisions = [];
       this.counselors = [];
       if(this.authService.admin()){
+        console.log("Test 2");
         this.sessions = data.output;
         for(let session of this.sessions){
           for(let counselor of session.counselors){
@@ -54,7 +56,6 @@ export class EvaluationsComponent implements OnInit {
                 else
                 sub_evals[answer.question.byWho.type] = [answer];
               }
-              console.log(sub_evals);
               evaluation.sub_evals = []
               for(let key of Object.keys(sub_evals).sort()){
                 evaluation.sub_evals[key] = sub_evals[key];

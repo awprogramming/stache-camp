@@ -37631,9 +37631,11 @@ var EvaluationsComponent = (function () {
     EvaluationsComponent.prototype.getAllCurrent = function () {
         var _this = this;
         this.evaluationsService.getCurrentEvals().subscribe(function (data) {
+            console.log("Test 1");
             _this.divisions = [];
             _this.counselors = [];
             if (_this.authService.admin()) {
+                console.log("Test 2");
                 _this.sessions = data.output;
                 for (var _i = 0, _a = _this.sessions; _i < _a.length; _i++) {
                     var session = _a[_i];
@@ -37655,7 +37657,6 @@ var EvaluationsComponent = (function () {
                                 else
                                     sub_evals[answer.question.byWho.type] = [answer];
                             }
-                            console.log(sub_evals);
                             evaluation.sub_evals = [];
                             for (var _h = 0, _j = Object.keys(sub_evals).sort(); _h < _j.length; _h++) {
                                 var key = _j[_h];
