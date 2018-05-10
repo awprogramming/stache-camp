@@ -1,7 +1,7 @@
 <h2>Options</h2>
 
 <h3>Session</h3>
-<p>{{options?.session.name}}</p>
+<p *ngIf="options.session">{{options?.session.name}}</p>
 <form [formGroup]="form" (submit)="onFormSubmit()">
   <div class="form-group">
     <label for="session_name">New Session</label>
