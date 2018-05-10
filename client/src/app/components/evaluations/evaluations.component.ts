@@ -53,6 +53,7 @@ export class EvaluationsComponent implements OnInit {
                 else
                 sub_evals[answer.question.byWho.type] = [answer];
               }
+              console.log(sub_evals);
               evaluation.sub_evals = []
               for(let key of Object.keys(sub_evals).sort()){
                 evaluation.sub_evals[key] = sub_evals[key];

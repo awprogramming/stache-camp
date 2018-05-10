@@ -37654,6 +37654,7 @@ var EvaluationsComponent = (function () {
                                 else
                                     sub_evals[answer.question.byWho.type] = [answer];
                             }
+                            console.log(sub_evals);
                             evaluation.sub_evals = [];
                             for (var _h = 0, _j = Object.keys(sub_evals).sort(); _h < _j.length; _h++) {
                                 var key = _j[_h];
@@ -42660,7 +42661,6 @@ var SwimService = (function () {
         });
     };
     SwimService.prototype.allGroups = function () {
-        console.log("test 1: service");
         this.createAuthenticationHeaders();
         return this.http.get(this.domain + 'swim/all_groups', this.options).map(function (res) { return res.json(); });
     };
