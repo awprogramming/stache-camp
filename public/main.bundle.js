@@ -39482,7 +39482,6 @@ var OptionsComponent = (function () {
         var _this = this;
         this.campsService.getOptions().subscribe(function (data) {
             _this.options = data.options;
-            console.log(_this.options.swimOpts.agMax);
         });
     };
     OptionsComponent.prototype.ngOnInit = function () {
