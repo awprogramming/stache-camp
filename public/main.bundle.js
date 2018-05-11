@@ -36707,7 +36707,6 @@ var CounselorsComponent = (function () {
             }
             if (_this.authService.admin()) {
                 _this.sessions = data.output.sessions;
-                console.log(data.output);
                 if (data.output.sessions[0]._id.session_id != data.output.cur_session._id) {
                     var session = {
                         "_id": {
@@ -37539,6 +37538,9 @@ var EvaluateComponent = (function () {
         });
     };
     EvaluateComponent.prototype.viewing = function () {
+        console.log(this.options.evaluationOpts.currentEval);
+        console.log(this.evaluation.evaluation.number);
+        console.log(this.authService.admin());
         this.view = this.options.evaluationOpts.currentEval != this.evaluation.evaluation.number || this.authService.admin();
     };
     EvaluateComponent.prototype.userIsApprover = function () {
@@ -41911,7 +41913,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var AuthService = (function () {
     function AuthService(http) {
         this.http = http;
-        this.domain = ""; // Production;
+        //domain = ""; // Production;
+        this.domain = "http://localhost:8080/";
     }
     // Function to create headers, add token, to be used in HTTP requests
     AuthService.prototype.createAuthenticationHeaders = function () {

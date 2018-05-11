@@ -94,8 +94,11 @@ module.exports = (router) => {
                         }
                         if(hired){
                             for(let division of leaderDivisions){
-
+                                    console.log(counselor.division._id);
+                                    console.log(division);
+                                    console.log("***");
                                 if(counselor.division && counselor.division._id.equals(division)){
+                                    
                                     if(!(counselor.division.name in counselors))
                                         counselors[counselor.division.name] = []
                                     counselors[counselor.division.name].push(counselor);

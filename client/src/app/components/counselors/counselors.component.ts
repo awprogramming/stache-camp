@@ -180,7 +180,6 @@ export class CounselorsComponent implements OnInit {
       }
       if(this.authService.admin()){
         this.sessions = data.output.sessions;
-        console.log(data.output);
         if(data.output.sessions[0]._id.session_id!=data.output.cur_session._id){
           const session = {
             "_id": {
@@ -193,7 +192,7 @@ export class CounselorsComponent implements OnInit {
         }
         else{
         this.hired = data.output.sessions[0].counselors;
-
+        
         for(var i = 1; i < this.sessions.length; i++){
           for(let counselor of this.sessions[i].counselors){
             for(let h of this.hired)

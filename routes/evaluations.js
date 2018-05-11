@@ -145,6 +145,7 @@ module.exports = (router) => {
                     { $group : { _id : {counselor_id:"$counselors._id",s_id:"$counselors.evaluations.session._id",s_name:"$counselors.evaluations.session.name"},  evaluations:{$push:"$counselors.evaluations"}}},
                     { $group : { _id:"$_id.s_id",counselors:{$push:{counselor:"$_id.counselor_id",evaluations:"$evaluations"}}}}
                 ],(err,result)=>{
+                    result = result.slice(0).reverse();
                     for(let session of result){
                         session.session = camp.sessions.id(session._id);
                         for(let counselor of session.counselors){
