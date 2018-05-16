@@ -1,3 +1,4 @@
+const env = require('./env');
 const express = require('express');
 const app = express();
 const router = express.Router();
@@ -13,7 +14,7 @@ const meds = require('./routes/meds')(router);
 const swim = require('./routes/swim')(router);
 const bodyParser = require('body-parser');
 const cors = require('cors');
-
+const port = process.env.PORT || 8080; // Allows heroku to set port
 
 require('./cron');
 
@@ -43,12 +44,14 @@ app.use('/meds',meds);
 app.use('/swim',swim);
 
 
-app.get('/', (req, res) =>{
-    res.sendFile(path.join(__dirname +'/public/index.html'));
-});
+app.get('*', (req, res) => {
+    console.log("HELLO WORLD");
+    res.sendFile(path.join(__dirname + '/public/index.html'));
+  });
 
 
-
-app.listen(process.env.PORT || 8080, () =>{
+app.listen(port, () =>{
     console.log('Listening on port ' + process.env.PORT);
 });
+
+// module.exports = router;
