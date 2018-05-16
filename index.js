@@ -47,16 +47,8 @@ app.get('/', (req, res) =>{
     res.sendFile(path.join(__dirname +'/public/index.html'));
 });
 
-// serve angular front end files from root path
-router.use('/', express.static('app', { redirect: false }));
- 
-// rewrite virtual urls to angular app to enable refreshing of internal pages
-router.get('*', function (req, res, next) {
-    res.sendFile(path.resolve('app/index.html'));
-});
+
 
 app.listen(process.env.PORT || 8080, () =>{
     console.log('Listening on port ' + process.env.PORT);
 });
-
-module.exports = router;
