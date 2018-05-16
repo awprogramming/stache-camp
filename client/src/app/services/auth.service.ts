@@ -6,8 +6,8 @@ import { tokenNotExpired } from 'angular2-jwt';
 @Injectable()
 export class AuthService {
 
-  //domain = ""; // Production;
-  domain = "http://localhost:8080/";
+  domain = ""; // Production;
+  //domain = "http://localhost:8080/";
   authToken;
   user;
   options;
@@ -62,7 +62,6 @@ export class AuthService {
   // Function to store user's data in client local storage
   storeUserData(token, user) {
     localStorage.setItem('token', token); // Set token in local storage
-    console.log("HELLO WORLD");
     localStorage.setItem('user', JSON.stringify(user)); // Set user in local storage as string
     this.authToken = token; // Assign token to be used elsewhere
     this.user = user; // Set user to be used elsewhere
@@ -71,7 +70,6 @@ export class AuthService {
   // // Function to check if user is logged in
   loggedIn() {
     return tokenNotExpired();
-    
   }
 
   superUser(){

@@ -52,7 +52,7 @@ const appRoutes: Routes = [
     {
         path: 'camps',
         component: CampsComponent,
-        canActivate: [AuthGuard, SuperUserGuard]
+        canActivate: [AuthGuard]//, SuperUserGuard]
     },
     {
         path: 'login',

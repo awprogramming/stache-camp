@@ -47,7 +47,6 @@ export class LoginComponent implements OnInit {
 
   // Functiont to submit form and login user
   onLoginSubmit() {
-    console.log("hello world");
     this.processing = true; // Used to submit button while is being processed
     this.disableForm(); // Disable form while being process
     // Create user object from user's input
@@ -67,7 +66,6 @@ export class LoginComponent implements OnInit {
         this.messageClass = 'alert alert-success'; // Set bootstrap success class
         this.message = data.message; // Set success message
         // Function to store user's token in client local storage
-        console.log("hello world");
         this.authService.storeUserData(data.token, data.user);
         setTimeout(() => {
           if(this.previousUrl)

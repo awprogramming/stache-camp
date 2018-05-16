@@ -34983,7 +34983,7 @@ var appRoutes = [
     {
         path: 'camps',
         component: __WEBPACK_IMPORTED_MODULE_4__components_camps_camps_component__["a" /* CampsComponent */],
-        canActivate: [__WEBPACK_IMPORTED_MODULE_5__guards_auth_guard__["a" /* AuthGuard */], __WEBPACK_IMPORTED_MODULE_8__guards_superuser_guard__["a" /* SuperUserGuard */]]
+        canActivate: [__WEBPACK_IMPORTED_MODULE_5__guards_auth_guard__["a" /* AuthGuard */]] //, SuperUserGuard]
     },
     {
         path: 'login',
@@ -38807,7 +38807,6 @@ var LoginComponent = (function () {
     // Functiont to submit form and login user
     LoginComponent.prototype.onLoginSubmit = function () {
         var _this = this;
-        console.log("hello world");
         this.processing = true; // Used to submit button while is being processed
         this.disableForm(); // Disable form while being process
         // Create user object from user's input
@@ -38828,7 +38827,6 @@ var LoginComponent = (function () {
                 _this.messageClass = 'alert alert-success'; // Set bootstrap success class
                 _this.message = data.message; // Set success message
                 // Function to store user's token in client local storage
-                console.log("hello world");
                 _this.authService.storeUserData(data.token, data.user);
                 setTimeout(function () {
                     if (_this.previousUrl)
@@ -41915,8 +41913,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var AuthService = (function () {
     function AuthService(http) {
         this.http = http;
-        //domain = ""; // Production;
-        this.domain = "http://localhost:8080/";
+        this.domain = ""; // Production;
     }
     // Function to create headers, add token, to be used in HTTP requests
     AuthService.prototype.createAuthenticationHeaders = function () {
@@ -41958,7 +41955,6 @@ var AuthService = (function () {
     // Function to store user's data in client local storage
     AuthService.prototype.storeUserData = function (token, user) {
         localStorage.setItem('token', token); // Set token in local storage
-        console.log("HELLO WORLD");
         localStorage.setItem('user', JSON.stringify(user)); // Set user in local storage as string
         this.authToken = token; // Assign token to be used elsewhere
         this.user = user; // Set user to be used elsewhere
