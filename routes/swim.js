@@ -7,9 +7,6 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 const nodemailer = require('nodemailer');
 
-
-
-
 module.exports = (router) => {
    
     router.post('/register_group/',(req,res) => {
@@ -19,7 +16,6 @@ module.exports = (router) => {
             camp.save({ validateBeforeSave: false });
             res.json({success:true});
         });
-
     });
 
     router.post('/remove_swim_group/',(req,res) => {
@@ -483,10 +479,6 @@ module.exports = (router) => {
             });
         });
     });
-
-    
-
-
     return router;
 }
 

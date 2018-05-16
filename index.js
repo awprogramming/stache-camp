@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const router = express.Router();
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 const config = require('./config/database');
 const path = require('path');
 const authentication = require('./routes/authentication')(router);
@@ -19,7 +20,6 @@ const port = process.env.PORT || 8080; // Allows heroku to set port
 require('./cron');
 
 
-mongoose.Promise = global.Promise;
 mongoose.connect(config.uri, (err) => {
     if(err){
         console.log("Could NOT connect to database");
@@ -35,23 +35,21 @@ app.use(cors({
 app.use(bodyParser.urlencoded({ exteded: false}));
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
+
+app.use('/authentication',authentication);
 app.use('/modules',modules);
 app.use('/camps',camps);
-app.use('/authentication',authentication);
 app.use('/evaluations',evaluations);
 app.use('/sports',sports);
 app.use('/meds',meds);
 app.use('/swim',swim);
 
-
+// Connect server to Angular 2 Index.html
 app.get('*', (req, res) => {
-    console.log("HELLO WORLD");
-    res.sendFile(path.join(__dirname + '/public/index.html'));
-  });
+  res.sendFile(path.join(__dirname + '/public/index.html'));
+});
 
 
 app.listen(port, () =>{
     console.log('Listening on port ' + process.env.PORT);
 });
-
-// module.exports = router;
