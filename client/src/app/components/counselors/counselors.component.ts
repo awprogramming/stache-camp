@@ -29,7 +29,7 @@ export class CounselorsComponent implements OnInit {
   toAddType;
   options;
   lgReg;
-
+  toMassRehire = [];
   constructor(
     private formBuilder: FormBuilder,
     private campsService: CampsService,
@@ -265,7 +265,25 @@ export class CounselorsComponent implements OnInit {
     this.bulkAdd = false;
   }
 
-  rehire(c){
+  preMassRehire(e,counselor){
+    if(e.target.checked){
+      this.toMassRehire[counselor._id] = counselor;
+    }
+    else{
+      delete this.toMassRehire[counselor._id];
+    }
+    
+  }
+
+  massRehire(){
+    console.log("hello world");
+    console.log(this.toMassRehire);
+    for(let counselor of Object.keys(this.toMassRehire)){
+      this.rehire(this.toMassRehire[counselor],true);
+    }
+  }
+
+  rehire(c,mass){
     const counselor = {
       "counselor": c,
       "session":{
@@ -274,7 +292,7 @@ export class CounselorsComponent implements OnInit {
       }
     }
     this.campsService.rehire(counselor).subscribe(data => {
-      this.getAllCounselors();
+        this.getAllCounselors();
     });
   }
   populateDivisions(){

@@ -32,7 +32,7 @@
       <div *ngIf="!approver">
         <button *ngIf="!saved" class="btn btn-primary" (click) = "save()">Save</button>
         <span *ngIf="saved">Saved</span>
-        <button class="btn btn-primary" (click) = "submit()">Submit</button>
+        <button *ngIf="type != 'head_specialist'" class="btn btn-primary" (click) = "submit()">Submit</button>
       </div>
       <div *ngIf="approver">
         <span *ngIf="!evaluation?.evaluation.submitted">Evaluation Not Yet Submitted</span>

@@ -117,6 +117,7 @@
                               <th>Type</th>
                               <th>Specialty</th>
                               <th *ngIf="i!=0"></th>
+                              <th *ngIf="i!=0"><button class="btn btn-primary" (click) = "massRehire()">Rehire Selected</button></th>
                               <th *ngIf="i==0"></th>
                             </tr>
                             <tr *ngFor="let counselor of session.counselors">
@@ -136,7 +137,11 @@
                               </td>
                               <td *ngIf="i!=0 && counselor.hired">Hired</td>
                               <td *ngIf="i!=0 && !counselor.hired">
-                                  <button class="btn btn-primary" (click) = "rehire(counselor)">Rehire</button>
+                                  <button class="btn btn-primary" (click) = "rehire(counselor,false)">Rehire</button>
+                              </td>
+                              <td *ngIf="i!=0 && counselor.hired"></td>
+                              <td *ngIf="i!=0 && !counselor.hired">
+                                  <input type="checkbox" (change)="preMassRehire($event,counselor)">
                               </td>
                               <td *ngIf="i==0"><button class="btn btn-primary" (click) = "remove(counselor)">X</button></td>
                             </tr>

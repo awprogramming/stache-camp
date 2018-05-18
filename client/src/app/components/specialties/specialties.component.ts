@@ -18,6 +18,7 @@ export class SpecialtiesComponent implements OnInit {
   previousUrl;
   newCamp = false;
   specialties;
+  heads;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -105,6 +106,13 @@ export class SpecialtiesComponent implements OnInit {
     this.newCamp = false;
   }
 
+  getHeads(){
+    this.campsService.getAllHeads().subscribe(data=>{
+      this.heads = data.heads;
+      this.getAllSpecialties();
+    });
+  }
+
   ngOnInit() {
     if(this.authGuard.redirectUrl){
       this.messageClass = 'alert alert-danger';
@@ -112,7 +120,7 @@ export class SpecialtiesComponent implements OnInit {
       this.previousUrl = this.authGuard.redirectUrl;
       this.authGuard.redirectUrl = undefined;
     }
-    this.getAllSpecialties();
+    this.getHeads();
   }
 
 }

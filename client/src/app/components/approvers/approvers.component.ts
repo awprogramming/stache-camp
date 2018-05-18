@@ -18,6 +18,7 @@ export class ApproversComponent implements OnInit {
   previousUrl;
   newCamp = false;
   divisions;
+  heads;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -54,6 +55,13 @@ export class ApproversComponent implements OnInit {
     division.showAddButton = e;
   }
 
+  getHeads(){
+    this.campsService.getAllHeads().subscribe(data=>{
+      this.heads = data.heads;
+      this.getAllDivisions();
+    });
+  }
+
   ngOnInit() {
     if(this.authGuard.redirectUrl){
       this.messageClass = 'alert alert-danger';
@@ -61,7 +69,7 @@ export class ApproversComponent implements OnInit {
       this.previousUrl = this.authGuard.redirectUrl;
       this.authGuard.redirectUrl = undefined;
     }
-    this.getAllDivisions();
+    this.getHeads();
   }
 
 }

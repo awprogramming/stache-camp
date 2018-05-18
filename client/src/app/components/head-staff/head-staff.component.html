@@ -40,7 +40,7 @@
       </div>
     </div>
     <!-- Submit Button -->
-    <input [disabled]="processing" class="btn btn-primary" type="submit" value="Register" />
+    <input class="btn btn-primary" type="submit" value="Register" />
   </form>
 </div>
 <button class="btn btn-primary" (click) = "showAdd()" *ngIf = "!newHead">Add</button>
@@ -58,7 +58,7 @@
       <td>{{head.email}}</td>
       <td *ngIf="head.type">{{head.type.type}}</td>
       <td *ngIf="!head.type">
-          <app-head-staff-type-dropdown (selectedChanged) = "preAddhType($event,head)"></app-head-staff-type-dropdown>
+          <app-head-staff-type-dropdown (selectedChanged) = "preAddhType($event,head)" [types]="types"></app-head-staff-type-dropdown>
           <button class="btn btn-primary" (click) = "addhType(head)">Add</button>
       </td>
       <td><button class="btn btn-primary" (click) = "remove(head)">X</button></td>

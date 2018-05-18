@@ -11,31 +11,41 @@ import { CampsService } from '../../services/camps.service';
 export class HeadStaffDropdownComponent implements OnInit {
 
   @Input() exclude: Array<object>;
+  @Input() heads: Array<object>
   @Output() selectedChanged = new EventEmitter();
   @Output() showAddButton = new EventEmitter();
-  heads;
+  inDD;
   constructor(
     private campService: CampsService
   ) { }
 
   populateHeads(){
-    this.campService.getAllHeads().subscribe(data=>{
-      this.heads = data.heads;
-      for(var ex in this.exclude){
-        for(var head in this.heads){
-          if(isEquivalent(this.exclude[ex],this.heads[head])){
-            this.heads.splice(head,1);
+    this.inDD = [];
+    console.log(this.heads);
+    console.log(this.exclude);
+    if(this.exclude.length == 0){
+      this.inDD = this.heads;
+    }
+    else{
+      for(var head in this.heads){
+        var e = false;
+        for(var ex in this.exclude){
+          // console.log(this.exclude[ex]["_id"],this.heads[head]["_id"],this.exclude[ex]["_id"] == this.heads[head]["_id"])
+          if(this.exclude[ex]["_id"] == this.heads[head]["_id"]){
+            e = true;
+            break;
           }
         }
+        if(!e)
+          this.inDD.push(this.heads[head]);
       }
-      this.selectedChanged.emit(this.heads[0]);
-      this.showAddButton.emit(this.heads.length!=0);
-    });
-    
+    }
+    this.selectedChanged.emit(this.inDD[0]);
+    this.showAddButton.emit(this.inDD.length!=0);
   }
 
   handleChange(e){
-    this.selectedChanged.emit(this.heads[e.target.value]);
+    this.selectedChanged.emit(this.inDD[e.target.value]);
   }
 
   ngOnInit() {

@@ -9,17 +9,13 @@ import { CampsService } from '../../services/camps.service';
 })
 export class HeadStaffTypeDropdownComponent implements OnInit {
   @Output() selectedChanged = new EventEmitter();
-  types;
+  @Input() types: Array<object>;
   constructor(
     private campService: CampsService
   ) { }
 
   populateTypes(){
-    this.campService.getOptions().subscribe(data=>{
-      this.types = data.options.headStaff_types;
-      this.selectedChanged.emit(this.types[0]);
-    });
-    
+      this.selectedChanged.emit(this.types[0]); 
   }
 
   handleChange(e){

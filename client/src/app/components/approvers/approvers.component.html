@@ -10,7 +10,7 @@
         <td>{{division.name}}</td>
         <td>
           <p *ngFor="let leader of division.approvers">{{leader.first}} {{leader.last}} <button class="btn btn-primary" (click) = "removeHead(division._id,leader._id)">X</button></p>
-          <app-head-staff-dropdown (selectedChanged) = "preAddHead($event,division)" (showAddButton) = "showAddButton($event,division)" [exclude]="division.leaders"></app-head-staff-dropdown>
+          <app-head-staff-dropdown (selectedChanged) = "preAddHead($event,division)" (showAddButton) = "showAddButton($event,division)" [exclude]="division.approvers" [heads]="heads"></app-head-staff-dropdown>
           <button class="btn btn-primary" *ngIf = "division.showAddButton" (click) = "addHead(division)">Add</button>
         </td>
       </tr>

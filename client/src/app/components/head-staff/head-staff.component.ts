@@ -18,6 +18,7 @@ export class HeadStaffComponent implements OnInit {
   heads;
   newHead;
   toAddType;
+  types;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -82,6 +83,12 @@ export class HeadStaffComponent implements OnInit {
     });
   }
 
+  getTypes(){
+    this.campsService.getOptions().subscribe(data=>{
+      this.types = data.options.headStaff_types;
+      this.getAllHeads();
+    });
+  }
   showAdd(){
     this.newHead = true;
   }
@@ -120,7 +127,7 @@ export class HeadStaffComponent implements OnInit {
       this.previousUrl = this.authGuard.redirectUrl;
       this.authGuard.redirectUrl = undefined;
     }
-    this.getAllHeads();
+    this.getTypes();
   }
 
 }

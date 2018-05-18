@@ -17,6 +17,7 @@ export class DivisionsComponent implements OnInit {
   previousUrl;
   newCamp = false;
   divisions;
+  heads;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -95,6 +96,13 @@ export class DivisionsComponent implements OnInit {
     })
   }
 
+  getHeads(){
+    this.campsService.getAllHeads().subscribe(data=>{
+      this.heads = data.heads;
+      this.getAllDivisions();
+    });
+  }
+
   showAddButton(e,division){
     division.showAddButton = e;
   }
@@ -114,7 +122,8 @@ export class DivisionsComponent implements OnInit {
       this.previousUrl = this.authGuard.redirectUrl;
       this.authGuard.redirectUrl = undefined;
     }
-    this.getAllDivisions();
+    this.getHeads();
+    
   }
 
 }

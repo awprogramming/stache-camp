@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { EvaluationsService } from '../../services/evaluations.service';
+import { CampsService } from '../../services/camps.service';
+
 import { Router } from '@angular/router';
 import { AuthGuard } from '../../guards/auth.guard';
 
@@ -19,10 +21,12 @@ export class QuestionsComponent implements OnInit {
   types;
   toAddType;
   toAddhType;
+  hsTypes;
 
   constructor(
     private formBuilder: FormBuilder,
     private evaluationsService: EvaluationsService,
+    private campsService: CampsService,
     private router: Router,
     private authGuard: AuthGuard
   ) { 
@@ -92,6 +96,12 @@ export class QuestionsComponent implements OnInit {
   }
 
   
+  getTypes(){
+    this.campsService.getOptions().subscribe(data=>{
+      this.hsTypes = data.options.headStaff_types;
+      this.getAllQuestions();
+    });
+  }
 
 
 
@@ -110,7 +120,7 @@ export class QuestionsComponent implements OnInit {
       this.previousUrl = this.authGuard.redirectUrl;
       this.authGuard.redirectUrl = undefined;
     }
-    this.getAllQuestions();
+    this.getTypes();
   }
 
 }

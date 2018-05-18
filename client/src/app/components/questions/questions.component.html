@@ -26,7 +26,7 @@
       <div class="form-group">
         <label for="headStaff-type">Type</label>
         <div>
-            <app-head-staff-type-dropdown (selectedChanged) = "preAddhType($event,type)"></app-head-staff-type-dropdown>
+            <app-head-staff-type-dropdown (selectedChanged) = "preAddhType($event,type)" [types]="hsTypes"></app-head-staff-type-dropdown>
         </div>
       </div>
     
