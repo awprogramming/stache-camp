@@ -35436,7 +35436,7 @@ module.exports = ""
 /***/ "./src/app/components/approvers/approvers.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngFor=\"let gender of divisions\">\n  <h2 *ngIf=\"gender._id.gender=='male'\">Boys Side</h2>\n  <h2 *ngIf=\"gender._id.gender=='female'\">Girls Side</h2>\n  <table class=\"table\">\n      <tr>\n        <th>Name</th>\n        <th>Approver(s)</th>\n      </tr>\n      <tr *ngFor=\"let division of gender.divisions\">\n        <td>{{division.name}}</td>\n        <td>\n          <p *ngFor=\"let leader of division.approvers\">{{leader.first}} {{leader.last}} <button class=\"btn btn-primary\" (click) = \"removeHead(division._id,leader._id)\">X</button></p>\n          <app-head-staff-dropdown (selectedChanged) = \"preAddHead($event,division)\" (showAddButton) = \"showAddButton($event,division)\" [exclude]=\"division.leaders\"></app-head-staff-dropdown>\n          <button class=\"btn btn-primary\" *ngIf = \"division.showAddButton\" (click) = \"addHead(division)\">Add</button>\n        </td>\n      </tr>\n    </table>\n</div>\n    "
+module.exports = "<div *ngFor=\"let gender of divisions\">\n  <h2 *ngIf=\"gender._id.gender=='male'\">Boys Side</h2>\n  <h2 *ngIf=\"gender._id.gender=='female'\">Girls Side</h2>\n  <table class=\"table\">\n      <tr>\n        <th>Name</th>\n        <th>Approver(s)</th>\n      </tr>\n      <tr *ngFor=\"let division of gender.divisions\">\n        <td>{{division.name}}</td>\n        <td>\n          <p *ngFor=\"let leader of division.approvers\">{{leader.first}} {{leader.last}} <button class=\"btn btn-primary\" (click) = \"removeHead(division._id,leader._id)\">X</button></p>\n          <app-head-staff-dropdown (selectedChanged) = \"preAddHead($event,division)\" (showAddButton) = \"showAddButton($event,division)\" [exclude]=\"division.approvers\" [heads]=\"heads\"></app-head-staff-dropdown>\n          <button class=\"btn btn-primary\" *ngIf = \"division.showAddButton\" (click) = \"addHead(division)\">Add</button>\n        </td>\n      </tr>\n    </table>\n</div>\n    "
 
 /***/ }),
 
@@ -35500,6 +35500,13 @@ var ApproversComponent = (function () {
     ApproversComponent.prototype.showAddButton = function (e, division) {
         division.showAddButton = e;
     };
+    ApproversComponent.prototype.getHeads = function () {
+        var _this = this;
+        this.campsService.getAllHeads().subscribe(function (data) {
+            _this.heads = data.heads;
+            _this.getAllDivisions();
+        });
+    };
     ApproversComponent.prototype.ngOnInit = function () {
         if (this.authGuard.redirectUrl) {
             this.messageClass = 'alert alert-danger';
@@ -35507,7 +35514,7 @@ var ApproversComponent = (function () {
             this.previousUrl = this.authGuard.redirectUrl;
             this.authGuard.redirectUrl = undefined;
         }
-        this.getAllDivisions();
+        this.getHeads();
     };
     ApproversComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -36522,7 +36529,7 @@ module.exports = ""
 /***/ "./src/app/components/counselors/counselors.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"newCamp\">\n    <h2 class=\"page-header\">Register Counselor</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n    \n      <div class=\"form-group\">\n        <label for=\"first\">First Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"first\" formControlName=\"first\" />\n        </div>\n      </div>\n    \n      <div class=\"form-group\">\n        <label for=\"last\">Last Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"last\" formControlName=\"last\" />\n        </div>\n      </div>\n      \n      <div class=\"form-group\">\n        <label for=\"gender\">Gender</label>\n        <div>\n          <div>\n            <input class=\"form-check-input\" formControlName=\"gender\" type=\"radio\" name=\"gender\" value=\"male\">\n            <label class=\"form-check-label\">Male</label>\n          </div>\n          <div>\n              <input class=\"form-check-input\" formControlName=\"gender\" type=\"radio\" name=\"gender\" value=\"female\">\n              <label class=\"form-check-label\">Female</label>\n          </div>\n        </div>\n      </div>\n\n      <div *ngIf=\"lgReg\">\n        <div class=\"form-group\">\n            <label for=\"email\">Email</label>\n            <div>\n              <input class=\"form-control\" type=\"text\" name=\"email\" formControlName=\"email\" />\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label for=\"password\">Password</label>\n            <div>\n              <input class=\"form-control\" type=\"password\" name=\"password\" formControlName=\"password\" />\n            </div>\n          </div>\n        </div>\n      <div *ngIf=\"!lgReg\">\n        <div class=\"form-group\">\n          <label for=\"type\">Type</label>\n          <div>\n              <app-counselor-types-dropdown (selectedChanged) = \"preAddType($event,type)\"></app-counselor-types-dropdown>\n          </div>\n        </div>\n      </div>\n    \n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n    </form>\n</div>\n\n<div *ngIf=\"bulkAdd\">\n    <h2 class=\"page-header\">Bulk Upload Counselor</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    \n    <form [formGroup]=\"bulkAddForm\" (submit)=\"onBulkUploadSubmit()\">\n    \n      <div class=\"form-group\">\n        <label for=\"counselor_file\">Counselor CSV File</label>\n        <div>\n          <input class=\"form-control\" type=\"file\" (change)=\"fileUploaded($event)\" name=\"counselor_file\" formControlName=\"counselor_file\" />\n        </div>\n      </div>\n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Upload\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelBulkAdd()\" value=\"Cancel Add\" />\n    </form>\n</div>\n\n    \n    <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newCamp && authService.admin()\">Add</button>\n    \n    <button class=\"btn btn-primary\" (click) = \"showBulkAdd()\" *ngIf = \"!bulkAdd && authService.admin()\">Upload Counselor CSV File</button>\n    \n    <div *ngIf=\"authService.admin()\">\n        <div class=\"panel with-nav-tabs\">\n            <div class=\"panel-heading\">\n                    <ul class=\"nav nav-tabs\">\n                        <li class=\"nav-item\" [ngClass] = \"{'active':i==0}\" *ngFor=\"let session of sessions; let i = index\">\n                          <a  class=\"nav-link\" id=\"{{session._id.session_name}}-tab\" data-toggle=\"tab\" href=\"#{{session._id.session_name}}\" role=\"tab\" attr.aria-controls=\"{{session._id.session_name}}\" aria-selected=\"true\">{{session._id.session_name}}</a>\n                        </li>\n                    </ul>\n            </div>\n            <div class=\"panel-body\">\n                <div class=\"tab-content\">\n                    <div *ngFor=\"let session of sessions; let i = index\" [ngClass] = \"{'in active':i==0}\" class=\"tab-pane fade\" id=\"{{session._id.session_name}}\">\n                        <h2>{{session._id.session_name}}</h2>\n                        <table class=\"table\" >\n                            <tr>\n                              <th>First</th>\n                              <th>Last</th>\n                              <th>Gender</th>\n                              <th>Division</th>\n                              <th>Type</th>\n                              <th>Specialty</th>\n                              <th *ngIf=\"i!=0\"></th>\n                              <th *ngIf=\"i==0\"></th>\n                            </tr>\n                            <tr *ngFor=\"let counselor of session.counselors\">\n                              <td>{{counselor.first}}</td>\n                              <td>{{counselor.last}}</td>\n                              <td>{{counselor.gender}}</td>\n                              <td *ngIf=\"counselor.division \">{{counselor.division.name}}</td>\n                              <td *ngIf=\"!counselor.division\">\n                                <app-divisions-dropdown *ngIf=\"i==0\" (selectedChanged) = \"preAdd($event,counselor)\" [gender]=\"counselor.gender\" [divisions]=\"divGenders(counselor.gender)\"></app-divisions-dropdown>\n                                <button *ngIf=\"i==0\" class=\"btn btn-primary\" (click) = \"addDivision(counselor)\">Add</button>\n                              </td>\n                              <td>{{counselor.type.type}}</td>\n                              <td *ngIf=\"counselor.specialty\">{{counselor.specialty.name}}</td>\n                              <td *ngIf=\"!counselor.specialty\">\n                                  <app-specialties-dropdown *ngIf=\"i==0 && counselor.type.type=='specialist'\" (selectedChanged) = \"preAddSpecialty($event,counselor)\"></app-specialties-dropdown>\n                                  <button *ngIf=\"i==0 && counselor.type.type=='specialist'\" class=\"btn btn-primary\" (click) = \"addSpecialty(counselor)\">Add</button>\n                              </td>\n                              <td *ngIf=\"i!=0 && counselor.hired\">Hired</td>\n                              <td *ngIf=\"i!=0 && !counselor.hired\">\n                                  <button class=\"btn btn-primary\" (click) = \"rehire(counselor)\">Rehire</button>\n                              </td>\n                              <td *ngIf=\"i==0\"><button class=\"btn btn-primary\" (click) = \"remove(counselor)\">X</button></td>\n                            </tr>\n                          </table>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div *ngIf=\"authService.isUser()\">\n      <div *ngFor=\"let division of divisions\">\n      <h2>{{division}}</h2>\n      <table class=\"table\" >\n          <tr>\n            <th>First</th>\n            <th>Last</th>\n            <th>Gender</th>\n            <th>Type</th>\n            <th>Specialty</th>\n          </tr>\n          <tr *ngFor=\"let counselor of counselors[division]\">\n            <td>{{counselor.first}}</td>\n            <td>{{counselor.last}}</td>\n            <td>{{counselor.gender}}</td>\n            <td>{{counselor.type.type}}</td>\n            <td>{{counselor.specialty?.name}}</td>\n          </tr>\n        </table>\n      </div>\n    </div>\n    "
+module.exports = "<div *ngIf=\"newCamp\">\n    <h2 class=\"page-header\">Register Counselor</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n    \n      <div class=\"form-group\">\n        <label for=\"first\">First Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"first\" formControlName=\"first\" />\n        </div>\n      </div>\n    \n      <div class=\"form-group\">\n        <label for=\"last\">Last Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"last\" formControlName=\"last\" />\n        </div>\n      </div>\n      \n      <div class=\"form-group\">\n        <label for=\"gender\">Gender</label>\n        <div>\n          <div>\n            <input class=\"form-check-input\" formControlName=\"gender\" type=\"radio\" name=\"gender\" value=\"male\">\n            <label class=\"form-check-label\">Male</label>\n          </div>\n          <div>\n              <input class=\"form-check-input\" formControlName=\"gender\" type=\"radio\" name=\"gender\" value=\"female\">\n              <label class=\"form-check-label\">Female</label>\n          </div>\n        </div>\n      </div>\n\n      <div *ngIf=\"lgReg\">\n        <div class=\"form-group\">\n            <label for=\"email\">Email</label>\n            <div>\n              <input class=\"form-control\" type=\"text\" name=\"email\" formControlName=\"email\" />\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label for=\"password\">Password</label>\n            <div>\n              <input class=\"form-control\" type=\"password\" name=\"password\" formControlName=\"password\" />\n            </div>\n          </div>\n        </div>\n      <div *ngIf=\"!lgReg\">\n        <div class=\"form-group\">\n          <label for=\"type\">Type</label>\n          <div>\n              <app-counselor-types-dropdown (selectedChanged) = \"preAddType($event,type)\"></app-counselor-types-dropdown>\n          </div>\n        </div>\n      </div>\n    \n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n    </form>\n</div>\n\n<div *ngIf=\"bulkAdd\">\n    <h2 class=\"page-header\">Bulk Upload Counselor</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    \n    <form [formGroup]=\"bulkAddForm\" (submit)=\"onBulkUploadSubmit()\">\n    \n      <div class=\"form-group\">\n        <label for=\"counselor_file\">Counselor CSV File</label>\n        <div>\n          <input class=\"form-control\" type=\"file\" (change)=\"fileUploaded($event)\" name=\"counselor_file\" formControlName=\"counselor_file\" />\n        </div>\n      </div>\n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Upload\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelBulkAdd()\" value=\"Cancel Add\" />\n    </form>\n</div>\n\n    \n    <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newCamp && authService.admin()\">Add</button>\n    \n    <button class=\"btn btn-primary\" (click) = \"showBulkAdd()\" *ngIf = \"!bulkAdd && authService.admin()\">Upload Counselor CSV File</button>\n    \n    <div *ngIf=\"authService.admin()\">\n        <div class=\"panel with-nav-tabs\">\n            <div class=\"panel-heading\">\n                    <ul class=\"nav nav-tabs\">\n                        <li class=\"nav-item\" [ngClass] = \"{'active':i==0}\" *ngFor=\"let session of sessions; let i = index\">\n                          <a  class=\"nav-link\" id=\"{{session._id.session_name}}-tab\" data-toggle=\"tab\" href=\"#{{session._id.session_name}}\" role=\"tab\" attr.aria-controls=\"{{session._id.session_name}}\" aria-selected=\"true\">{{session._id.session_name}}</a>\n                        </li>\n                    </ul>\n            </div>\n            <div class=\"panel-body\">\n                <div class=\"tab-content\">\n                    <div *ngFor=\"let session of sessions; let i = index\" [ngClass] = \"{'in active':i==0}\" class=\"tab-pane fade\" id=\"{{session._id.session_name}}\">\n                        <h2>{{session._id.session_name}}</h2>\n                        <table class=\"table\" >\n                            <tr>\n                              <th>First</th>\n                              <th>Last</th>\n                              <th>Gender</th>\n                              <th>Division</th>\n                              <th>Type</th>\n                              <th>Specialty</th>\n                              <th *ngIf=\"i!=0\"></th>\n                              <th *ngIf=\"i!=0\"><button class=\"btn btn-primary\" (click) = \"massRehire()\">Rehire Selected</button></th>\n                              <th *ngIf=\"i==0\"></th>\n                            </tr>\n                            <tr *ngFor=\"let counselor of session.counselors\">\n                              <td>{{counselor.first}}</td>\n                              <td>{{counselor.last}}</td>\n                              <td>{{counselor.gender}}</td>\n                              <td *ngIf=\"counselor.division \">{{counselor.division.name}}</td>\n                              <td *ngIf=\"!counselor.division\">\n                                <app-divisions-dropdown *ngIf=\"i==0\" (selectedChanged) = \"preAdd($event,counselor)\" [gender]=\"counselor.gender\" [divisions]=\"divGenders(counselor.gender)\"></app-divisions-dropdown>\n                                <button *ngIf=\"i==0\" class=\"btn btn-primary\" (click) = \"addDivision(counselor)\">Add</button>\n                              </td>\n                              <td>{{counselor.type.type}}</td>\n                              <td *ngIf=\"counselor.specialty\">{{counselor.specialty.name}}</td>\n                              <td *ngIf=\"!counselor.specialty\">\n                                  <app-specialties-dropdown *ngIf=\"i==0 && counselor.type.type=='specialist'\" (selectedChanged) = \"preAddSpecialty($event,counselor)\"></app-specialties-dropdown>\n                                  <button *ngIf=\"i==0 && counselor.type.type=='specialist'\" class=\"btn btn-primary\" (click) = \"addSpecialty(counselor)\">Add</button>\n                              </td>\n                              <td *ngIf=\"i!=0 && counselor.hired\">Hired</td>\n                              <td *ngIf=\"i!=0 && !counselor.hired\">\n                                  <button class=\"btn btn-primary\" (click) = \"rehire(counselor,false)\">Rehire</button>\n                              </td>\n                              <td *ngIf=\"i!=0 && counselor.hired\"></td>\n                              <td *ngIf=\"i!=0 && !counselor.hired\">\n                                  <input type=\"checkbox\" (change)=\"preMassRehire($event,counselor)\">\n                              </td>\n                              <td *ngIf=\"i==0\"><button class=\"btn btn-primary\" (click) = \"remove(counselor)\">X</button></td>\n                            </tr>\n                          </table>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div *ngIf=\"authService.isUser()\">\n      <div *ngFor=\"let division of divisions\">\n      <h2>{{division}}</h2>\n      <table class=\"table\" >\n          <tr>\n            <th>First</th>\n            <th>Last</th>\n            <th>Gender</th>\n            <th>Type</th>\n            <th>Specialty</th>\n          </tr>\n          <tr *ngFor=\"let counselor of counselors[division]\">\n            <td>{{counselor.first}}</td>\n            <td>{{counselor.last}}</td>\n            <td>{{counselor.gender}}</td>\n            <td>{{counselor.type.type}}</td>\n            <td>{{counselor.specialty?.name}}</td>\n          </tr>\n        </table>\n      </div>\n    </div>\n    "
 
 /***/ }),
 
@@ -36566,6 +36573,7 @@ var CounselorsComponent = (function () {
         this.processing = false;
         this.newCamp = false;
         this.bulkAdd = false;
+        this.toMassRehire = [];
         this.lgReg = route.snapshot.data['lgReg'];
         this.createForm();
     }
@@ -36787,7 +36795,23 @@ var CounselorsComponent = (function () {
     CounselorsComponent.prototype.cancelBulkAdd = function () {
         this.bulkAdd = false;
     };
-    CounselorsComponent.prototype.rehire = function (c) {
+    CounselorsComponent.prototype.preMassRehire = function (e, counselor) {
+        if (e.target.checked) {
+            this.toMassRehire[counselor._id] = counselor;
+        }
+        else {
+            delete this.toMassRehire[counselor._id];
+        }
+    };
+    CounselorsComponent.prototype.massRehire = function () {
+        console.log("hello world");
+        console.log(this.toMassRehire);
+        for (var _i = 0, _a = Object.keys(this.toMassRehire); _i < _a.length; _i++) {
+            var counselor = _a[_i];
+            this.rehire(this.toMassRehire[counselor], true);
+        }
+    };
+    CounselorsComponent.prototype.rehire = function (c, mass) {
         var _this = this;
         var counselor = {
             "counselor": c,
@@ -37225,7 +37249,7 @@ module.exports = ""
 /***/ "./src/app/components/divisions/divisions.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"newCamp\">\n    <h2 class=\"page-header\">Register Division</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    \n    <!-- Login Form -->\n    <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n    \n      <div class=\"form-group\">\n        <label for=\"name\">Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"name\" formControlName=\"name\" />\n        </div>\n      </div>\n\n      <!-- <div class=\"form-group\">\n        <label for=\"grade\">Grade</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"grade\" formControlName=\"grade\" />\n        </div>\n      </div> -->\n    \n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n    </form>\n    </div>\n    \n    <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newCamp\">Add</button>\n    <div *ngFor=\"let gender of divisions\">\n      <h2 *ngIf=\"gender._id.gender=='male'\">Boys Side</h2>\n      <h2 *ngIf=\"gender._id.gender=='female'\">Girls Side</h2>\n      <table class=\"table\">\n          <tr>\n            <th>Name</th>\n            <th>Leader(s)</th>\n            <th></th>\n          </tr>\n          <tr *ngFor=\"let division of gender.divisions\">\n            <td>{{division.name}}</td>\n            <td>\n              <p *ngFor=\"let leader of division.leaders\">{{leader.first}} {{leader.last}} <button class=\"btn btn-primary\" (click) = \"removeHead(division._id,leader._id)\">X</button></p>\n              <app-head-staff-dropdown (selectedChanged) = \"preAddHead($event,division)\" (showAddButton) = \"showAddButton($event,division)\" [exclude]=\"division.leaders\"></app-head-staff-dropdown>\n              <button class=\"btn btn-primary\" *ngIf = \"division.showAddButton\" (click) = \"addHead(division)\">Add</button>\n            </td>\n            <td><button class=\"btn btn-primary\" (click) = \"remove(division)\">X</button></td>\n          </tr>\n        </table>\n    </div>\n    "
+module.exports = "<div *ngIf=\"newCamp\">\n    <h2 class=\"page-header\">Register Division</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    \n    <!-- Login Form -->\n    <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n    \n      <div class=\"form-group\">\n        <label for=\"name\">Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"name\" formControlName=\"name\" />\n        </div>\n      </div>\n\n      <!-- <div class=\"form-group\">\n        <label for=\"grade\">Grade</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"grade\" formControlName=\"grade\" />\n        </div>\n      </div> -->\n    \n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n    </form>\n    </div>\n    \n    <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newCamp\">Add</button>\n    <div *ngFor=\"let gender of divisions\">\n      <h2 *ngIf=\"gender._id.gender=='male'\">Boys Side</h2>\n      <h2 *ngIf=\"gender._id.gender=='female'\">Girls Side</h2>\n      <table class=\"table\">\n          <tr>\n            <th>Name</th>\n            <th>Leader(s)</th>\n            <th></th>\n          </tr>\n          <tr *ngFor=\"let division of gender.divisions\">\n            <td>{{division.name}}</td>\n            <td>\n              <p *ngFor=\"let leader of division.leaders\">{{leader.first}} {{leader.last}} <button class=\"btn btn-primary\" (click) = \"removeHead(division._id,leader._id)\">X</button></p>\n              <app-head-staff-dropdown (selectedChanged) = \"preAddHead($event,division)\" (showAddButton) = \"showAddButton($event,division)\" [exclude]=\"division.leaders\" [heads]=\"heads\"></app-head-staff-dropdown>\n              <button class=\"btn btn-primary\" *ngIf = \"division.showAddButton\" (click) = \"addHead(division)\">Add</button>\n            </td>\n            <td><button class=\"btn btn-primary\" (click) = \"remove(division)\">X</button></td>\n          </tr>\n        </table>\n    </div>\n    "
 
 /***/ }),
 
@@ -37329,6 +37353,13 @@ var DivisionsComponent = (function () {
             _this.getAllDivisions();
         });
     };
+    DivisionsComponent.prototype.getHeads = function () {
+        var _this = this;
+        this.campsService.getAllHeads().subscribe(function (data) {
+            _this.heads = data.heads;
+            _this.getAllDivisions();
+        });
+    };
     DivisionsComponent.prototype.showAddButton = function (e, division) {
         division.showAddButton = e;
     };
@@ -37345,7 +37376,7 @@ var DivisionsComponent = (function () {
             this.previousUrl = this.authGuard.redirectUrl;
             this.authGuard.redirectUrl = undefined;
         }
-        this.getAllDivisions();
+        this.getHeads();
     };
     DivisionsComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -37425,7 +37456,7 @@ module.exports = ".numerical{\n    font-size: 2em;\n    padding: 30px; \n}\n\n.s
 /***/ "./src/app/components/evaluate/evaluate.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-back-button></app-back-button>\n<h2>Evaluation #{{evaluation?.evaluation.number}} for {{evaluation?.counselor.first}} {{evaluation?.counselor.last}}</h2>\n<h3>Session: {{evaluation?.evaluation.session.name}}</h3>\n\n<div *ngFor=\"let answer of evaluation?.evaluation.answers; $index as i\">\n    <div class=\"flex\">\n      <div class=\"con-td\">\n          <p>{{answer.question.content}}</p>\n          <input class=\"slider\" [disabled] = \"view || approver\" type=\"range\" min=\"{{options?.evaluationOpts.low}}\" max=\"{{options?.evaluationOpts.high}}\" (change)=\"slider_change($event,answer)\" step=\"1\" value=\"{{answer.numerical}}\">\n          <textarea class=\"full form-control\" [disabled] = \"view || approver\" (focusout)=\"textarea_change($event,answer)\">{{answer.text}}</textarea>\n      </div>\n      <div class=\"num-td\">\n          <span class=\"numerical\">{{answer.numerical}}</span>\n      </div>\n    </div>\n    <hr>\n</div>\n<div *ngIf=\"type=='leader'\">\n<span>Additional Notes</span>\n<textarea class=\"full form-control\" [disabled] = \"view || approver\" (focusout)=\"additional_change($event)\">{{evaluation?.evaluation.additional_notes}}</textarea>\n</div>\n\n<div id=\"filler\"></div>\n\n\n<div class=\"eval_summary\">\n  <hr>\n  <div class=\"flex\">\n    <span class=\"flex-1\">Score: {{percentage}}%</span>\n    <span class=\"flex-1\">Level: {{level}}</span>\n    <div class=\"flex-1\" *ngIf=\"!view\">\n      <div *ngIf=\"!approver\">\n        <button *ngIf=\"!saved\" class=\"btn btn-primary\" (click) = \"save()\">Save</button>\n        <span *ngIf=\"saved\">Saved</span>\n        <button class=\"btn btn-primary\" (click) = \"submit()\">Submit</button>\n      </div>\n      <div *ngIf=\"approver\">\n        <span *ngIf=\"!evaluation?.evaluation.submitted\">Evaluation Not Yet Submitted</span>\n        <button *ngIf=\"!evaluation?.evaluation.approved && evaluation?.evaluation?.submitted\" class=\"btn btn-primary\" (click) = \"approve()\">Approve</button>\n        <span *ngIf=\"evaluation?.evaluation.approved\">Approved</span>\n      </div>\n    </div>\n  </div>\n</div>\n"
+module.exports = "<app-back-button></app-back-button>\n<h2>Evaluation #{{evaluation?.evaluation.number}} for {{evaluation?.counselor.first}} {{evaluation?.counselor.last}}</h2>\n<h3>Session: {{evaluation?.evaluation.session.name}}</h3>\n\n<div *ngFor=\"let answer of evaluation?.evaluation.answers; $index as i\">\n    <div class=\"flex\">\n      <div class=\"con-td\">\n          <p>{{answer.question.content}}</p>\n          <input class=\"slider\" [disabled] = \"view || approver\" type=\"range\" min=\"{{options?.evaluationOpts.low}}\" max=\"{{options?.evaluationOpts.high}}\" (change)=\"slider_change($event,answer)\" step=\"1\" value=\"{{answer.numerical}}\">\n          <textarea class=\"full form-control\" [disabled] = \"view || approver\" (focusout)=\"textarea_change($event,answer)\">{{answer.text}}</textarea>\n      </div>\n      <div class=\"num-td\">\n          <span class=\"numerical\">{{answer.numerical}}</span>\n      </div>\n    </div>\n    <hr>\n</div>\n<div *ngIf=\"type=='leader'\">\n<span>Additional Notes</span>\n<textarea class=\"full form-control\" [disabled] = \"view || approver\" (focusout)=\"additional_change($event)\">{{evaluation?.evaluation.additional_notes}}</textarea>\n</div>\n\n<div id=\"filler\"></div>\n\n\n<div class=\"eval_summary\">\n  <hr>\n  <div class=\"flex\">\n    <span class=\"flex-1\">Score: {{percentage}}%</span>\n    <span class=\"flex-1\">Level: {{level}}</span>\n    <div class=\"flex-1\" *ngIf=\"!view\">\n      <div *ngIf=\"!approver\">\n        <button *ngIf=\"!saved\" class=\"btn btn-primary\" (click) = \"save()\">Save</button>\n        <span *ngIf=\"saved\">Saved</span>\n        <button *ngIf=\"type != 'head_specialist'\" class=\"btn btn-primary\" (click) = \"submit()\">Submit</button>\n      </div>\n      <div *ngIf=\"approver\">\n        <span *ngIf=\"!evaluation?.evaluation.submitted\">Evaluation Not Yet Submitted</span>\n        <button *ngIf=\"!evaluation?.evaluation.approved && evaluation?.evaluation?.submitted\" class=\"btn btn-primary\" (click) = \"approve()\">Approve</button>\n        <span *ngIf=\"evaluation?.evaluation.approved\">Approved</span>\n      </div>\n    </div>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -38213,7 +38244,7 @@ module.exports = ""
 /***/ "./src/app/components/head-staff-dropdown/head-staff-dropdown.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<select *ngIf=\"heads && heads.length!=0\" (change) = \"handleChange($event);\">\n  <option *ngFor=\"let head of heads; index as i\" value=\"{{i}}\">{{head.first}} {{head.last}}</option>\n</select>"
+module.exports = "<select *ngIf=\"inDD && inDD.length!=0\" (change) = \"handleChange($event);\">\n  <option *ngFor=\"let head of inDD; index as i\" value=\"{{i}}\">{{head.first}} {{head.last}}</option>\n</select>"
 
 /***/ }),
 
@@ -38242,22 +38273,31 @@ var HeadStaffDropdownComponent = (function () {
         this.showAddButton = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
     }
     HeadStaffDropdownComponent.prototype.populateHeads = function () {
-        var _this = this;
-        this.campService.getAllHeads().subscribe(function (data) {
-            _this.heads = data.heads;
-            for (var ex in _this.exclude) {
-                for (var head in _this.heads) {
-                    if (isEquivalent(_this.exclude[ex], _this.heads[head])) {
-                        _this.heads.splice(head, 1);
+        this.inDD = [];
+        console.log(this.heads);
+        console.log(this.exclude);
+        if (this.exclude.length == 0) {
+            this.inDD = this.heads;
+        }
+        else {
+            for (var head in this.heads) {
+                var e = false;
+                for (var ex in this.exclude) {
+                    // console.log(this.exclude[ex]["_id"],this.heads[head]["_id"],this.exclude[ex]["_id"] == this.heads[head]["_id"])
+                    if (this.exclude[ex]["_id"] == this.heads[head]["_id"]) {
+                        e = true;
+                        break;
                     }
                 }
+                if (!e)
+                    this.inDD.push(this.heads[head]);
             }
-            _this.selectedChanged.emit(_this.heads[0]);
-            _this.showAddButton.emit(_this.heads.length != 0);
-        });
+        }
+        this.selectedChanged.emit(this.inDD[0]);
+        this.showAddButton.emit(this.inDD.length != 0);
     };
     HeadStaffDropdownComponent.prototype.handleChange = function (e) {
-        this.selectedChanged.emit(this.heads[e.target.value]);
+        this.selectedChanged.emit(this.inDD[e.target.value]);
     };
     HeadStaffDropdownComponent.prototype.ngOnInit = function () {
         this.populateHeads();
@@ -38266,6 +38306,10 @@ var HeadStaffDropdownComponent = (function () {
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
         __metadata("design:type", Array)
     ], HeadStaffDropdownComponent.prototype, "exclude", void 0);
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
+        __metadata("design:type", Array)
+    ], HeadStaffDropdownComponent.prototype, "heads", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])(),
         __metadata("design:type", Object)
@@ -38348,11 +38392,7 @@ var HeadStaffTypeDropdownComponent = (function () {
         this.selectedChanged = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
     }
     HeadStaffTypeDropdownComponent.prototype.populateTypes = function () {
-        var _this = this;
-        this.campService.getOptions().subscribe(function (data) {
-            _this.types = data.options.headStaff_types;
-            _this.selectedChanged.emit(_this.types[0]);
-        });
+        this.selectedChanged.emit(this.types[0]);
     };
     HeadStaffTypeDropdownComponent.prototype.handleChange = function (e) {
         this.selectedChanged.emit(this.types[e.target.value]);
@@ -38364,6 +38404,10 @@ var HeadStaffTypeDropdownComponent = (function () {
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])(),
         __metadata("design:type", Object)
     ], HeadStaffTypeDropdownComponent.prototype, "selectedChanged", void 0);
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
+        __metadata("design:type", Array)
+    ], HeadStaffTypeDropdownComponent.prototype, "types", void 0);
     HeadStaffTypeDropdownComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-head-staff-type-dropdown',
@@ -38389,7 +38433,7 @@ module.exports = ""
 /***/ "./src/app/components/head-staff/head-staff.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"newHead\">\n  <h2 class=\"page-header\">Register Head Staff Member</h2>\n\n  <!-- Custom Success/Error Message -->\n  <div class=\"row show-hide-message\">\n    <div [ngClass]=\"messageClass\">\n      {{ message }}\n    </div>\n  </div>\n\n  <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"first\">First</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"first\" formControlName=\"first\" />\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label for=\"last\">Last</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"last\" formControlName=\"last\" />\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label for=\"type\">Type</label>\n        <div>\n            <app-head-staff-type-dropdown (selectedChanged) = \"preAddType($event,type)\"></app-head-staff-type-dropdown>\n        </div>\n      </div>\n    <div class=\"form-group\">\n      <label for=\"email\">Email</label>\n      <div>\n        <input class=\"form-control\" type=\"text\" name=\"email\" formControlName=\"email\" />\n      </div>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"password\">Password</label>\n      <div>\n        <input class=\"form-control\" type=\"password\" name=\"password\" formControlName=\"password\" />\n      </div>\n    </div>\n    <!-- Submit Button -->\n    <input [disabled]=\"processing\" class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n  </form>\n</div>\n<button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newHead\">Add</button>\n<table class=\"table\">\n    <tr>\n      <th>First</th>\n      <th>Last</th>\n      <th>Email</th>\n      <th>Type</th>\n      <th></th>\n    </tr>\n    <tr *ngFor=\"let head of heads\">\n      <td>{{head.first}}</td>\n      <td>{{head.last}}</td>\n      <td>{{head.email}}</td>\n      <td *ngIf=\"head.type\">{{head.type.type}}</td>\n      <td *ngIf=\"!head.type\">\n          <app-head-staff-type-dropdown (selectedChanged) = \"preAddhType($event,head)\"></app-head-staff-type-dropdown>\n          <button class=\"btn btn-primary\" (click) = \"addhType(head)\">Add</button>\n      </td>\n      <td><button class=\"btn btn-primary\" (click) = \"remove(head)\">X</button></td>\n    </tr>\n  </table>"
+module.exports = "<div *ngIf=\"newHead\">\n  <h2 class=\"page-header\">Register Head Staff Member</h2>\n\n  <!-- Custom Success/Error Message -->\n  <div class=\"row show-hide-message\">\n    <div [ngClass]=\"messageClass\">\n      {{ message }}\n    </div>\n  </div>\n\n  <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"first\">First</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"first\" formControlName=\"first\" />\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label for=\"last\">Last</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"last\" formControlName=\"last\" />\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label for=\"type\">Type</label>\n        <div>\n            <app-head-staff-type-dropdown (selectedChanged) = \"preAddType($event,type)\"></app-head-staff-type-dropdown>\n        </div>\n      </div>\n    <div class=\"form-group\">\n      <label for=\"email\">Email</label>\n      <div>\n        <input class=\"form-control\" type=\"text\" name=\"email\" formControlName=\"email\" />\n      </div>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"password\">Password</label>\n      <div>\n        <input class=\"form-control\" type=\"password\" name=\"password\" formControlName=\"password\" />\n      </div>\n    </div>\n    <!-- Submit Button -->\n    <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n  </form>\n</div>\n<button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newHead\">Add</button>\n<table class=\"table\">\n    <tr>\n      <th>First</th>\n      <th>Last</th>\n      <th>Email</th>\n      <th>Type</th>\n      <th></th>\n    </tr>\n    <tr *ngFor=\"let head of heads\">\n      <td>{{head.first}}</td>\n      <td>{{head.last}}</td>\n      <td>{{head.email}}</td>\n      <td *ngIf=\"head.type\">{{head.type.type}}</td>\n      <td *ngIf=\"!head.type\">\n          <app-head-staff-type-dropdown (selectedChanged) = \"preAddhType($event,head)\" [types]=\"types\"></app-head-staff-type-dropdown>\n          <button class=\"btn btn-primary\" (click) = \"addhType(head)\">Add</button>\n      </td>\n      <td><button class=\"btn btn-primary\" (click) = \"remove(head)\">X</button></td>\n    </tr>\n  </table>"
 
 /***/ }),
 
@@ -38479,6 +38523,13 @@ var HeadStaffComponent = (function () {
             }
         });
     };
+    HeadStaffComponent.prototype.getTypes = function () {
+        var _this = this;
+        this.campsService.getOptions().subscribe(function (data) {
+            _this.types = data.options.headStaff_types;
+            _this.getAllHeads();
+        });
+    };
     HeadStaffComponent.prototype.showAdd = function () {
         this.newHead = true;
     };
@@ -38511,7 +38562,7 @@ var HeadStaffComponent = (function () {
             this.previousUrl = this.authGuard.redirectUrl;
             this.authGuard.redirectUrl = undefined;
         }
-        this.getAllHeads();
+        this.getTypes();
     };
     HeadStaffComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -39531,7 +39582,7 @@ module.exports = ""
 /***/ "./src/app/components/questions/questions.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"newQuestion\">\n    <h2 class=\"page-header\">Register Question</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    \n    <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"content\">Content</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"content\" formControlName=\"content\" />\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"type\">Type</label>\n        <div>\n            <app-counselor-types-dropdown (selectedChanged) = \"preAddType($event,type)\"></app-counselor-types-dropdown>\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"headStaff-type\">Type</label>\n        <div>\n            <app-head-staff-type-dropdown (selectedChanged) = \"preAddhType($event,type)\"></app-head-staff-type-dropdown>\n        </div>\n      </div>\n    \n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n    </form>\n    </div>\n    <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newQuestion\">Add</button>\n\n    <div *ngFor=\"let type of types\">\n      <h2>{{type?._id.type.type}}</h2>\n      <table class=\"table\">\n          <tr>\n            <th>Content</th>\n            <th>Evaluated By</th>\n            <th></th>\n          </tr>\n          <tr *ngFor=\"let question of type.questions\">\n            <td>{{question.content}}</td>\n            <td>{{question.byWho.type}}</td>\n            <td><button class=\"btn btn-primary\" (click) = \"remove(question)\">X</button></td>\n          </tr>\n        </table>\n    </div>"
+module.exports = "<div *ngIf=\"newQuestion\">\n    <h2 class=\"page-header\">Register Question</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    \n    <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"content\">Content</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"content\" formControlName=\"content\" />\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"type\">Type</label>\n        <div>\n            <app-counselor-types-dropdown (selectedChanged) = \"preAddType($event,type)\"></app-counselor-types-dropdown>\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"headStaff-type\">Type</label>\n        <div>\n            <app-head-staff-type-dropdown (selectedChanged) = \"preAddhType($event,type)\" [types]=\"hsTypes\"></app-head-staff-type-dropdown>\n        </div>\n      </div>\n    \n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n    </form>\n    </div>\n    <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newQuestion\">Add</button>\n\n    <div *ngFor=\"let type of types\">\n      <h2>{{type?._id.type.type}}</h2>\n      <table class=\"table\">\n          <tr>\n            <th>Content</th>\n            <th>Evaluated By</th>\n            <th></th>\n          </tr>\n          <tr *ngFor=\"let question of type.questions\">\n            <td>{{question.content}}</td>\n            <td>{{question.byWho.type}}</td>\n            <td><button class=\"btn btn-primary\" (click) = \"remove(question)\">X</button></td>\n          </tr>\n        </table>\n    </div>"
 
 /***/ }),
 
@@ -39543,8 +39594,9 @@ module.exports = "<div *ngIf=\"newQuestion\">\n    <h2 class=\"page-header\">Reg
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_forms__ = __webpack_require__("./node_modules/@angular/forms/esm5/forms.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_evaluations_service__ = __webpack_require__("./src/app/services/evaluations.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__guards_auth_guard__ = __webpack_require__("./src/app/guards/auth.guard.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_camps_service__ = __webpack_require__("./src/app/services/camps.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__guards_auth_guard__ = __webpack_require__("./src/app/guards/auth.guard.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -39559,10 +39611,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var QuestionsComponent = (function () {
-    function QuestionsComponent(formBuilder, evaluationsService, router, authGuard) {
+    function QuestionsComponent(formBuilder, evaluationsService, campsService, router, authGuard) {
         this.formBuilder = formBuilder;
         this.evaluationsService = evaluationsService;
+        this.campsService = campsService;
         this.router = router;
         this.authGuard = authGuard;
         this.processing = false;
@@ -39629,6 +39683,13 @@ var QuestionsComponent = (function () {
             }
         });
     };
+    QuestionsComponent.prototype.getTypes = function () {
+        var _this = this;
+        this.campsService.getOptions().subscribe(function (data) {
+            _this.hsTypes = data.options.headStaff_types;
+            _this.getAllQuestions();
+        });
+    };
     QuestionsComponent.prototype.showAdd = function () {
         this.newQuestion = true;
     };
@@ -39642,7 +39703,7 @@ var QuestionsComponent = (function () {
             this.previousUrl = this.authGuard.redirectUrl;
             this.authGuard.redirectUrl = undefined;
         }
-        this.getAllQuestions();
+        this.getTypes();
     };
     QuestionsComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -39652,8 +39713,9 @@ var QuestionsComponent = (function () {
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_forms__["a" /* FormBuilder */],
             __WEBPACK_IMPORTED_MODULE_2__services_evaluations_service__["a" /* EvaluationsService */],
-            __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* Router */],
-            __WEBPACK_IMPORTED_MODULE_4__guards_auth_guard__["a" /* AuthGuard */]])
+            __WEBPACK_IMPORTED_MODULE_3__services_camps_service__["a" /* CampsService */],
+            __WEBPACK_IMPORTED_MODULE_4__angular_router__["b" /* Router */],
+            __WEBPACK_IMPORTED_MODULE_5__guards_auth_guard__["a" /* AuthGuard */]])
     ], QuestionsComponent);
     return QuestionsComponent;
 }());
@@ -40275,7 +40337,7 @@ module.exports = ""
 /***/ "./src/app/components/specialties/specialties.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"newCamp\">\n  <h2 class=\"page-header\">Register Specialty</h2>\n  \n  <!-- Custom Success/Error Message -->\n  <div class=\"row show-hide-message\">\n    <div [ngClass]=\"messageClass\">\n      {{ message }}\n    </div>\n  </div>\n  \n  <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n  \n    <div class=\"form-group\">\n      <label for=\"name\">Name</label>\n      <div>\n        <input class=\"form-control\" type=\"text\" name=\"name\" formControlName=\"name\" />\n      </div>\n    </div>\n  \n    <!-- Submit Button -->\n    <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n    <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n  </form>\n  </div>\n  \n  <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newCamp\">Add</button>\n  <div>\n    <table class=\"table\">\n        <tr>\n          <th>Name</th>\n          <th>Head Specialists</th>\n          <th></th>\n        </tr>\n        <tr *ngFor=\"let specialty of specialties\">\n          <td>{{specialty.name}}</td>\n          <td>\n            <p *ngFor=\"let leader of specialty.head_specialists\">{{leader.first}} {{leader.last}} <button class=\"btn btn-primary\" (click) = \"removeHead(specialty._id,leader._id)\">X</button></p>\n            <app-head-staff-dropdown (selectedChanged) = \"preAddHead($event,specialty)\" (showAddButton) = \"showAddButton($event,specialty)\" [exclude]=\"specialty.head_specialists\"></app-head-staff-dropdown>\n            <button class=\"btn btn-primary\" *ngIf = \"specialty.showAddButton\" (click) = \"addHead(specialty)\">Add</button>\n          </td>\n          <td><button class=\"btn btn-primary\" (click) = \"remove(specialty)\">X</button></td>\n        </tr>\n      </table>\n  </div>\n  "
+module.exports = "<div *ngIf=\"newCamp\">\n  <h2 class=\"page-header\">Register Specialty</h2>\n  \n  <!-- Custom Success/Error Message -->\n  <div class=\"row show-hide-message\">\n    <div [ngClass]=\"messageClass\">\n      {{ message }}\n    </div>\n  </div>\n  \n  <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n  \n    <div class=\"form-group\">\n      <label for=\"name\">Name</label>\n      <div>\n        <input class=\"form-control\" type=\"text\" name=\"name\" formControlName=\"name\" />\n      </div>\n    </div>\n  \n    <!-- Submit Button -->\n    <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n    <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n  </form>\n  </div>\n  \n  <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newCamp\">Add</button>\n  <div>\n    <table class=\"table\">\n        <tr>\n          <th>Name</th>\n          <th>Head Specialists</th>\n          <th></th>\n        </tr>\n        <tr *ngFor=\"let specialty of specialties\">\n          <td>{{specialty.name}}</td>\n          <td>\n            <p *ngFor=\"let leader of specialty.head_specialists\">{{leader.first}} {{leader.last}} <button class=\"btn btn-primary\" (click) = \"removeHead(specialty._id,leader._id)\">X</button></p>\n            <app-head-staff-dropdown (selectedChanged) = \"preAddHead($event,specialty)\" (showAddButton) = \"showAddButton($event,specialty)\" [exclude]=\"specialty.head_specialists\" [heads]=\"heads\"></app-head-staff-dropdown>\n            <button class=\"btn btn-primary\" *ngIf = \"specialty.showAddButton\" (click) = \"addHead(specialty)\">Add</button>\n          </td>\n          <td><button class=\"btn btn-primary\" (click) = \"remove(specialty)\">X</button></td>\n        </tr>\n      </table>\n  </div>\n  "
 
 /***/ }),
 
@@ -40387,6 +40449,13 @@ var SpecialtiesComponent = (function () {
     SpecialtiesComponent.prototype.cancelAdd = function () {
         this.newCamp = false;
     };
+    SpecialtiesComponent.prototype.getHeads = function () {
+        var _this = this;
+        this.campsService.getAllHeads().subscribe(function (data) {
+            _this.heads = data.heads;
+            _this.getAllSpecialties();
+        });
+    };
     SpecialtiesComponent.prototype.ngOnInit = function () {
         if (this.authGuard.redirectUrl) {
             this.messageClass = 'alert alert-danger';
@@ -40394,7 +40463,7 @@ var SpecialtiesComponent = (function () {
             this.previousUrl = this.authGuard.redirectUrl;
             this.authGuard.redirectUrl = undefined;
         }
-        this.getAllSpecialties();
+        this.getHeads();
     };
     SpecialtiesComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -41913,7 +41982,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var AuthService = (function () {
     function AuthService(http) {
         this.http = http;
-        this.domain = ""; // Production;
+        //domain = ""; // Production;
+        this.domain = "http://localhost:8080/";
     }
     // Function to create headers, add token, to be used in HTTP requests
     AuthService.prototype.createAuthenticationHeaders = function () {
