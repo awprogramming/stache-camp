@@ -16,7 +16,7 @@ const SwimGroupSchema = require('./swimGroup').schema;
 
 const campSchema = new Schema({
     name: {type:String, required: true, unique: true},
-    admin: UserSchema,
+    admin: String,
     users: [UserSchema],
     divisions: [DivisionSchema],
     modules: [ModuleSchema],

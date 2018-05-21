@@ -148,8 +148,10 @@ module.exports = (router) => {
                 { $unwind: '$counselors.sessions'},
                 { $project: {counselors:1}},
                 { $group : { _id : {session_id:"$counselors.sessions._id",session_name:"$counselors.sessions.name"}, counselors:{$push:"$counselors"}}},
+                { $sort: {"_id.session_id":-1}},
                 
             ],(err,result)=>{
+                console.log(result);
                 const output = {
                     "sessions":result,
                     "cur_session":current_session

@@ -30,6 +30,7 @@ export class CounselorsComponent implements OnInit {
   options;
   lgReg;
   toMassRehire = [];
+  specialties;
   constructor(
     private formBuilder: FormBuilder,
     private campsService: CampsService,
@@ -179,6 +180,7 @@ export class CounselorsComponent implements OnInit {
         this.counselors = data.counselors;
       }
       if(this.authService.admin()){
+        console.log(data);
         this.sessions = data.output.sessions;
         if(data.output.sessions[0]._id.session_id!=data.output.cur_session._id){
           const session = {
@@ -316,6 +318,12 @@ export class CounselorsComponent implements OnInit {
       return this.dropdownDivisions.divisions[1].divisions;
   }
 
+  getSpecialties(){
+    this.campsService.getAllSpecialties().subscribe(data=>{
+      this.specialties = data.specialties;
+    });
+  }
+
   ngOnInit() {
     if(this.authGuard.redirectUrl){
       this.messageClass = 'alert alert-danger';
@@ -323,6 +331,7 @@ export class CounselorsComponent implements OnInit {
       this.previousUrl = this.authGuard.redirectUrl;
       this.authGuard.redirectUrl = undefined;
     }
+    this.getSpecialties();
     this.populateDivisions();
     this.getAllCounselors();
     this.getOptions();

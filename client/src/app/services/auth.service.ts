@@ -6,8 +6,8 @@ import { tokenNotExpired } from 'angular2-jwt';
 @Injectable()
 export class AuthService {
 
-  domain = ""; // Production;
-  //domain = "http://localhost:8080/";
+  //domain = ""; // Production;
+  domain = "http://localhost:8080/";
   authToken;
   user;
   options;
@@ -26,6 +26,11 @@ export class AuthService {
         'authorization': this.authToken // Attach token
       })
     });
+  }
+
+  changePassword(newPassword){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'authentication/change_password', newPassword, this.options).map(res => res.json());
   }
 
   // Function to get token from client local storage

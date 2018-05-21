@@ -48,17 +48,17 @@ let validPasswordChecker = (password) => {
     if (!password){
         return false;
     } else {
-        const regExp = new RegExp(/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/);
+        const regExp = new RegExp(/^(?=.*[0-9])(?=.*[!@#$%^&*\/])[a-zA-Z0-9!@#$%^&*\/]{7,60}$/);
         return regExp.test(password);
     }
 }
 
 const passwordValidators = [
+    // {
+    //     validator: passwordLengthChecker, message: 'Password must be between 8 and 35 characters'
+    // },
     {
-        validator: passwordLengthChecker, message: 'Password must be between 8 and 35 characters'
-    },
-    {
-        validator: validPasswordChecker, message: 'Password must include at least one numeric digit and a special character'
+        validator: validPasswordChecker, message: 'Password must include at least one numeric digit, one special character, and be at least 7 characters long'
     }
 ]
 
@@ -71,11 +71,11 @@ const userSchema = new Schema({
     counselorRef: String
 });
 
-
 userSchema.pre('save',function(next) {
 
-    if(!this.isModified('password'))
+    if(!this.isModified('password')){
         return next();
+    }
     
     bcrypt.hash(this.password,null,null,(err,hash) => {
         if (err) return next(err);

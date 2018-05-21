@@ -28,7 +28,7 @@ module.exports = (router) => {
         });
         let camp = new Camp({
             name: req.body.name,
-            admin: admin,
+            admin: admin._id,
             users:[admin],
             options:{
                 counselor_types:[
@@ -150,7 +150,7 @@ module.exports = (router) => {
                         }
                         else{
                             const token = jwt.sign({userId:camp.users[0]._id,campId:camp._id}, config.secret,{ expiresIn:'100d'});
-                            if(camp.users[0]._id.equals(admin._id)){
+                            if(camp.users[0]._id.equals(admin)){
                                 res.json({success:true,message:"Success",token:token, user:{_id:camp.users[0]._id,type:{type:"leader"},email:camp.users[0].email,permissions:"admin",camp_id:camp._id,modules:camp.modules}});
                             }
                             else{
@@ -167,7 +167,6 @@ module.exports = (router) => {
     router.get('/get_swim_group/:campId/:id',(req,res) => {
         Camp.findById(req.params.campId, (err,camp)=>{
             var data = camp.swimGroups.id(req.params.id);
-            console.log(data);
             var lifeguard = camp.counselors.id(data.lifeguardId);
             var campers = [];
             for(let camperId of data.camperIds){
@@ -181,24 +180,6 @@ module.exports = (router) => {
             res.json({success:true,group:result});
         });
     });
-
-    // router.use((req,res,next)=>{
-    //    const token = req.headers['authorization'];
-    //    if(!token){
-    //        res.json({success:false,message:req.headers});
-    //    }
-    //    else{
-    //        jwt.verify(token,config.secret,(err,decoded)=>{
-    //             if(err){
-    //                 res.json({succes:false,message:"Token invalid. "+err});
-    //             }
-    //             else{
-    //                 req.decoded = decoded;
-    //                 next();
-    //             }
-    //        });
-    //    }
-    // });
 
     router.use((req, res, next) => {
         const token = req.headers['authorization'];
@@ -215,6 +196,36 @@ module.exports = (router) => {
           });
         }
       });
+
+    
+    router.post('/change_password',(req,res)=>{
+        Camp.findById(req.decoded.campId).exec().then((camp)=>{
+            camp.users.id(req.decoded.userId).password = req.body.password;
+            camp.save((err) =>{
+                if (err) {
+                    if(err.errors){
+                        res.json({
+                            success:false,
+                            message: err.errors
+                        });
+                    }
+                    else{
+                        res.json({
+                            success:false,
+                            message: "Could not save user. Error: " + err
+                        });
+                    }
+                }
+                else{
+                    res.json({
+                        success:true,
+                        message: "Password Changed"
+                    });
+                }
+                })
+            });
+        });
+
 
     return router;
 }

@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit {
         this.router.navigate(['/swim-groups']);
       }
       else{
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/options']);
       }
     }
 

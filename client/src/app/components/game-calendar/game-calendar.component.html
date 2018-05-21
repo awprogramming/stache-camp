@@ -4,7 +4,7 @@
   <button class="btn btn-primary" *ngIf="authService.admin()" (click)="scheduler=true">Schedule Game</button>
   <div *ngIf="scheduler">
     <app-timepicker (selection)="timeSelected($event)"></app-timepicker>
-    <app-specialties-dropdown (selectedChanged)="specialtySelected($event)"></app-specialties-dropdown>
+    <app-specialties-dropdown (selectedChanged)="specialtySelected($event)" [specialties]="specialties"></app-specialties-dropdown>
     
     <form [formGroup]="form" (submit)="onScheduleSubmit()">
       <div class="form-group">

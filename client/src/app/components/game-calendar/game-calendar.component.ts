@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { SportsService } from '../../services/sports.service';
+import { CampsService } from '../../services/camps.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -17,9 +18,11 @@ export class GameCalendarComponent implements OnInit {
   scheduler = false;
   form: FormGroup;
   monthView;
+  specialties;
   constructor(
     private formBuilder: FormBuilder,
     private sportsService: SportsService,
+    private campsService: CampsService,
     private authService: AuthService
   ) {
     this.createForm();
@@ -92,11 +95,18 @@ export class GameCalendarComponent implements OnInit {
     return dayNames[day];
   }
 
+  getSpecialties(){
+    this.campsService.getAllSpecialties().subscribe(data=>{
+      this.specialties = data.specialties;
+    });
+  }
+
   displayTime(date){
     return new Date(date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
   }
 
   ngOnInit() {
+    this.getSpecialties();
   }
 
 }

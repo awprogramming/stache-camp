@@ -21,6 +21,7 @@ export class OptionsComponent implements OnInit {
   newTypeForm;
   newhTypeForm;
   perSessionForm;
+  newPasswordForm
   newType = false;
   newhType = false;
 
@@ -49,7 +50,11 @@ export class OptionsComponent implements OnInit {
     this.perSessionForm = this.formBuilder.group({
       per_session: ['', Validators.required],
     });
+    this.newPasswordForm = this.formBuilder.group({
+      password: ['', Validators.required],
+    });
   }
+  
 
   onFormSubmit() {
     const session = {
@@ -60,6 +65,32 @@ export class OptionsComponent implements OnInit {
     });
 
   }
+
+  
+  onNewPasswordSubmit(){
+    const newPassword = {
+      password: this.newPasswordForm.get('password').value
+    }
+    if(newPassword.password.length == 0){
+      this.messageClass = 'alert alert-danger'; // Set bootstrap error class
+      this.message = "Please enter a new password"; // Set error message
+    }
+    else{
+      this.authService.changePassword(newPassword).subscribe(data => {
+        if (!data.success) {
+          this.messageClass = 'alert alert-danger'; // Set bootstrap error class
+          console.log(data.message);
+          for(let error of Object.keys(data.message)){
+            this.message = data.message[error].message;
+          }
+            //this.message = error.message;
+        } else {
+          this.messageClass = 'alert alert-success'; // Set bootstrap success class
+          this.message = data.message; // Set success message
+        }
+      });
+    }
+  }  
 
   increasePeriod(){
     const newPeriod = {

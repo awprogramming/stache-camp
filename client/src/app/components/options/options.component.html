@@ -1,94 +1,114 @@
 <h2>Options</h2>
 
-<h3>Session</h3>
-<p *ngIf="options?.session">{{options?.session.name}}</p>
-<form [formGroup]="form" (submit)="onFormSubmit()">
-  <div class="form-group">
-    <label for="session_name">New Session</label>
-    <div>
-      <input class="form-control" type="text" name="session_name" formControlName="session_name" />
-    </div>
+<h3>Change Password</h3>
+<!-- Custom Success/Error Message -->
+<div class="row show-hide-message">
+  <div [ngClass]="messageClass">
+    {{ message }}
   </div>
-  <!-- Submit Button -->
-  <input class="btn btn-primary" type="submit" value="Submit" />
-</form>
-
-<h3>Head Staff Types</h3>
-<table class="table">
-  <tr>
-    <th>Type</th>
-    <th></th>
-  </tr>
-  <tr *ngFor="let type of options?.headStaff_types">
-    <td>{{type.type}}</td>
-    <td><button class="btn btn-primary" (click) = "removehType(type)">X</button></td>
-  </tr>
-</table>
-<div *ngIf="newhType">
-  <form [formGroup]="newhTypeForm" (submit)="onNewhTypeSubmit()">
-    <div class="form-group">
-      <label for="type">Name</label>
-      <div>
-        <input class="form-control" type="text" name="htype" formControlName="htype" />
-      </div>
-    </div>
-
-    <!-- Submit Button -->
-    <input class="btn btn-primary" type="submit" value="Register" />
-    <input class="btn btn-primary" (click) = "cancelhAdd()" value="Cancel Add" />
-  </form>
 </div>
-<button class="btn btn-primary" (click) = "showhAdd()" *ngIf = "!newType">Add</button>
-
-<h3>Counselor Types</h3>
-<table class="table">
-  <tr>
-    <th>Type</th>
-    <th></th>
-  </tr>
-  <tr *ngFor="let type of options?.counselor_types">
-    <td>{{type.type}}</td>
-    <td><button class="btn btn-primary" (click) = "removeType(type)">X</button></td>
-  </tr>
-</table>
-<div *ngIf="newType">
-  <form [formGroup]="newTypeForm" (submit)="onNewTypeSubmit()">
+<form [formGroup]="newPasswordForm" (submit)="onNewPasswordSubmit()">
     <div class="form-group">
-      <label for="type">Name</label>
+      <label for="password">New Password</label>
       <div>
-        <input class="form-control" type="text" name="type" formControlName="type" />
-      </div>
-    </div>
-
-    <!-- Submit Button -->
-    <input class="btn btn-primary" type="submit" value="Register" />
-    <input class="btn btn-primary" (click) = "cancelAdd()" value="Cancel Add" />
-  </form>
-</div>
-<button class="btn btn-primary" (click) = "showAdd()" *ngIf = "!newType">Add</button>
-
-<div *ngIf="campsService.hasModule('eval')">
-  <h2>Evaluation Options</h2>
-  <h3>Current Evaluation Period</h3>
-  <button class="btn btn-primary" [disabled]="options?.evaluationOpts.currentEval==1" (click)="decreasePeriod()">&lt;</button> 
-  {{options?.evaluationOpts.currentEval}} 
-  <button class="btn btn-primary" [disabled]="options?.evaluationOpts.currentEval==options?.evaluationOpts.perSession" (click)="increasePeriod()">&gt;</button>
-  <h3>Evaluations Per Session</h3>
-  <p>{{options?.evaluationOpts.perSession}}</p>
-  <form [formGroup]="perSessionForm" (submit)="onPerSessionSubmit()">
-    <div class="form-group">
-      <label for="per_session">New Evaluations Per Session Value</label>
-      <div>
-        <input class="form-control" type="number" name="per_session" formControlName="per_session" />
+        <input class="form-control" type="password" name="password" formControlName="password" />
       </div>
     </div>
     <!-- Submit Button -->
     <input class="btn btn-primary" type="submit" value="Submit" />
   </form>
-</div>
 
-<div *ngIf="campsService.hasModule('swim')">
-  <h2>Swim Options</h2>
-  <h3>Auto-Generation Max Campers</h3>
-  <input class="form-control" type="number" name="ag-max-swim" min=1 (input)="changeAGMax($event)" [value]="options?.swimOpts.agMax">
+<div *ngIf="authService.admin()">
+  <h3>Session</h3>
+  <p *ngIf="options?.session">{{options?.session.name}}</p>
+  <form [formGroup]="form" (submit)="onFormSubmit()">
+    <div class="form-group">
+      <label for="session_name">New Session</label>
+      <div>
+        <input class="form-control" type="text" name="session_name" formControlName="session_name" />
+      </div>
+    </div>
+    <!-- Submit Button -->
+    <input class="btn btn-primary" type="submit" value="Submit" />
+  </form>
+
+  <h3>Head Staff Types</h3>
+  <table class="table">
+    <tr>
+      <th>Type</th>
+      <th></th>
+    </tr>
+    <tr *ngFor="let type of options?.headStaff_types">
+      <td>{{type.type}}</td>
+      <td><button class="btn btn-primary" (click) = "removehType(type)">X</button></td>
+    </tr>
+  </table>
+  <div *ngIf="newhType">
+    <form [formGroup]="newhTypeForm" (submit)="onNewhTypeSubmit()">
+      <div class="form-group">
+        <label for="type">Name</label>
+        <div>
+          <input class="form-control" type="text" name="htype" formControlName="htype" />
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <input class="btn btn-primary" type="submit" value="Register" />
+      <input class="btn btn-primary" (click) = "cancelhAdd()" value="Cancel Add" />
+    </form>
+  </div>
+  <button class="btn btn-primary" (click) = "showhAdd()" *ngIf = "!newType">Add</button>
+
+  <h3>Counselor Types</h3>
+  <table class="table">
+    <tr>
+      <th>Type</th>
+      <th></th>
+    </tr>
+    <tr *ngFor="let type of options?.counselor_types">
+      <td>{{type.type}}</td>
+      <td><button class="btn btn-primary" (click) = "removeType(type)">X</button></td>
+    </tr>
+  </table>
+  <div *ngIf="newType">
+    <form [formGroup]="newTypeForm" (submit)="onNewTypeSubmit()">
+      <div class="form-group">
+        <label for="type">Name</label>
+        <div>
+          <input class="form-control" type="text" name="type" formControlName="type" />
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <input class="btn btn-primary" type="submit" value="Register" />
+      <input class="btn btn-primary" (click) = "cancelAdd()" value="Cancel Add" />
+    </form>
+  </div>
+  <button class="btn btn-primary" (click) = "showAdd()" *ngIf = "!newType">Add</button>
+
+  <div *ngIf="campsService.hasModule('eval')">
+    <h2>Evaluation Options</h2>
+    <h3>Current Evaluation Period</h3>
+    <button class="btn btn-primary" [disabled]="options?.evaluationOpts.currentEval==1" (click)="decreasePeriod()">&lt;</button> 
+    {{options?.evaluationOpts.currentEval}} 
+    <button class="btn btn-primary" [disabled]="options?.evaluationOpts.currentEval==options?.evaluationOpts.perSession" (click)="increasePeriod()">&gt;</button>
+    <h3>Evaluations Per Session</h3>
+    <p>{{options?.evaluationOpts.perSession}}</p>
+    <form [formGroup]="perSessionForm" (submit)="onPerSessionSubmit()">
+      <div class="form-group">
+        <label for="per_session">New Evaluations Per Session Value</label>
+        <div>
+          <input class="form-control" type="number" name="per_session" formControlName="per_session" />
+        </div>
+      </div>
+      <!-- Submit Button -->
+      <input class="btn btn-primary" type="submit" value="Submit" />
+    </form>
+  </div>
+
+  <div *ngIf="campsService.hasModule('swim')">
+    <h2>Swim Options</h2>
+    <h3>Auto-Generation Max Campers</h3>
+    <input class="form-control" type="number" name="ag-max-swim" min=1 (input)="changeAGMax($event)" [value]="options?.swimOpts.agMax">
+  </div>
 </div>
