@@ -1,22 +1,6 @@
 <h2>Options</h2>
 
-<h3>Change Password</h3>
-<!-- Custom Success/Error Message -->
-<div class="row show-hide-message">
-  <div [ngClass]="messageClass">
-    {{ message }}
-  </div>
-</div>
-<form [formGroup]="newPasswordForm" (submit)="onNewPasswordSubmit()">
-    <div class="form-group">
-      <label for="password">New Password</label>
-      <div>
-        <input class="form-control" type="password" name="password" formControlName="password" />
-      </div>
-    </div>
-    <!-- Submit Button -->
-    <input class="btn btn-primary" type="submit" value="Submit" />
-  </form>
+<app-password-reset [user]="-1"></app-password-reset>
 
 <div *ngIf="authService.admin()">
   <h3>Session</h3>

@@ -36,7 +36,7 @@ import { SwimStatComponent } from './components/swim-stat/swim-stat.component';
 import { SwimLevelsComponent } from './components/swim-levels/swim-levels.component';
 import { SwimLevelComponent } from './components/swim-level/swim-level.component';
 import { SwimReportComponent } from './components/swim-report/swim-report.component';
-
+import { HeadStaffProfileComponent } from './components/head-staff-profile/head-staff-profile.component';
 
 const appRoutes: Routes = [
     {
@@ -82,6 +82,11 @@ const appRoutes: Routes = [
     {
         path: 'specialties',
         component: SpecialtiesComponent,
+        canActivate: [AuthGuard, AdminGuard]
+    },
+    {
+        path: 'head-staff-profile/:headId',
+        component: HeadStaffProfileComponent,
         canActivate: [AuthGuard, AdminGuard]
     },
     {

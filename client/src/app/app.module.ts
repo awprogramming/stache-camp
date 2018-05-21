@@ -69,6 +69,8 @@ import { SwimStatComponent } from './components/swim-stat/swim-stat.component';
 import { SwimLevelDropdownComponent } from './components/swim-level-dropdown/swim-level-dropdown.component';
 import { BackButtonComponent } from './components/back-button/back-button.component';
 import { SwimReportComponent } from './components/swim-report/swim-report.component';
+import { HeadStaffProfileComponent } from './components/head-staff-profile/head-staff-profile.component';
+import { PasswordResetComponent } from './components/password-reset/password-reset.component';
 
 @NgModule({
   declarations: [
@@ -119,6 +121,8 @@ import { SwimReportComponent } from './components/swim-report/swim-report.compon
     SwimLevelDropdownComponent,
     BackButtonComponent,
     SwimReportComponent,
+    HeadStaffProfileComponent,
+    PasswordResetComponent,
 
   ],
   imports: [

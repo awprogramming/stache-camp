@@ -52,7 +52,7 @@
             </ul>
         </li>
         <li *ngIf="!authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/login">Login</a></li>
-        <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/options">Options</a></li>
+        <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/options">Options</a></li>
         <li *ngIf="authService.loggedIn()"><a href="#" (click)="onLogoutClick()" >Logout</a></li>
       </ul>
   </div><!-- /.container-fluid -->

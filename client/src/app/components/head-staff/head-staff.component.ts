@@ -95,6 +95,11 @@ export class HeadStaffComponent implements OnInit {
     this.newHead = true;
   }
 
+  goToHead(head){
+    this.router.navigate(['/head-staff-profile/'+head._id]);
+  }
+  
+
   // addDivision(head){
   //   this.campsService.addDivisionToHead(head).subscribe(data => {
   //     this.getAllHeads();

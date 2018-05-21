@@ -200,8 +200,12 @@ module.exports = (router) => {
     
     router.post('/change_password',(req,res)=>{
         Camp.findById(req.decoded.campId).exec().then((camp)=>{
-            camp.users.id(req.decoded.userId).password = req.body.password;
-            camp.save((err) =>{
+            console.log(req.body);
+            if(req.body.user_id == -1)
+                camp.users.id(req.decoded.userId).password = req.body.password;
+            else
+                camp.users.id(req.body.user_id).password = req.body.password;
+            camp.save({ validateBeforeSave: false },(err) =>{
                 if (err) {
                     if(err.errors){
                         res.json({
