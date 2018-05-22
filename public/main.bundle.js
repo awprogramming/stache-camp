@@ -34927,12 +34927,14 @@ webpackEmptyAsyncContext.id = "./src/$$_lazy_route_resource lazy recursive";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_33__components_swim_levels_swim_levels_component__ = __webpack_require__("./src/app/components/swim-levels/swim-levels.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_34__components_swim_level_swim_level_component__ = __webpack_require__("./src/app/components/swim-level/swim-level.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_35__components_swim_report_swim_report_component__ = __webpack_require__("./src/app/components/swim-report/swim-report.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_36__components_head_staff_profile_head_staff_profile_component__ = __webpack_require__("./src/app/components/head-staff-profile/head-staff-profile.component.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -34983,7 +34985,7 @@ var appRoutes = [
     {
         path: 'camps',
         component: __WEBPACK_IMPORTED_MODULE_4__components_camps_camps_component__["a" /* CampsComponent */],
-        canActivate: [__WEBPACK_IMPORTED_MODULE_5__guards_auth_guard__["a" /* AuthGuard */]] //, SuperUserGuard]
+        canActivate: [__WEBPACK_IMPORTED_MODULE_5__guards_auth_guard__["a" /* AuthGuard */], __WEBPACK_IMPORTED_MODULE_8__guards_superuser_guard__["a" /* SuperUserGuard */]]
     },
     {
         path: 'login',
@@ -35016,9 +35018,14 @@ var appRoutes = [
         canActivate: [__WEBPACK_IMPORTED_MODULE_5__guards_auth_guard__["a" /* AuthGuard */], __WEBPACK_IMPORTED_MODULE_7__guards_admin_guard__["a" /* AdminGuard */]]
     },
     {
+        path: 'head-staff-profile/:headId',
+        component: __WEBPACK_IMPORTED_MODULE_36__components_head_staff_profile_head_staff_profile_component__["a" /* HeadStaffProfileComponent */],
+        canActivate: [__WEBPACK_IMPORTED_MODULE_5__guards_auth_guard__["a" /* AuthGuard */], __WEBPACK_IMPORTED_MODULE_7__guards_admin_guard__["a" /* AdminGuard */]]
+    },
+    {
         path: 'options',
         component: __WEBPACK_IMPORTED_MODULE_15__components_options_options_component__["a" /* OptionsComponent */],
-        canActivate: [__WEBPACK_IMPORTED_MODULE_5__guards_auth_guard__["a" /* AuthGuard */], __WEBPACK_IMPORTED_MODULE_7__guards_admin_guard__["a" /* AdminGuard */]]
+        canActivate: [__WEBPACK_IMPORTED_MODULE_5__guards_auth_guard__["a" /* AuthGuard */]]
     },
     {
         path: 'evaluations',
@@ -35274,6 +35281,8 @@ var AppComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_66__components_swim_level_dropdown_swim_level_dropdown_component__ = __webpack_require__("./src/app/components/swim-level-dropdown/swim-level-dropdown.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_67__components_back_button_back_button_component__ = __webpack_require__("./src/app/components/back-button/back-button.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_68__components_swim_report_swim_report_component__ = __webpack_require__("./src/app/components/swim-report/swim-report.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_69__components_head_staff_profile_head_staff_profile_component__ = __webpack_require__("./src/app/components/head-staff-profile/head-staff-profile.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_70__components_password_reset_password_reset_component__ = __webpack_require__("./src/app/components/password-reset/password-reset.component.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -35351,6 +35360,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
+
+
 var AppModule = (function () {
     function AppModule() {
     }
@@ -35404,6 +35415,8 @@ var AppModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_66__components_swim_level_dropdown_swim_level_dropdown_component__["a" /* SwimLevelDropdownComponent */],
                 __WEBPACK_IMPORTED_MODULE_67__components_back_button_back_button_component__["a" /* BackButtonComponent */],
                 __WEBPACK_IMPORTED_MODULE_68__components_swim_report_swim_report_component__["a" /* SwimReportComponent */],
+                __WEBPACK_IMPORTED_MODULE_69__components_head_staff_profile_head_staff_profile_component__["a" /* HeadStaffProfileComponent */],
+                __WEBPACK_IMPORTED_MODULE_70__components_password_reset_password_reset_component__["a" /* PasswordResetComponent */],
             ],
             imports: [
                 __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -36007,6 +36020,9 @@ var CampersComponent = (function () {
                     var data;
                     if (cs.hasModule("swim")) {
                         var fname = vals[0].split('\n')[1];
+                        var bracelet = vals[10].toLowerCase();
+                        if (bracelet != "orange" && bracelet != "green")
+                            bracelet = "none";
                         data = {
                             divisionName: vals[4],
                             camper: {
@@ -36019,7 +36035,7 @@ var CampersComponent = (function () {
                                 p2Name: vals[7],
                                 p2Email: vals[8],
                                 cSwimOpts: {
-                                    bracelet: vals[10]
+                                    bracelet: bracelet
                                 },
                             },
                             cSwimOpts: {
@@ -36287,7 +36303,6 @@ var CampsComponent = (function () {
     };
     CampsComponent.prototype.addModule = function (camp) {
         var _this = this;
-        console.log(camp);
         var toAdd = {
             _id: camp._id,
             toAdd: camp.toAdd
@@ -36529,7 +36544,7 @@ module.exports = ""
 /***/ "./src/app/components/counselors/counselors.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"newCamp\">\n    <h2 class=\"page-header\">Register Counselor</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n    \n      <div class=\"form-group\">\n        <label for=\"first\">First Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"first\" formControlName=\"first\" />\n        </div>\n      </div>\n    \n      <div class=\"form-group\">\n        <label for=\"last\">Last Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"last\" formControlName=\"last\" />\n        </div>\n      </div>\n      \n      <div class=\"form-group\">\n        <label for=\"gender\">Gender</label>\n        <div>\n          <div>\n            <input class=\"form-check-input\" formControlName=\"gender\" type=\"radio\" name=\"gender\" value=\"male\">\n            <label class=\"form-check-label\">Male</label>\n          </div>\n          <div>\n              <input class=\"form-check-input\" formControlName=\"gender\" type=\"radio\" name=\"gender\" value=\"female\">\n              <label class=\"form-check-label\">Female</label>\n          </div>\n        </div>\n      </div>\n\n      <div *ngIf=\"lgReg\">\n        <div class=\"form-group\">\n            <label for=\"email\">Email</label>\n            <div>\n              <input class=\"form-control\" type=\"text\" name=\"email\" formControlName=\"email\" />\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label for=\"password\">Password</label>\n            <div>\n              <input class=\"form-control\" type=\"password\" name=\"password\" formControlName=\"password\" />\n            </div>\n          </div>\n        </div>\n      <div *ngIf=\"!lgReg\">\n        <div class=\"form-group\">\n          <label for=\"type\">Type</label>\n          <div>\n              <app-counselor-types-dropdown (selectedChanged) = \"preAddType($event,type)\"></app-counselor-types-dropdown>\n          </div>\n        </div>\n      </div>\n    \n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n    </form>\n</div>\n\n<div *ngIf=\"bulkAdd\">\n    <h2 class=\"page-header\">Bulk Upload Counselor</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    \n    <form [formGroup]=\"bulkAddForm\" (submit)=\"onBulkUploadSubmit()\">\n    \n      <div class=\"form-group\">\n        <label for=\"counselor_file\">Counselor CSV File</label>\n        <div>\n          <input class=\"form-control\" type=\"file\" (change)=\"fileUploaded($event)\" name=\"counselor_file\" formControlName=\"counselor_file\" />\n        </div>\n      </div>\n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Upload\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelBulkAdd()\" value=\"Cancel Add\" />\n    </form>\n</div>\n\n    \n    <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newCamp && authService.admin()\">Add</button>\n    \n    <button class=\"btn btn-primary\" (click) = \"showBulkAdd()\" *ngIf = \"!bulkAdd && authService.admin()\">Upload Counselor CSV File</button>\n    \n    <div *ngIf=\"authService.admin()\">\n        <div class=\"panel with-nav-tabs\">\n            <div class=\"panel-heading\">\n                    <ul class=\"nav nav-tabs\">\n                        <li class=\"nav-item\" [ngClass] = \"{'active':i==0}\" *ngFor=\"let session of sessions; let i = index\">\n                          <a  class=\"nav-link\" id=\"{{session._id.session_name}}-tab\" data-toggle=\"tab\" href=\"#{{session._id.session_name}}\" role=\"tab\" attr.aria-controls=\"{{session._id.session_name}}\" aria-selected=\"true\">{{session._id.session_name}}</a>\n                        </li>\n                    </ul>\n            </div>\n            <div class=\"panel-body\">\n                <div class=\"tab-content\">\n                    <div *ngFor=\"let session of sessions; let i = index\" [ngClass] = \"{'in active':i==0}\" class=\"tab-pane fade\" id=\"{{session._id.session_name}}\">\n                        <h2>{{session._id.session_name}}</h2>\n                        <table class=\"table\" >\n                            <tr>\n                              <th>First</th>\n                              <th>Last</th>\n                              <th>Gender</th>\n                              <th>Division</th>\n                              <th>Type</th>\n                              <th>Specialty</th>\n                              <th *ngIf=\"i!=0\"></th>\n                              <th *ngIf=\"i!=0\"><button class=\"btn btn-primary\" (click) = \"massRehire()\">Rehire Selected</button></th>\n                              <th *ngIf=\"i==0\"></th>\n                            </tr>\n                            <tr *ngFor=\"let counselor of session.counselors\">\n                              <td>{{counselor.first}}</td>\n                              <td>{{counselor.last}}</td>\n                              <td>{{counselor.gender}}</td>\n                              <td *ngIf=\"counselor.division \">{{counselor.division.name}}</td>\n                              <td *ngIf=\"!counselor.division\">\n                                <app-divisions-dropdown *ngIf=\"i==0\" (selectedChanged) = \"preAdd($event,counselor)\" [gender]=\"counselor.gender\" [divisions]=\"divGenders(counselor.gender)\"></app-divisions-dropdown>\n                                <button *ngIf=\"i==0\" class=\"btn btn-primary\" (click) = \"addDivision(counselor)\">Add</button>\n                              </td>\n                              <td>{{counselor.type.type}}</td>\n                              <td *ngIf=\"counselor.specialty\">{{counselor.specialty.name}}</td>\n                              <td *ngIf=\"!counselor.specialty\">\n                                  <app-specialties-dropdown *ngIf=\"i==0 && counselor.type.type=='specialist'\" (selectedChanged) = \"preAddSpecialty($event,counselor)\"></app-specialties-dropdown>\n                                  <button *ngIf=\"i==0 && counselor.type.type=='specialist'\" class=\"btn btn-primary\" (click) = \"addSpecialty(counselor)\">Add</button>\n                              </td>\n                              <td *ngIf=\"i!=0 && counselor.hired\">Hired</td>\n                              <td *ngIf=\"i!=0 && !counselor.hired\">\n                                  <button class=\"btn btn-primary\" (click) = \"rehire(counselor,false)\">Rehire</button>\n                              </td>\n                              <td *ngIf=\"i!=0 && counselor.hired\"></td>\n                              <td *ngIf=\"i!=0 && !counselor.hired\">\n                                  <input type=\"checkbox\" (change)=\"preMassRehire($event,counselor)\">\n                              </td>\n                              <td *ngIf=\"i==0\"><button class=\"btn btn-primary\" (click) = \"remove(counselor)\">X</button></td>\n                            </tr>\n                          </table>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div *ngIf=\"authService.isUser()\">\n      <div *ngFor=\"let division of divisions\">\n      <h2>{{division}}</h2>\n      <table class=\"table\" >\n          <tr>\n            <th>First</th>\n            <th>Last</th>\n            <th>Gender</th>\n            <th>Type</th>\n            <th>Specialty</th>\n          </tr>\n          <tr *ngFor=\"let counselor of counselors[division]\">\n            <td>{{counselor.first}}</td>\n            <td>{{counselor.last}}</td>\n            <td>{{counselor.gender}}</td>\n            <td>{{counselor.type.type}}</td>\n            <td>{{counselor.specialty?.name}}</td>\n          </tr>\n        </table>\n      </div>\n    </div>\n    "
+module.exports = "<div *ngIf=\"newCamp\">\n    <h2 class=\"page-header\">Register Counselor</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n    \n      <div class=\"form-group\">\n        <label for=\"first\">First Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"first\" formControlName=\"first\" />\n        </div>\n      </div>\n    \n      <div class=\"form-group\">\n        <label for=\"last\">Last Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"last\" formControlName=\"last\" />\n        </div>\n      </div>\n      \n      <div class=\"form-group\">\n        <label for=\"gender\">Gender</label>\n        <div>\n          <div>\n            <input class=\"form-check-input\" formControlName=\"gender\" type=\"radio\" name=\"gender\" value=\"male\">\n            <label class=\"form-check-label\">Male</label>\n          </div>\n          <div>\n              <input class=\"form-check-input\" formControlName=\"gender\" type=\"radio\" name=\"gender\" value=\"female\">\n              <label class=\"form-check-label\">Female</label>\n          </div>\n        </div>\n      </div>\n\n      <div *ngIf=\"lgReg\">\n        <div class=\"form-group\">\n            <label for=\"email\">Email</label>\n            <div>\n              <input class=\"form-control\" type=\"text\" name=\"email\" formControlName=\"email\" />\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label for=\"password\">Password</label>\n            <div>\n              <input class=\"form-control\" type=\"password\" name=\"password\" formControlName=\"password\" />\n            </div>\n          </div>\n        </div>\n      <div *ngIf=\"!lgReg\">\n        <div class=\"form-group\">\n          <label for=\"type\">Type</label>\n          <div>\n              <app-counselor-types-dropdown (selectedChanged) = \"preAddType($event,type)\"></app-counselor-types-dropdown>\n          </div>\n        </div>\n      </div>\n    \n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n    </form>\n</div>\n\n<div *ngIf=\"bulkAdd\">\n    <h2 class=\"page-header\">Bulk Upload Counselor</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    \n    <form [formGroup]=\"bulkAddForm\" (submit)=\"onBulkUploadSubmit()\">\n    \n      <div class=\"form-group\">\n        <label for=\"counselor_file\">Counselor CSV File</label>\n        <div>\n          <input class=\"form-control\" type=\"file\" (change)=\"fileUploaded($event)\" name=\"counselor_file\" formControlName=\"counselor_file\" />\n        </div>\n      </div>\n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Upload\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelBulkAdd()\" value=\"Cancel Add\" />\n    </form>\n</div>\n\n    \n    <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newCamp && authService.admin()\">Add</button>\n    \n    <button class=\"btn btn-primary\" (click) = \"showBulkAdd()\" *ngIf = \"!bulkAdd && authService.admin()\">Upload Counselor CSV File</button>\n    \n    <div *ngIf=\"authService.admin()\">\n        <div class=\"panel with-nav-tabs\">\n            <div class=\"panel-heading\">\n                    <ul class=\"nav nav-tabs\">\n                        <li class=\"nav-item\" [ngClass] = \"{'active':i==0}\" *ngFor=\"let session of sessions; let i = index\">\n                          <a  class=\"nav-link\" id=\"{{session._id.session_name}}-tab\" data-toggle=\"tab\" href=\"#{{session._id.session_name}}\" role=\"tab\" attr.aria-controls=\"{{session._id.session_name}}\" aria-selected=\"true\">{{session._id.session_name}}</a>\n                        </li>\n                    </ul>\n            </div>\n            <div class=\"panel-body\">\n                <div class=\"tab-content\">\n                    <div *ngFor=\"let session of sessions; let i = index\" [ngClass] = \"{'in active':i==0}\" class=\"tab-pane fade\" id=\"{{session._id.session_name}}\">\n                        <h2>{{session._id.session_name}}</h2>\n                        <table class=\"table\" >\n                            <tr>\n                              <th>First</th>\n                              <th>Last</th>\n                              <th>Gender</th>\n                              <th>Division</th>\n                              <th>Type</th>\n                              <th>Specialty</th>\n                              <th *ngIf=\"i!=0\"></th>\n                              <th *ngIf=\"i!=0\"><button class=\"btn btn-primary\" (click) = \"massRehire()\">Rehire Selected</button></th>\n                              <th *ngIf=\"i==0\"></th>\n                            </tr>\n                            <tr *ngFor=\"let counselor of session.counselors\">\n                              <td>{{counselor.first}}</td>\n                              <td>{{counselor.last}}</td>\n                              <td>{{counselor.gender}}</td>\n                              <td *ngIf=\"counselor.division \">{{counselor.division.name}}</td>\n                              <td *ngIf=\"!counselor.division\">\n                                <app-divisions-dropdown *ngIf=\"i==0\" (selectedChanged) = \"preAdd($event,counselor)\" [gender]=\"counselor.gender\" [divisions]=\"divGenders(counselor.gender)\"></app-divisions-dropdown>\n                                <button *ngIf=\"i==0\" class=\"btn btn-primary\" (click) = \"addDivision(counselor)\">Add</button>\n                              </td>\n                              <td>{{counselor.type.type}}</td>\n                              <td *ngIf=\"counselor.specialty\">{{counselor.specialty.name}}</td>\n                              <td *ngIf=\"!counselor.specialty\">\n                                  <app-specialties-dropdown *ngIf=\"i==0 && counselor.type.type=='specialist'\" (selectedChanged) = \"preAddSpecialty($event,counselor)\" [specialties]=\"specialties\"></app-specialties-dropdown>\n                                  <button *ngIf=\"i==0 && counselor.type.type=='specialist'\" class=\"btn btn-primary\" (click) = \"addSpecialty(counselor)\">Add</button>\n                              </td>\n                              <td *ngIf=\"i!=0 && counselor.hired\">Hired</td>\n                              <td *ngIf=\"i!=0 && !counselor.hired\">\n                                  <button class=\"btn btn-primary\" (click) = \"rehire(counselor,false)\">Rehire</button>\n                              </td>\n                              <td *ngIf=\"i!=0 && counselor.hired\"></td>\n                              <td *ngIf=\"i!=0 && !counselor.hired\">\n                                  <input type=\"checkbox\" (change)=\"preMassRehire($event,counselor)\">\n                              </td>\n                              <td *ngIf=\"i==0\"><button class=\"btn btn-primary\" (click) = \"remove(counselor)\">X</button></td>\n                            </tr>\n                          </table>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div *ngIf=\"authService.isUser()\">\n      <div *ngFor=\"let division of divisions\">\n      <h2>{{division}}</h2>\n      <table class=\"table\" >\n          <tr>\n            <th>First</th>\n            <th>Last</th>\n            <th>Gender</th>\n            <th>Type</th>\n            <th>Specialty</th>\n          </tr>\n          <tr *ngFor=\"let counselor of counselors[division]\">\n            <td>{{counselor.first}}</td>\n            <td>{{counselor.last}}</td>\n            <td>{{counselor.gender}}</td>\n            <td>{{counselor.type.type}}</td>\n            <td>{{counselor.specialty?.name}}</td>\n          </tr>\n        </table>\n      </div>\n    </div>\n    "
 
 /***/ }),
 
@@ -36804,8 +36819,6 @@ var CounselorsComponent = (function () {
         }
     };
     CounselorsComponent.prototype.massRehire = function () {
-        console.log("hello world");
-        console.log(this.toMassRehire);
         for (var _i = 0, _a = Object.keys(this.toMassRehire); _i < _a.length; _i++) {
             var counselor = _a[_i];
             this.rehire(this.toMassRehire[counselor], true);
@@ -36842,6 +36855,12 @@ var CounselorsComponent = (function () {
         else if (gender.toLowerCase() == "male")
             return this.dropdownDivisions.divisions[1].divisions;
     };
+    CounselorsComponent.prototype.getSpecialties = function () {
+        var _this = this;
+        this.campsService.getAllSpecialties().subscribe(function (data) {
+            _this.specialties = data.specialties;
+        });
+    };
     CounselorsComponent.prototype.ngOnInit = function () {
         if (this.authGuard.redirectUrl) {
             this.messageClass = 'alert alert-danger';
@@ -36849,6 +36868,7 @@ var CounselorsComponent = (function () {
             this.previousUrl = this.authGuard.redirectUrl;
             this.authGuard.redirectUrl = undefined;
         }
+        this.getSpecialties();
         this.populateDivisions();
         this.getAllCounselors();
         this.getOptions();
@@ -36932,7 +36952,7 @@ var DashboardComponent = (function () {
                 this.router.navigate(['/swim-groups']);
             }
             else {
-                this.router.navigate(['/dashboard']);
+                this.router.navigate(['/options']);
             }
         }
     };
@@ -37569,9 +37589,6 @@ var EvaluateComponent = (function () {
         });
     };
     EvaluateComponent.prototype.viewing = function () {
-        console.log(this.options.evaluationOpts.currentEval);
-        console.log(this.evaluation.evaluation.number);
-        console.log(this.authService.admin());
         this.view = this.options.evaluationOpts.currentEval != this.evaluation.evaluation.number || this.authService.admin();
     };
     EvaluateComponent.prototype.userIsApprover = function () {
@@ -37664,11 +37681,9 @@ var EvaluationsComponent = (function () {
     EvaluationsComponent.prototype.getAllCurrent = function () {
         var _this = this;
         this.evaluationsService.getCurrentEvals().subscribe(function (data) {
-            console.log("Test 1");
             _this.divisions = [];
             _this.counselors = [];
             if (_this.authService.admin()) {
-                console.log("Test 2");
                 _this.sessions = data.output;
                 for (var _i = 0, _a = _this.sessions; _i < _a.length; _i++) {
                     var session = _a[_i];
@@ -37971,7 +37986,7 @@ module.exports = ""
 /***/ "./src/app/components/game-calendar/game-calendar.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-calendar (selection)=\"dateSelected($event)\" (changeVisible)=\"getGames($event)\" [events] = \"games\"></app-calendar>\n<div *ngIf=\"selectedDate\">\n  <h2>{{selectedDate.day}} {{getMonthName(selectedDate.date.month)}} {{selectedDate.date.day}}, {{selectedDate.date.year}}</h2>\n  <button class=\"btn btn-primary\" *ngIf=\"authService.admin()\" (click)=\"scheduler=true\">Schedule Game</button>\n  <div *ngIf=\"scheduler\">\n    <app-timepicker (selection)=\"timeSelected($event)\"></app-timepicker>\n    <app-specialties-dropdown (selectedChanged)=\"specialtySelected($event)\"></app-specialties-dropdown>\n    \n    <form [formGroup]=\"form\" (submit)=\"onScheduleSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"name\">Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"name\" formControlName=\"name\" />\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"location\">Location</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"location\" formControlName=\"location\" />\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"needsLunch\">Lunch?</label>\n        <div>\n          <input type=\"checkbox\" name=\"needsLunch\" formControlName=\"needsLunch\" />\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"opponent\">Opponent</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"opponent\" formControlName=\"opponent\" />\n        </div>\n      </div>\n\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Schedule\" />\n    </form>\n  </div>\n  <div *ngIf=\"selectedDate?.date.events\">\n    <div *ngFor=\"let game of selectedDate.date.events\">\n      <h2>{{displayTime(game.date)}} ({{game.specialty.name}})</h2>\n      <h3>{{game.name}}</h3>\n      <p>vs. {{game.opponent}}</p>\n      <p>@ {{game.location}}</p>\n      <a class=\"btn btn-primary\" [routerLink]=\"['/game', game._id]\">View Game</a>\n    </div>\n  </div>\n</div>"
+module.exports = "<app-calendar (selection)=\"dateSelected($event)\" (changeVisible)=\"getGames($event)\" [events] = \"games\"></app-calendar>\n<div *ngIf=\"selectedDate\">\n  <h2>{{selectedDate.day}} {{getMonthName(selectedDate.date.month)}} {{selectedDate.date.day}}, {{selectedDate.date.year}}</h2>\n  <button class=\"btn btn-primary\" *ngIf=\"authService.admin()\" (click)=\"scheduler=true\">Schedule Game</button>\n  <div *ngIf=\"scheduler\">\n    <app-timepicker (selection)=\"timeSelected($event)\"></app-timepicker>\n    <app-specialties-dropdown (selectedChanged)=\"specialtySelected($event)\" [specialties]=\"specialties\"></app-specialties-dropdown>\n    \n    <form [formGroup]=\"form\" (submit)=\"onScheduleSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"name\">Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"name\" formControlName=\"name\" />\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"location\">Location</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"location\" formControlName=\"location\" />\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"needsLunch\">Lunch?</label>\n        <div>\n          <input type=\"checkbox\" name=\"needsLunch\" formControlName=\"needsLunch\" />\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"opponent\">Opponent</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"opponent\" formControlName=\"opponent\" />\n        </div>\n      </div>\n\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Schedule\" />\n    </form>\n  </div>\n  <div *ngIf=\"selectedDate?.date.events\">\n    <div *ngFor=\"let game of selectedDate.date.events\">\n      <h2>{{displayTime(game.date)}} ({{game.specialty.name}})</h2>\n      <h3>{{game.name}}</h3>\n      <p>vs. {{game.opponent}}</p>\n      <p>@ {{game.location}}</p>\n      <a class=\"btn btn-primary\" [routerLink]=\"['/game', game._id]\">View Game</a>\n    </div>\n  </div>\n</div>"
 
 /***/ }),
 
@@ -37983,7 +37998,8 @@ module.exports = "<app-calendar (selection)=\"dateSelected($event)\" (changeVisi
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_forms__ = __webpack_require__("./node_modules/@angular/forms/esm5/forms.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_sports_service__ = __webpack_require__("./src/app/services/sports.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_auth_service__ = __webpack_require__("./src/app/services/auth.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_camps_service__ = __webpack_require__("./src/app/services/camps.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__services_auth_service__ = __webpack_require__("./src/app/services/auth.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -37997,10 +38013,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var GameCalendarComponent = (function () {
-    function GameCalendarComponent(formBuilder, sportsService, authService) {
+    function GameCalendarComponent(formBuilder, sportsService, campsService, authService) {
         this.formBuilder = formBuilder;
         this.sportsService = sportsService;
+        this.campsService = campsService;
         this.authService = authService;
         this.games = [];
         this.scheduler = false;
@@ -38067,10 +38085,17 @@ var GameCalendarComponent = (function () {
         var dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         return dayNames[day];
     };
+    GameCalendarComponent.prototype.getSpecialties = function () {
+        var _this = this;
+        this.campsService.getAllSpecialties().subscribe(function (data) {
+            _this.specialties = data.specialties;
+        });
+    };
     GameCalendarComponent.prototype.displayTime = function (date) {
         return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
     GameCalendarComponent.prototype.ngOnInit = function () {
+        this.getSpecialties();
     };
     GameCalendarComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -38080,7 +38105,8 @@ var GameCalendarComponent = (function () {
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_forms__["a" /* FormBuilder */],
             __WEBPACK_IMPORTED_MODULE_2__services_sports_service__["a" /* SportsService */],
-            __WEBPACK_IMPORTED_MODULE_3__services_auth_service__["a" /* AuthService */]])
+            __WEBPACK_IMPORTED_MODULE_3__services_camps_service__["a" /* CampsService */],
+            __WEBPACK_IMPORTED_MODULE_4__services_auth_service__["a" /* AuthService */]])
     ], GameCalendarComponent);
     return GameCalendarComponent;
 }());
@@ -38274,8 +38300,6 @@ var HeadStaffDropdownComponent = (function () {
     }
     HeadStaffDropdownComponent.prototype.populateHeads = function () {
         this.inDD = [];
-        console.log(this.heads);
-        console.log(this.exclude);
         if (this.exclude.length == 0) {
             this.inDD = this.heads;
         }
@@ -38350,6 +38374,63 @@ function isEquivalent(a, b) {
     // are considered equivalent
     return true;
 }
+
+
+/***/ }),
+
+/***/ "./src/app/components/head-staff-profile/head-staff-profile.component.css":
+/***/ (function(module, exports) {
+
+module.exports = ""
+
+/***/ }),
+
+/***/ "./src/app/components/head-staff-profile/head-staff-profile.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<app-back-button></app-back-button>\n<app-password-reset [user]=\"user\"></app-password-reset>"
+
+/***/ }),
+
+/***/ "./src/app/components/head-staff-profile/head-staff-profile.component.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HeadStaffProfileComponent; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var HeadStaffProfileComponent = (function () {
+    function HeadStaffProfileComponent(route) {
+        this.route = route;
+    }
+    HeadStaffProfileComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.route.paramMap.subscribe(function (params) {
+            _this.user = params.get('headId');
+        });
+    };
+    HeadStaffProfileComponent = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+            selector: 'app-head-staff-profile',
+            template: __webpack_require__("./src/app/components/head-staff-profile/head-staff-profile.component.html"),
+            styles: [__webpack_require__("./src/app/components/head-staff-profile/head-staff-profile.component.css")]
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* ActivatedRoute */]])
+    ], HeadStaffProfileComponent);
+    return HeadStaffProfileComponent;
+}());
+
 
 
 /***/ }),
@@ -38433,7 +38514,7 @@ module.exports = ""
 /***/ "./src/app/components/head-staff/head-staff.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"newHead\">\n  <h2 class=\"page-header\">Register Head Staff Member</h2>\n\n  <!-- Custom Success/Error Message -->\n  <div class=\"row show-hide-message\">\n    <div [ngClass]=\"messageClass\">\n      {{ message }}\n    </div>\n  </div>\n\n  <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"first\">First</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"first\" formControlName=\"first\" />\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label for=\"last\">Last</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"last\" formControlName=\"last\" />\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label for=\"type\">Type</label>\n        <div>\n            <app-head-staff-type-dropdown (selectedChanged) = \"preAddType($event,type)\"></app-head-staff-type-dropdown>\n        </div>\n      </div>\n    <div class=\"form-group\">\n      <label for=\"email\">Email</label>\n      <div>\n        <input class=\"form-control\" type=\"text\" name=\"email\" formControlName=\"email\" />\n      </div>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"password\">Password</label>\n      <div>\n        <input class=\"form-control\" type=\"password\" name=\"password\" formControlName=\"password\" />\n      </div>\n    </div>\n    <!-- Submit Button -->\n    <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n  </form>\n</div>\n<button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newHead\">Add</button>\n<table class=\"table\">\n    <tr>\n      <th>First</th>\n      <th>Last</th>\n      <th>Email</th>\n      <th>Type</th>\n      <th></th>\n    </tr>\n    <tr *ngFor=\"let head of heads\">\n      <td>{{head.first}}</td>\n      <td>{{head.last}}</td>\n      <td>{{head.email}}</td>\n      <td *ngIf=\"head.type\">{{head.type.type}}</td>\n      <td *ngIf=\"!head.type\">\n          <app-head-staff-type-dropdown (selectedChanged) = \"preAddhType($event,head)\" [types]=\"types\"></app-head-staff-type-dropdown>\n          <button class=\"btn btn-primary\" (click) = \"addhType(head)\">Add</button>\n      </td>\n      <td><button class=\"btn btn-primary\" (click) = \"remove(head)\">X</button></td>\n    </tr>\n  </table>"
+module.exports = "<div *ngIf=\"newHead\">\n  <h2 class=\"page-header\">Register Head Staff Member</h2>\n\n  <!-- Custom Success/Error Message -->\n  <div class=\"row show-hide-message\">\n    <div [ngClass]=\"messageClass\">\n      {{ message }}\n    </div>\n  </div>\n\n  <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"first\">First</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"first\" formControlName=\"first\" />\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label for=\"last\">Last</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"last\" formControlName=\"last\" />\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label for=\"type\">Type</label>\n        <div>\n            <app-head-staff-type-dropdown (selectedChanged) = \"preAddType($event,type)\" [types]=\"types\"></app-head-staff-type-dropdown>\n        </div>\n      </div>\n    <div class=\"form-group\">\n      <label for=\"email\">Email</label>\n      <div>\n        <input class=\"form-control\" type=\"text\" name=\"email\" formControlName=\"email\" />\n      </div>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"password\">Password</label>\n      <div>\n        <input class=\"form-control\" type=\"password\" name=\"password\" formControlName=\"password\" />\n      </div>\n    </div>\n    <!-- Submit Button -->\n    <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n  </form>\n</div>\n<button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newHead\">Add</button>\n<table class=\"table table-hover\">\n    <tr>\n      <th>First</th>\n      <th>Last</th>\n      <th>Email</th>\n      <th>Type</th>\n      <th></th>\n    </tr>\n    <tr *ngFor=\"let head of heads\" (click)=\"goToHead(head)\">\n      <td>{{head.first}}</td>\n      <td>{{head.last}}</td>\n      <td>{{head.email}}</td>\n      <td *ngIf=\"head.type\">{{head.type.type}}</td>\n      <td *ngIf=\"!head.type\">\n          <app-head-staff-type-dropdown (selectedChanged) = \"preAddhType($event,head)\" [types]=\"types\"></app-head-staff-type-dropdown>\n          <button class=\"btn btn-primary\" (click) = \"addhType(head)\">Add</button>\n      </td>\n      <td><button class=\"btn btn-primary\" (click) = \"remove(head)\">X</button></td>\n    </tr>\n  </table>"
 
 /***/ }),
 
@@ -38532,6 +38613,9 @@ var HeadStaffComponent = (function () {
     };
     HeadStaffComponent.prototype.showAdd = function () {
         this.newHead = true;
+    };
+    HeadStaffComponent.prototype.goToHead = function (head) {
+        this.router.navigate(['/head-staff-profile/' + head._id]);
     };
     // addDivision(head){
     //   this.campsService.addDivisionToHead(head).subscribe(data => {
@@ -38801,7 +38885,7 @@ module.exports = ""
 /***/ "./src/app/components/login/login.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h2 class=\"page-header\">Login</h2>\n\n<!-- Custom Success/Error Message -->\n<div class=\"row show-hide-message\">\n  <div [ngClass]=\"messageClass\">\n    {{ message }}\n  </div>\n</div>\n\n<!-- Login Form -->\n<form [formGroup]=\"form\" (submit)=\"onLoginSubmit()\">\n\n  <!-- Username Field -->\n  <div class=\"form-group\">\n    <label for=\"username\">Username</label>\n    <div [ngClass]=\"{'has-error': form.controls.username.errors && form.controls.username.dirty, 'has-success': form.controls.username.valid && form.controls.username.dirty }\">\n      <input class=\"form-control\" type=\"text\" name=\"username\" formControlName=\"username\" />\n      <!-- Validation -->\n      <ul class=\"help-block\">\n        <li *ngIf=\"form.controls.username.errors?.required && form.controls.username.dirty\">This field is required.</li>\n      </ul>\n    </div>\n  </div>\n\n  <!-- Password Field  -->\n  <div class=\"form-group\">\n    <label for=\"password\">Password</label>\n    <div [ngClass]=\"{'has-error': form.controls.password.errors && form.controls.password.dirty, 'has-success': form.controls.password.valid && form.controls.password.dirty }\">\n      <input class=\"form-control\" type=\"password\" name=\"password\" formControlName=\"password\" />\n      <!-- Validation -->\n      <ul class=\"help-block\">\n        <li *ngIf=\"form.controls.password.errors?.required && form.controls.password.dirty\">This field is required.</li>\n      </ul>\n    </div>\n  </div>\n  <!-- Submit Button -->\n  <input [disabled]=\"!form.valid || processing\" class=\"btn btn-primary\" type=\"submit\" value=\"Login\" />\n</form>"
+module.exports = "<h2 class=\"page-header\">Login</h2>\n\n<!-- Custom Success/Error Message -->\n<div class=\"row show-hide-message\">\n  <div [ngClass]=\"messageClass\">\n    {{ message }}\n  </div>\n</div>\n\n<!-- Login Form -->\n<form [formGroup]=\"form\" (submit)=\"onLoginSubmit()\">\n\n  <!-- Username Field -->\n  <div class=\"form-group\">\n    <label for=\"username\">Username</label>\n    <div [ngClass]=\"{'has-error': form.controls.username.errors && form.controls.username.dirty, 'has-success': form.controls.username.valid && form.controls.username.dirty }\">\n      <input class=\"form-control\" type=\"text\" name=\"username\" formControlName=\"username\" />\n      <!-- Validation -->\n      <ul class=\"help-block\">\n        <li *ngIf=\"form.controls.username.errors?.required && form.controls.username.dirty\">This field is required.</li>\n      </ul>\n    </div>\n  </div>\n\n  <!-- Password Field  -->\n  <div class=\"form-group\">\n    <label for=\"password\">Password</label>\n    <div [ngClass]=\"{'has-error': form.controls.password.errors && form.controls.password.dirty, 'has-success': form.controls.password.valid && form.controls.password.dirty }\">\n      <input class=\"form-control\" type=\"password\" name=\"password\" formControlName=\"password\" />\n      <!-- Validation -->\n      <ul class=\"help-block\">\n        <li *ngIf=\"form.controls.password.errors?.required && form.controls.password.dirty\">This field is required.</li>\n      </ul>\n    </div>\n  </div>\n  <!-- Submit Button -->\n  <input [disabled]=\"!form.valid\" class=\"btn btn-primary\" type=\"submit\" value=\"Login\" />\n</form>"
 
 /***/ }),
 
@@ -39322,7 +39406,7 @@ module.exports = ""
 /***/ "./src/app/components/navbar/navbar.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<nav class=\"navbar navbar-default\">\n  <div class=\"container-fluid\">\n    <ul class=\"nav navbar-nav navbar-left\">\n      <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/\">Home</a></li>\n    </ul>\n\n      <ul class=\"nav navbar-nav navbar-right\">\n        <li *ngIf=\"authService.superUser()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/register-camp\">Register Camp</a></li>\n        <li *ngIf=\"authService.superUser()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/camps\">Camps</a></li>\n        <li *ngIf=\"authService.superUser()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/modules\">Modules</a></li>\n\n        <li *ngIf=\"authService.loggedIn()\" class=\"nav-item dropdown\">\n            <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Campers <b class=\"caret\"></b></a>\n            <ul class=\"dropdown-menu\" role=\"menu\">\n                <li *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/campers\">Campers</a></li>\n                <li *ngIf=\"authService.loggedIn() && campsService.hasModule('meds')\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/meds\">Meds</a></li>\n                <li *ngIf=\"authService.loggedIn() && campsService.hasModule('meds')\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/dietary\">Dietary</a></li>\n            </ul>\n        </li>\n\n        <li *ngIf=\"authService.loggedIn()\" class=\"nav-item dropdown\">\n            <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Staff <b class=\"caret\"></b></a>\n            <ul class=\"dropdown-menu\" role=\"menu\">\n              <li *ngIf=\"authService.admin()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/head-staff\">Head Staff</a></li>\n              <li *ngIf=\"authService.admin()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/divisions\">Divisions</a></li>\n              <li *ngIf=\"authService.admin()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/specialties\">Specialties</a></li>\n              <li *ngIf=\"authService.admin()||authService.isUser()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/counselors\">Counselors</a></li>\n            </ul>\n        </li>\n        <li *ngIf=\"authService.loggedIn() && campsService.hasModule('eval')\" class=\"nav-item dropdown\">\n            <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Evaluations <b class=\"caret\"></b></a>\n            <ul class=\"dropdown-menu\" role=\"menu\">\n                <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/evaluations\">Evals</a></li>\n                <li *ngIf=\"authService.admin()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/questions\">Questions</a></li>\n                <li *ngIf=\"authService.admin()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/approvers\">Approvers</a></li>\n            </ul>\n        </li>\n        <li *ngIf=\"authService.loggedIn() && campsService.hasModule('sports')\" class=\"nav-item dropdown\">\n            <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Sports<b class=\"caret\"></b></a>\n            <ul class=\"dropdown-menu\" role=\"menu\">\n                <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/rosters\">Rosters</a></li>\n                <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/calendar\">Calendar</a></li>\n            </ul>\n        </li>\n        <li *ngIf=\"authService.loggedIn() && campsService.hasModule('swim')\" class=\"nav-item dropdown\">\n            <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Swim<b class=\"caret\"></b></a>\n            <ul class=\"dropdown-menu\" role=\"menu\">\n                <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/swim-groups\">Swim Groups</a></li>\n                <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/swim-stats\">Camper Stats</a></li>\n                <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/swim-levels\">Swim Levels</a></li>\n                <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/register-lifeguard\">Register Lifeguard</a></li>\n            </ul>\n        </li>\n        <li *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/login\">Login</a></li>\n        <li *ngIf=\"authService.admin()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/options\">Options</a></li>\n        <li *ngIf=\"authService.loggedIn()\"><a href=\"#\" (click)=\"onLogoutClick()\" >Logout</a></li>\n      </ul>\n  </div><!-- /.container-fluid -->\n</nav>"
+module.exports = "<nav class=\"navbar navbar-default\">\n  <div class=\"container-fluid\">\n    <ul class=\"nav navbar-nav navbar-left\">\n      <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/\">Home</a></li>\n    </ul>\n\n      <ul class=\"nav navbar-nav navbar-right\">\n        <li *ngIf=\"authService.superUser()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/register-camp\">Register Camp</a></li>\n        <li *ngIf=\"authService.superUser()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/camps\">Camps</a></li>\n        <li *ngIf=\"authService.superUser()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/modules\">Modules</a></li>\n\n        <li *ngIf=\"authService.loggedIn()\" class=\"nav-item dropdown\">\n            <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Campers <b class=\"caret\"></b></a>\n            <ul class=\"dropdown-menu\" role=\"menu\">\n                <li *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/campers\">Campers</a></li>\n                <li *ngIf=\"authService.loggedIn() && campsService.hasModule('meds')\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/meds\">Meds</a></li>\n                <li *ngIf=\"authService.loggedIn() && campsService.hasModule('meds')\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/dietary\">Dietary</a></li>\n            </ul>\n        </li>\n\n        <li *ngIf=\"authService.loggedIn()\" class=\"nav-item dropdown\">\n            <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Staff <b class=\"caret\"></b></a>\n            <ul class=\"dropdown-menu\" role=\"menu\">\n              <li *ngIf=\"authService.admin()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/head-staff\">Head Staff</a></li>\n              <li *ngIf=\"authService.admin()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/divisions\">Divisions</a></li>\n              <li *ngIf=\"authService.admin()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/specialties\">Specialties</a></li>\n              <li *ngIf=\"authService.admin()||authService.isUser()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/counselors\">Counselors</a></li>\n            </ul>\n        </li>\n        <li *ngIf=\"authService.loggedIn() && campsService.hasModule('eval')\" class=\"nav-item dropdown\">\n            <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Evaluations <b class=\"caret\"></b></a>\n            <ul class=\"dropdown-menu\" role=\"menu\">\n                <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/evaluations\">Evals</a></li>\n                <li *ngIf=\"authService.admin()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/questions\">Questions</a></li>\n                <li *ngIf=\"authService.admin()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/approvers\">Approvers</a></li>\n            </ul>\n        </li>\n        <li *ngIf=\"authService.loggedIn() && campsService.hasModule('sports')\" class=\"nav-item dropdown\">\n            <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Sports<b class=\"caret\"></b></a>\n            <ul class=\"dropdown-menu\" role=\"menu\">\n                <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/rosters\">Rosters</a></li>\n                <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/calendar\">Calendar</a></li>\n            </ul>\n        </li>\n        <li *ngIf=\"authService.loggedIn() && campsService.hasModule('swim')\" class=\"nav-item dropdown\">\n            <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Swim<b class=\"caret\"></b></a>\n            <ul class=\"dropdown-menu\" role=\"menu\">\n                <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/swim-groups\">Swim Groups</a></li>\n                <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/swim-stats\">Camper Stats</a></li>\n                <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/swim-levels\">Swim Levels</a></li>\n                <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/register-lifeguard\">Register Lifeguard</a></li>\n            </ul>\n        </li>\n        <li *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/login\">Login</a></li>\n        <li *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\"><a routerLink=\"/options\">Options</a></li>\n        <li *ngIf=\"authService.loggedIn()\"><a href=\"#\" (click)=\"onLogoutClick()\" >Logout</a></li>\n      </ul>\n  </div><!-- /.container-fluid -->\n</nav>"
 
 /***/ }),
 
@@ -39389,7 +39473,7 @@ module.exports = ""
 /***/ "./src/app/components/options/options.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h2>Options</h2>\n\n<h3>Session</h3>\n<p *ngIf=\"options?.session\">{{options?.session.name}}</p>\n<form [formGroup]=\"form\" (submit)=\"onFormSubmit()\">\n  <div class=\"form-group\">\n    <label for=\"session_name\">New Session</label>\n    <div>\n      <input class=\"form-control\" type=\"text\" name=\"session_name\" formControlName=\"session_name\" />\n    </div>\n  </div>\n  <!-- Submit Button -->\n  <input class=\"btn btn-primary\" type=\"submit\" value=\"Submit\" />\n</form>\n\n<h3>Head Staff Types</h3>\n<table class=\"table\">\n  <tr>\n    <th>Type</th>\n    <th></th>\n  </tr>\n  <tr *ngFor=\"let type of options?.headStaff_types\">\n    <td>{{type.type}}</td>\n    <td><button class=\"btn btn-primary\" (click) = \"removehType(type)\">X</button></td>\n  </tr>\n</table>\n<div *ngIf=\"newhType\">\n  <form [formGroup]=\"newhTypeForm\" (submit)=\"onNewhTypeSubmit()\">\n    <div class=\"form-group\">\n      <label for=\"type\">Name</label>\n      <div>\n        <input class=\"form-control\" type=\"text\" name=\"htype\" formControlName=\"htype\" />\n      </div>\n    </div>\n\n    <!-- Submit Button -->\n    <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n    <input class=\"btn btn-primary\" (click) = \"cancelhAdd()\" value=\"Cancel Add\" />\n  </form>\n</div>\n<button class=\"btn btn-primary\" (click) = \"showhAdd()\" *ngIf = \"!newType\">Add</button>\n\n<h3>Counselor Types</h3>\n<table class=\"table\">\n  <tr>\n    <th>Type</th>\n    <th></th>\n  </tr>\n  <tr *ngFor=\"let type of options?.counselor_types\">\n    <td>{{type.type}}</td>\n    <td><button class=\"btn btn-primary\" (click) = \"removeType(type)\">X</button></td>\n  </tr>\n</table>\n<div *ngIf=\"newType\">\n  <form [formGroup]=\"newTypeForm\" (submit)=\"onNewTypeSubmit()\">\n    <div class=\"form-group\">\n      <label for=\"type\">Name</label>\n      <div>\n        <input class=\"form-control\" type=\"text\" name=\"type\" formControlName=\"type\" />\n      </div>\n    </div>\n\n    <!-- Submit Button -->\n    <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n    <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n  </form>\n</div>\n<button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newType\">Add</button>\n\n<div *ngIf=\"campsService.hasModule('eval')\">\n  <h2>Evaluation Options</h2>\n  <h3>Current Evaluation Period</h3>\n  <button class=\"btn btn-primary\" [disabled]=\"options?.evaluationOpts.currentEval==1\" (click)=\"decreasePeriod()\">&lt;</button> \n  {{options?.evaluationOpts.currentEval}} \n  <button class=\"btn btn-primary\" [disabled]=\"options?.evaluationOpts.currentEval==options?.evaluationOpts.perSession\" (click)=\"increasePeriod()\">&gt;</button>\n  <h3>Evaluations Per Session</h3>\n  <p>{{options?.evaluationOpts.perSession}}</p>\n  <form [formGroup]=\"perSessionForm\" (submit)=\"onPerSessionSubmit()\">\n    <div class=\"form-group\">\n      <label for=\"per_session\">New Evaluations Per Session Value</label>\n      <div>\n        <input class=\"form-control\" type=\"number\" name=\"per_session\" formControlName=\"per_session\" />\n      </div>\n    </div>\n    <!-- Submit Button -->\n    <input class=\"btn btn-primary\" type=\"submit\" value=\"Submit\" />\n  </form>\n</div>\n\n<div *ngIf=\"campsService.hasModule('swim')\">\n  <h2>Swim Options</h2>\n  <h3>Auto-Generation Max Campers</h3>\n  <input class=\"form-control\" type=\"number\" name=\"ag-max-swim\" min=1 (input)=\"changeAGMax($event)\" [value]=\"options?.swimOpts.agMax\">\n</div>"
+module.exports = "<h2>Options</h2>\n\n<app-password-reset [user]=\"-1\"></app-password-reset>\n\n<div *ngIf=\"authService.admin()\">\n  <h3>Session</h3>\n  <p *ngIf=\"options?.session\">{{options?.session.name}}</p>\n  <form [formGroup]=\"form\" (submit)=\"onFormSubmit()\">\n    <div class=\"form-group\">\n      <label for=\"session_name\">New Session</label>\n      <div>\n        <input class=\"form-control\" type=\"text\" name=\"session_name\" formControlName=\"session_name\" />\n      </div>\n    </div>\n    <!-- Submit Button -->\n    <input class=\"btn btn-primary\" type=\"submit\" value=\"Submit\" />\n  </form>\n\n  <h3>Head Staff Types</h3>\n  <table class=\"table\">\n    <tr>\n      <th>Type</th>\n      <th></th>\n    </tr>\n    <tr *ngFor=\"let type of options?.headStaff_types\">\n      <td>{{type.type}}</td>\n      <td><button class=\"btn btn-primary\" (click) = \"removehType(type)\">X</button></td>\n    </tr>\n  </table>\n  <div *ngIf=\"newhType\">\n    <form [formGroup]=\"newhTypeForm\" (submit)=\"onNewhTypeSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"type\">Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"htype\" formControlName=\"htype\" />\n        </div>\n      </div>\n\n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelhAdd()\" value=\"Cancel Add\" />\n    </form>\n  </div>\n  <button class=\"btn btn-primary\" (click) = \"showhAdd()\" *ngIf = \"!newType\">Add</button>\n\n  <h3>Counselor Types</h3>\n  <table class=\"table\">\n    <tr>\n      <th>Type</th>\n      <th></th>\n    </tr>\n    <tr *ngFor=\"let type of options?.counselor_types\">\n      <td>{{type.type}}</td>\n      <td><button class=\"btn btn-primary\" (click) = \"removeType(type)\">X</button></td>\n    </tr>\n  </table>\n  <div *ngIf=\"newType\">\n    <form [formGroup]=\"newTypeForm\" (submit)=\"onNewTypeSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"type\">Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"type\" formControlName=\"type\" />\n        </div>\n      </div>\n\n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n    </form>\n  </div>\n  <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newType\">Add</button>\n\n  <div *ngIf=\"campsService.hasModule('eval')\">\n    <h2>Evaluation Options</h2>\n    <h3>Current Evaluation Period</h3>\n    <button class=\"btn btn-primary\" [disabled]=\"options?.evaluationOpts.currentEval==1\" (click)=\"decreasePeriod()\">&lt;</button> \n    {{options?.evaluationOpts.currentEval}} \n    <button class=\"btn btn-primary\" [disabled]=\"options?.evaluationOpts.currentEval==options?.evaluationOpts.perSession\" (click)=\"increasePeriod()\">&gt;</button>\n    <h3>Evaluations Per Session</h3>\n    <p>{{options?.evaluationOpts.perSession}}</p>\n    <form [formGroup]=\"perSessionForm\" (submit)=\"onPerSessionSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"per_session\">New Evaluations Per Session Value</label>\n        <div>\n          <input class=\"form-control\" type=\"number\" name=\"per_session\" formControlName=\"per_session\" />\n        </div>\n      </div>\n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Submit\" />\n    </form>\n  </div>\n\n  <div *ngIf=\"campsService.hasModule('swim')\">\n    <h2>Swim Options</h2>\n    <h3>Auto-Generation Max Campers</h3>\n    <input class=\"form-control\" type=\"number\" name=\"ag-max-swim\" min=1 (input)=\"changeAGMax($event)\" [value]=\"options?.swimOpts.agMax\">\n  </div>\n</div>"
 
 /***/ }),
 
@@ -39566,6 +39650,114 @@ var OptionsComponent = (function () {
             __WEBPACK_IMPORTED_MODULE_4__guards_auth_guard__["a" /* AuthGuard */]])
     ], OptionsComponent);
     return OptionsComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/components/password-reset/password-reset.component.css":
+/***/ (function(module, exports) {
+
+module.exports = ""
+
+/***/ }),
+
+/***/ "./src/app/components/password-reset/password-reset.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<h3>Change Password</h3>\n<!-- Custom Success/Error Message -->\n<div class=\"row show-hide-message\">\n  <div [ngClass]=\"messageClass\">\n    {{ message }}\n  </div>\n</div>\n<form [formGroup]=\"newPasswordForm\" (submit)=\"onNewPasswordSubmit()\">\n  <div class=\"form-group\">\n    <label for=\"password\">New Password</label>\n    <div>\n      <input class=\"form-control\" type=\"password\" name=\"password\" formControlName=\"password\" />\n    </div>\n  </div>\n  <!-- Submit Button -->\n  <input class=\"btn btn-primary\" type=\"submit\" value=\"Submit\" />\n</form>"
+
+/***/ }),
+
+/***/ "./src/app/components/password-reset/password-reset.component.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PasswordResetComponent; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_forms__ = __webpack_require__("./node_modules/@angular/forms/esm5/forms.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__guards_auth_guard__ = __webpack_require__("./src/app/guards/auth.guard.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__services_auth_service__ = __webpack_require__("./src/app/services/auth.service.ts");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+var PasswordResetComponent = (function () {
+    function PasswordResetComponent(formBuilder, authService, router, authGuard) {
+        this.formBuilder = formBuilder;
+        this.authService = authService;
+        this.router = router;
+        this.authGuard = authGuard;
+        this.createForm();
+    }
+    PasswordResetComponent.prototype.createForm = function () {
+        this.newPasswordForm = this.formBuilder.group({
+            password: ['', __WEBPACK_IMPORTED_MODULE_1__angular_forms__["f" /* Validators */].required],
+        });
+    };
+    PasswordResetComponent.prototype.onNewPasswordSubmit = function () {
+        var _this = this;
+        var newPassword = {
+            user_id: this.user,
+            password: this.newPasswordForm.get('password').value
+        };
+        if (newPassword.password.length == 0) {
+            this.messageClass = 'alert alert-danger'; // Set bootstrap error class
+            this.message = "Please enter a new password"; // Set error message
+        }
+        else {
+            this.authService.changePassword(newPassword).subscribe(function (data) {
+                if (!data.success) {
+                    _this.messageClass = 'alert alert-danger'; // Set bootstrap error class
+                    for (var _i = 0, _a = Object.keys(data.message); _i < _a.length; _i++) {
+                        var error = _a[_i];
+                        _this.message = data.message[error].message;
+                    }
+                    //this.message = error.message;
+                }
+                else {
+                    _this.messageClass = 'alert alert-success'; // Set bootstrap success class
+                    _this.message = data.message; // Set success message
+                }
+            });
+        }
+    };
+    PasswordResetComponent.prototype.ngOnInit = function () {
+        if (this.authGuard.redirectUrl) {
+            this.messageClass = 'alert alert-danger';
+            this.message = 'You must be logged in to view that page';
+            this.previousUrl = this.authGuard.redirectUrl;
+            this.authGuard.redirectUrl = undefined;
+        }
+    };
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
+        __metadata("design:type", String)
+    ], PasswordResetComponent.prototype, "user", void 0);
+    PasswordResetComponent = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+            selector: 'app-password-reset',
+            template: __webpack_require__("./src/app/components/password-reset/password-reset.component.html"),
+            styles: [__webpack_require__("./src/app/components/password-reset/password-reset.component.css")]
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_forms__["a" /* FormBuilder */],
+            __WEBPACK_IMPORTED_MODULE_4__services_auth_service__["a" /* AuthService */],
+            __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* Router */],
+            __WEBPACK_IMPORTED_MODULE_3__guards_auth_guard__["a" /* AuthGuard */]])
+    ], PasswordResetComponent);
+    return PasswordResetComponent;
 }());
 
 
@@ -40275,11 +40467,7 @@ var SpecialtiesDropdownComponent = (function () {
         this.selectedChanged = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
     }
     SpecialtiesDropdownComponent.prototype.populateSpecialties = function () {
-        var _this = this;
-        this.campService.getAllSpecialties().subscribe(function (data) {
-            _this.specialties = data.specialties;
-            _this.selectedChanged.emit(_this.specialties[0]);
-        });
+        this.selectedChanged.emit(this.specialties[0]);
     };
     SpecialtiesDropdownComponent.prototype.handleChange = function (e) {
         this.selectedChanged.emit(this.specialties[e.target.value]);
@@ -40291,6 +40479,10 @@ var SpecialtiesDropdownComponent = (function () {
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])(),
         __metadata("design:type", Object)
     ], SpecialtiesDropdownComponent.prototype, "selectedChanged", void 0);
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
+        __metadata("design:type", Array)
+    ], SpecialtiesDropdownComponent.prototype, "specialties", void 0);
     SpecialtiesDropdownComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-specialties-dropdown',
@@ -40302,27 +40494,6 @@ var SpecialtiesDropdownComponent = (function () {
     return SpecialtiesDropdownComponent;
 }());
 
-function isEquivalent(a, b) {
-    // Create arrays of property names
-    var aProps = Object.getOwnPropertyNames(a);
-    var bProps = Object.getOwnPropertyNames(b);
-    // If number of properties is different,
-    // objects are not equivalent
-    if (aProps.length != bProps.length) {
-        return false;
-    }
-    for (var i = 0; i < aProps.length; i++) {
-        var propName = aProps[i];
-        // If values of same property are not equal,
-        // objects are not equivalent
-        if (a[propName] !== b[propName]) {
-            return false;
-        }
-    }
-    // If we made it this far, objects
-    // are considered equivalent
-    return true;
-}
 
 
 /***/ }),
@@ -40493,7 +40664,7 @@ module.exports = ".report{\n    width:75%;\n    position: relative;\n}\n.report 
 /***/ "./src/app/components/swim-group/swim-group.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-back-button></app-back-button>\n<div *ngIf=\"swimGroup && swimGroup.data\">\n  <h1>{{swimGroup.data.name}}</h1>\n  <div *ngIf=\"swimGroup.lifeguard\">\n    <h2>{{swimGroup.lifeguard.first}} {{swimGroup.lifeguard.last}}</h2><button class=\"btn btn-primary\" *ngIf=\"this.authService.userType() != 'lifeguard'\" (click)=\"removeLifeguard()\">X</button>\n  </div>\n  <div *ngIf=\"!swimGroup.lifeguard\">\n    <h2>Assign Lifeguard</h2>\n    <app-lifeguard-dropdown (selectedChanged)=\"preAssignLifeguard($event)\"></app-lifeguard-dropdown>\n    <button class=\"btn btn-primary\" (click)=\"assignLifeguard()\">Assign</button>\n  </div>\n  <button class=\"btn btn-primary\" (click)=\"generateReports()\" *ngIf=\"authService.userType() != 'lifeguard'\">Generate Reports</button>\n  <div *ngIf=\"generating\">\n    <div *ngFor=\"let camper of swimGroup.campers\" [id]=\"camper._id\" class=\"report\" (click)=\"goToReport(camper._id)\">\n      <img [src]=\"'./assets/'+camper.cSwimOpts.currentLevel.rcLevel+'.jpg'\">\n      <span [id]=\"'name-'+camper.cSwimOpts.currentLevel.rcLevel\">{{camper.first}} {{camper.last}}</span>\n      <span [id]=\"'date-'+camper.cSwimOpts.currentLevel.rcLevel\">{{displayDate()}}</span>\n      <span [id]=\"'instructor-'+camper.cSwimOpts.currentLevel.rcLevel\">{{swimGroup.lifeguard?.first}} {{swimGroup.lifeguard?.last}}</span>\n      <span [id]=\"'group-'+camper.cSwimOpts.currentLevel.rcLevel\">{{swimGroup.data.name}}</span>\n      <span *ngFor=\"let skill of completedSkills(camper.cSwimOpts.currentLevel)\" [id]=\"generateSkillClass(camper.cSwimOpts.currentLevel.rcLevel,skill)\">&#10004;</span>\n    </div>\n    <button class=\"btn btn-primary\" (click)=\"sendReports()\">Send Reports</button>\n  </div>\n  <h3>Campers:</h3>\n  <table class=\"table table-hover\" >\n    <thead>\n      <tr>\n        <th>First</th>\n        <th>Last</th>\n        <th>Red Cross Level</th>\n        <th>Swim Bracelet</th>\n        <th *ngIf=\"this.authService.userType() != 'lifeguard'\"></th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr *ngFor=\"let camper of swimGroup.campers\">\n        <td (click)=\"goToStats(camper)\">{{camper.first}}</td>\n        <td (click)=\"goToStats(camper)\">{{camper.last}}</td>\n        <td (click)=\"goToStats(camper)\">{{camper.cSwimOpts.currentLevel?.rcLevel}}</td>\n        <td (click)=\"goToStats(camper)\">{{camper.cSwimOpts.bracelet}}</td>\n        <td *ngIf=\"this.authService.userType() != 'lifeguard'\"><button class=\"btn btn-primary\" (click)=\"removeFromGroup(camper)\">x</button></td>\n      </tr>\n    </tbody>\n  </table>\n  <app-camper-selector *ngIf=\"this.authService.userType() != 'lifeguard'\" [exclude]=\"exclude\" (selection)=\"addToGroup($event)\"></app-camper-selector>\n</div>"
+module.exports = "<app-back-button></app-back-button>\n<div *ngIf=\"swimGroup && swimGroup.data\">\n  <h1>{{swimGroup.data.name}}</h1>\n  <div *ngIf=\"swimGroup.lifeguard\">\n    <h2>{{swimGroup.lifeguard.first}} {{swimGroup.lifeguard.last}}</h2><button class=\"btn btn-primary\" *ngIf=\"this.authService.userType() != 'lifeguard'\" (click)=\"removeLifeguard()\">X</button>\n  </div>\n  <div *ngIf=\"!swimGroup.lifeguard\">\n    <h2>Assign Lifeguard</h2>\n    <app-lifeguard-dropdown (selectedChanged)=\"preAssignLifeguard($event)\"></app-lifeguard-dropdown>\n    <button class=\"btn btn-primary\" (click)=\"assignLifeguard()\">Assign</button>\n  </div>\n  <button class=\"btn btn-primary\" (click)=\"generateReports()\" *ngIf=\"authService.userType() != 'lifeguard'\">Generate Reports</button>\n  <div *ngIf=\"generating\">\n    <div *ngFor=\"let camper of swimGroup.campers\" [id]=\"camper._id\" class=\"report\" (click)=\"goToReport(camper._id)\">\n      <img [src]=\"'./assets/'+camper.cSwimOpts.currentLevel.rcLevel+'.jpg'\">\n      <span [id]=\"'name-'+camper.cSwimOpts.currentLevel.rcLevel\">{{camper.first}} {{camper.last}}</span>\n      <span [id]=\"'date-'+camper.cSwimOpts.currentLevel.rcLevel\">{{displayDate()}}</span>\n      <span [id]=\"'instructor-'+camper.cSwimOpts.currentLevel.rcLevel\">{{swimGroup.lifeguard?.first}} {{swimGroup.lifeguard?.last}}</span>\n      <span [id]=\"'group-'+camper.cSwimOpts.currentLevel.rcLevel\">{{swimGroup.data.name}}</span>\n      <span *ngFor=\"let skill of completedSkills(camper.cSwimOpts.currentLevel)\" [id]=\"generateSkillClass(camper.cSwimOpts.currentLevel.rcLevel,skill)\">&#10004;</span>\n    </div>\n    <button class=\"btn btn-primary\" (click)=\"sendReports()\">Send Reports</button>\n  </div>\n  <h3>Campers:</h3>\n  <table class=\"table table-hover\" >\n    <thead>\n      <tr>\n        <th>First</th>\n        <th>Last</th>\n        <th>Red Cross Level</th>\n        <th>Swim Bracelet</th>\n        <th>Most Recent Report Sent</th>\n        <th *ngIf=\"this.authService.userType() != 'lifeguard'\"></th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr *ngFor=\"let camper of swimGroup.campers\">\n        <td (click)=\"goToStats(camper)\">{{camper.first}}</td>\n        <td (click)=\"goToStats(camper)\">{{camper.last}}</td>\n        <td (click)=\"goToStats(camper)\">{{camper.cSwimOpts.currentLevel?.rcLevel}}</td>\n        <td (click)=\"goToStats(camper)\">{{camper.cSwimOpts.bracelet}}</td>\n        <td (click)=\"goToStats(camper)\">{{displayDateHelper(camper.cSwimOpts.mostRecentReportSent)}}</td>\n        <td *ngIf=\"this.authService.userType() != 'lifeguard'\"><button class=\"btn btn-primary\" (click)=\"removeFromGroup(camper)\">x</button></td>\n      </tr>\n    </tbody>\n  </table>\n  <app-camper-selector *ngIf=\"this.authService.userType() != 'lifeguard'\" [exclude]=\"exclude\" (selection)=\"addToGroup($event)\"></app-camper-selector>\n</div>"
 
 /***/ }),
 
@@ -40602,7 +40773,15 @@ var SwimGroupComponent = (function () {
     };
     SwimGroupComponent.prototype.displayDate = function () {
         var d = new Date();
-        return d.getMonth() + "/" + d.getDate() + "/" + d.getFullYear();
+        return this.displayDateHelper(d);
+    };
+    SwimGroupComponent.prototype.displayDateHelper = function (d) {
+        if (d) {
+            d = new Date(d);
+            return d.getMonth() + 1 + "/" + d.getDate() + "/" + d.getFullYear();
+        }
+        else
+            return "Report not yet sent.";
     };
     SwimGroupComponent.prototype.preAssignLifeguard = function (lifeguard) {
         this.toAddLifeguard = String(lifeguard._id);
@@ -40625,7 +40804,6 @@ var SwimGroupComponent = (function () {
     };
     SwimGroupComponent.prototype.sendReports = function () {
         var _this = this;
-        console.log("hello world");
         this.swimService.sendReports(this.id).subscribe(function (data) {
             _this.loadSwimGroup();
         });
@@ -40717,6 +40895,7 @@ var SwimGroupsComponent = (function () {
         var _this = this;
         this.swimService.allGroups().subscribe(function (data) {
             _this.groups = data.groups;
+            return _this.groups.length > 0;
         });
     };
     SwimGroupsComponent.prototype.removeGroup = function (id) {
@@ -40739,7 +40918,10 @@ var SwimGroupsComponent = (function () {
     SwimGroupsComponent.prototype.generateGroups = function () {
         var _this = this;
         this.swimService.autoGenerateGroups().subscribe(function (data) {
-            _this.getGroups();
+            var checkGroups = setInterval(function () {
+                if (_this.getGroups())
+                    clearInterval(checkGroups);
+            }, 5000);
         });
     };
     SwimGroupsComponent.prototype.getOptions = function () {
@@ -41148,7 +41330,7 @@ module.exports = ".report{\n    width:75%;\n    position: relative;\n}\n.report 
 /***/ "./src/app/components/swim-report/swim-report.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"swimGroup && camper\" class=\"report\">\n<img [src]=\"'./assets/'+camper.cSwimOpts.currentLevel.rcLevel+'.jpg'\">\n<span [id]=\"'name-'+camper.cSwimOpts.currentLevel.rcLevel\">{{camper.first}} {{camper.last}}</span>\n<span [id]=\"'date-'+camper.cSwimOpts.currentLevel.rcLevel\">{{displayDate()}}</span>\n<span [id]=\"'instructor-'+camper.cSwimOpts.currentLevel.rcLevel\">{{lifeguard?.first}} {{lifeguard?.last}}</span>\n<span [id]=\"'group-'+camper.cSwimOpts.currentLevel.rcLevel\">{{swimGroup.name}}</span>\n<span *ngFor=\"let skill of completedSkills(camper.cSwimOpts.currentLevel)\" [id]=\"generateSkillClass(camper.cSwimOpts.currentLevel.rcLevel,skill)\">&#10004;</span>\n</div>\n<button (click)=\"downloadPDF()\">Down that load!</button>"
+module.exports = "<div *ngIf=\"swimGroup && camper\" class=\"report\">\n<img [src]=\"'./assets/'+camper.cSwimOpts.currentLevel.rcLevel+'.jpg'\">\n<span [id]=\"'name-'+camper.cSwimOpts.currentLevel.rcLevel\">{{camper.first}} {{camper.last}}</span>\n<span [id]=\"'date-'+camper.cSwimOpts.currentLevel.rcLevel\">{{displayDate()}}</span>\n<span [id]=\"'instructor-'+camper.cSwimOpts.currentLevel.rcLevel\">{{lifeguard?.first}} {{lifeguard?.last}}</span>\n<span [id]=\"'group-'+camper.cSwimOpts.currentLevel.rcLevel\">{{swimGroup.name}}</span>\n<span *ngFor=\"let skill of completedSkills(camper.cSwimOpts.currentLevel)\" [id]=\"generateSkillClass(camper.cSwimOpts.currentLevel.rcLevel,skill)\">&#10004;</span>\n</div>\n<button (click)=\"downloadPDF()\">Download report</button>"
 
 /***/ }),
 
@@ -41225,7 +41407,6 @@ var SwimReportComponent = (function () {
             if (skill.completed)
                 skills.push(skill);
         }
-        console.log(skills);
         return skills;
     };
     SwimReportComponent.prototype.generateSkillClass = function (level, skill) {
@@ -41233,7 +41414,7 @@ var SwimReportComponent = (function () {
     };
     SwimReportComponent.prototype.displayDate = function () {
         var d = new Date();
-        return d.getMonth() + "/" + d.getDate() + "/" + d.getFullYear();
+        return d.getMonth() + 1 + "/" + d.getDate() + "/" + d.getFullYear();
     };
     SwimReportComponent.prototype.downloadPDF = function () {
         var swimLevel = this.camper.cSwimOpts.currentLevel;
@@ -41357,7 +41538,7 @@ module.exports = ""
 /***/ "./src/app/components/swim-stat/swim-stat.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-back-button></app-back-button>\n<div *ngIf=\"camper?.cSwimOpts.currentLevel\">\n  <h1>{{camper.first}} {{camper.last}}</h1>\n  <h1>Red Cross Level {{camper.cSwimOpts.currentLevel.rcLevel}} - {{camper.cSwimOpts.currentLevel.name}}</h1>\n  <h3>Animals:</h3>\n  <div *ngFor=\"let animal of camper.cSwimOpts.currentLevel.animals\">\n    <h4>{{animal.name}}</h4>\n    <ul>\n      <li *ngFor=\"let skill of animal.skills\">\n        {{skill.skill}}\n        <input type=\"checkbox\" [checked]=\"skill.completed\" [disabled]=\"camper.cSwimOpts.currentLevel.completed\" (change)=\"checkSkill($event,animal._id,skill._id)\">\n      </li>  \n    </ul>\n  </div>\n  <h4>Exit Skills</h4>\n    <ul>\n      <li *ngFor=\"let skill of camper.cSwimOpts.currentLevel.exitSkills\">\n        {{skill.skill}}\n        <input type=\"checkbox\" [checked]=\"skill.completed\" [disabled]=\"camper.cSwimOpts.currentLevel.completed\" (change)=\"checkExitSkill($event,skill._id)\">\n      </li>  \n    </ul>\n  <button class=\"btn btn-primary\" *ngIf=\"!camper.cSwimOpts.currentLevel.completed\" (click)=\"levelComplete()\">Level Complete</button>\n</div>\n<div *ngIf=\"!camper?.cSwimOpts.currentLevel\">\n    <app-swim-level-dropdown (selectedChanged) = \"preAddLevel($event)\" [all]=\"false\"></app-swim-level-dropdown>\n    <button class=\"btn btn-primary\" (click)=\"levelSet()\">Set Level</button>\n</div>\n<div *ngIf=\"camper?.cSwimOpts?.completedLevels\">\n  <h1>Archive</h1>\n  <div *ngFor=\"let level of camper.cSwimOpts.completedLevels\">\n      <h2>Red Cross Level {{level.rcLevel}} - {{level.name}} completed in {{level.sessionCompleted.name}}</h2>\n  </div>\n</div>"
+module.exports = "<app-back-button></app-back-button>\n\n<div *ngIf=\"camper?.cSwimOpts.currentLevel\">\n  <h1>{{camper.first}} {{camper.last}}</h1>\n  <h1>Red Cross Level {{camper.cSwimOpts.currentLevel.rcLevel}} - {{camper.cSwimOpts.currentLevel.name}}</h1>\n  <h3>Animals:</h3>\n  <div *ngFor=\"let animal of camper.cSwimOpts.currentLevel.animals\">\n    <h4>{{animal.name}}</h4>\n    <ul>\n      <li *ngFor=\"let skill of animal.skills\">\n        {{skill.skill}}\n        <input type=\"checkbox\" [checked]=\"skill.completed\" [disabled]=\"camper.cSwimOpts.currentLevel.completed\" (change)=\"checkSkill($event,animal._id,skill._id)\">\n      </li>  \n    </ul>\n  </div>\n  <h4>Exit Skills</h4>\n    <ul>\n      <li *ngFor=\"let skill of camper.cSwimOpts.currentLevel.exitSkills\">\n        {{skill.skill}}\n        <input type=\"checkbox\" [checked]=\"skill.completed\" [disabled]=\"camper.cSwimOpts.currentLevel.completed\" (change)=\"checkExitSkill($event,skill._id)\">\n      </li>  \n    </ul>\n  <button class=\"btn btn-primary\" *ngIf=\"!camper.cSwimOpts.currentLevel.completed\" (click)=\"levelComplete()\">Level Complete</button>\n</div>\n<div *ngIf=\"!camper?.cSwimOpts.currentLevel\">\n    <app-swim-level-dropdown (selectedChanged) = \"preAddLevel($event)\" [all]=\"false\"></app-swim-level-dropdown>\n    <button class=\"btn btn-primary\" (click)=\"levelSet()\">Set Level</button>\n</div>\n<h2 *ngIf=\"camper\">Swim Bracelet: {{camper.cSwimOpts.bracelet}}</h2>\n<select (change)=\"changeBracelet($event);\" class=\"form-control\">\n  <option value=\"none\">none</option>\n  <option value=\"green\">green</option>\n  <option value=\"orange\">orange</option>\n</select>\n<div *ngIf=\"camper?.cSwimOpts?.completedLevels\">\n  <h2>Archive</h2>\n  <div *ngFor=\"let level of camper.cSwimOpts.completedLevels\">\n      <h2>Red Cross Level {{level.rcLevel}} - {{level.name}} completed in {{level.sessionCompleted.name}}</h2>\n  </div>\n</div>"
 
 /***/ }),
 
@@ -41394,17 +41575,14 @@ var SwimStatComponent = (function () {
         var _this = this;
         this.campsService.getCamper(this.id).subscribe(function (data) {
             _this.camper = data.camper;
-            console.log(_this.camper);
         });
     };
     SwimStatComponent.prototype.checkSkill = function (e, animal_id, skill_id) {
         this.swimService.checkSkill(this.id, animal_id, skill_id, e.target.checked).subscribe(function (data) {
-            console.log("done");
         });
     };
     SwimStatComponent.prototype.checkExitSkill = function (e, skill_id) {
         this.swimService.checkExitSkill(this.id, skill_id, e.target.checked).subscribe(function (data) {
-            console.log("done");
         });
     };
     SwimStatComponent.prototype.levelComplete = function () {
@@ -41419,6 +41597,12 @@ var SwimStatComponent = (function () {
     SwimStatComponent.prototype.levelSet = function () {
         var _this = this;
         this.swimService.setLevel(this.id, this.toAddLevel).subscribe(function (data) {
+            _this.loadStat();
+        });
+    };
+    SwimStatComponent.prototype.changeBracelet = function (e) {
+        var _this = this;
+        this.swimService.setBracelet(this.id, e.target.value).subscribe(function (data) {
             _this.loadStat();
         });
     };
@@ -41457,7 +41641,7 @@ module.exports = ""
 /***/ "./src/app/components/swim-stats/swim-stats.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"authService.admin() && session\">  \n  <app-swim-level-dropdown (selectedChanged) = \"filter($event)\" [all]=\"true\"></app-swim-level-dropdown>\n  <div *ngFor=\"let division of session.divisions\">\n    <h2>{{division.d_id.name}}</h2>\n    <table class=\"table table-hover\" >\n      <thead>\n        <tr>\n          <th>First</th>\n          <th>Last</th>\n          <th>Red Cross Level</th>\n          <th>Swim Bracelet</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr *ngFor=\"let camper of division.campers\" (click)=\"goToStats(camper)\">\n          <td>{{camper.first}}</td>\n          <td>{{camper.last}}</td>\n          <td>{{camper.cSwimOpts.currentLevel?.rcLevel}}</td>\n          <td>{{camper.cSwimOpts.bracelet}}</td>\n        </tr>\n      </tbody>\n    </table>\n  </div>\n</div>\n    "
+module.exports = "<div *ngIf=\"authService.admin() && session\">  \n  <app-swim-level-dropdown (selectedChanged) = \"filter($event)\" [all]=\"true\"></app-swim-level-dropdown>\n  <div *ngFor=\"let division of session.divisions\">\n    <h2>{{division.d_id.name}}</h2>\n    <table class=\"table table-hover\" >\n      <thead>\n        <tr>\n          <th>First</th>\n          <th>Last</th>\n          <th>Red Cross Level</th>\n          <th>Swim Bracelet</th>\n          <th>Most Recent Report Sent</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr *ngFor=\"let camper of division.campers\" (click)=\"goToStats(camper)\">\n          <td>{{camper.first}}</td>\n          <td>{{camper.last}}</td>\n          <td>{{camper.cSwimOpts.currentLevel?.rcLevel}}</td>\n          <td>{{camper.cSwimOpts.bracelet}}</td>\n          <td>{{displayDateHelper(camper.cSwimOpts.mostRecentReportSent)}}</td>\n        </tr>\n      </tbody>\n    </table>\n  </div>\n</div>\n    "
 
 /***/ }),
 
@@ -41509,6 +41693,14 @@ var SwimStatsComponent = (function () {
         this.campsService.getOptions().subscribe(function (data) {
             _this.options = data.options;
         });
+    };
+    SwimStatsComponent.prototype.displayDateHelper = function (d) {
+        if (d) {
+            d = new Date(d);
+            return d.getMonth() + 1 + "/" + d.getDate() + "/" + d.getFullYear();
+        }
+        else
+            return "Report not yet sent.";
     };
     SwimStatsComponent.prototype.goToStats = function (camper) {
         this.router.navigate(['/swim-stat/' + camper._id]);
@@ -41982,7 +42174,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var AuthService = (function () {
     function AuthService(http) {
         this.http = http;
-        this.domain = ""; // Production;
+        //domain = ""; // Production;
+        this.domain = "http://localhost:8080/";
     }
     // Function to create headers, add token, to be used in HTTP requests
     AuthService.prototype.createAuthenticationHeaders = function () {
@@ -41994,6 +42187,10 @@ var AuthService = (function () {
                 'authorization': this.authToken // Attach token
             })
         });
+    };
+    AuthService.prototype.changePassword = function (newPassword) {
+        this.createAuthenticationHeaders();
+        return this.http.post(this.domain + 'authentication/change_password', newPassword, this.options).map(function (res) { return res.json(); });
     };
     // Function to get token from client local storage
     AuthService.prototype.loadToken = function () {
@@ -42900,6 +43097,14 @@ var SwimService = (function () {
         };
         this.createAuthenticationHeaders();
         return this.http.post(this.domain + 'swim/send_reports', data, this.options).map(function (res) { return res.json(); });
+    };
+    SwimService.prototype.setBracelet = function (id, bracelet) {
+        var data = {
+            id: id,
+            bracelet: bracelet
+        };
+        this.createAuthenticationHeaders();
+        return this.http.post(this.domain + 'swim/set_bracelet', data, this.options).map(function (res) { return res.json(); });
     };
     SwimService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
