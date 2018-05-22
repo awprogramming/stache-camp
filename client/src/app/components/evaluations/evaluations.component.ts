@@ -23,6 +23,7 @@ export class EvaluationsComponent implements OnInit {
   approver;
   sessions;
   ready = false;
+  loading;
 
   constructor(
     private campsService: CampsService,
@@ -33,6 +34,7 @@ export class EvaluationsComponent implements OnInit {
   ) {}
 
   getAllCurrent(){
+    this.loading = true;
     this.evaluationsService.getCurrentEvals().subscribe(data => {
       this.divisions = [];
       this.counselors = [];
@@ -156,10 +158,12 @@ export class EvaluationsComponent implements OnInit {
       }
     }
     this.ready = true;
+    this.loading = false;
     });
   }
 
   getOptions(){
+    this.loading = true;
     this.campsService.getOptions().subscribe(data => {
       this.options = data.options;
       this.perSession = Array.from(Array(data.options.evaluationOpts.perSession).keys());
@@ -224,6 +228,7 @@ export class EvaluationsComponent implements OnInit {
   }
 
   export(session_id){
+    this.loading = true;
     var session;
     for(let sess of this.sessions){
       if(sess._id==session_id){
@@ -288,6 +293,7 @@ export class EvaluationsComponent implements OnInit {
     }
     
    new Angular2Csv(data, session.session.name+'_Eval_Report');
+   this.loading = false;
   }
 
   getType(){

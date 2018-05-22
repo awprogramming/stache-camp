@@ -15,6 +15,7 @@ export class LoginComponent implements OnInit {
   processing = false;
   form: FormGroup;
   previousUrl;
+  loading;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -47,6 +48,7 @@ export class LoginComponent implements OnInit {
 
   // Functiont to submit form and login user
   onLoginSubmit() {
+    this.loading = true;
     this.processing = true; // Used to submit button while is being processed
     this.disableForm(); // Disable form while being process
     // Create user object from user's input
@@ -74,6 +76,7 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['/dashboard']); 
         }, 1000);
       }
+      this.loading = false;
     });
   }
 

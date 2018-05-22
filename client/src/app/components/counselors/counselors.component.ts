@@ -31,6 +31,8 @@ export class CounselorsComponent implements OnInit {
   lgReg;
   toMassRehire = [];
   specialties;
+  loading;
+
   constructor(
     private formBuilder: FormBuilder,
     private campsService: CampsService,
@@ -60,6 +62,7 @@ export class CounselorsComponent implements OnInit {
   }
 
   onRegistrationSubmit() {
+    this.loading = true;
     if(this.lgReg){
       const counselor = {
         first: this.form.get('first').value,
@@ -155,6 +158,7 @@ export class CounselorsComponent implements OnInit {
 }
 
   onBulkUploadSubmit(){
+    this.loading = true;
     this.campsService.bulkRegisterCounselor(this.uploaded_counselors).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
@@ -174,6 +178,7 @@ export class CounselorsComponent implements OnInit {
   }
 
   getAllCounselors(){
+    this.loading = true;
     this.campsService.getAllCounselors().subscribe(data => {
       if(this.authService.isUser()){
         this.divisions = Object.keys(data.counselors);
@@ -203,16 +208,20 @@ export class CounselorsComponent implements OnInit {
         }
       }
       } 
+      this.loading = false;
     });
   }
 
   getOptions(){
+    this.loading = true;
     this.campsService.getOptions().subscribe(data => {
-      this.options = data.options
+      this.options = data.options;
+      this.loading = false;
     });
   }
 
   remove(counselor){
+    this.loading = true;
     this.campsService.removeCounselor(counselor).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
@@ -227,6 +236,7 @@ export class CounselorsComponent implements OnInit {
   }
 
   addDivision(counselor){
+    this.loading = true;
     this.campsService.addDivisionToCounselor(counselor).subscribe(data => {
       this.getAllCounselors();
     });
@@ -237,6 +247,7 @@ export class CounselorsComponent implements OnInit {
   }
 
   addSpecialty(counselor){
+    this.loading = true;
     this.campsService.addSpecialtyToCounselor(counselor).subscribe(data => {
       this.getAllCounselors();
     });
@@ -277,12 +288,14 @@ export class CounselorsComponent implements OnInit {
   }
 
   massRehire(){
+    this.loading = true;
     for(let counselor of Object.keys(this.toMassRehire)){
       this.rehire(this.toMassRehire[counselor],true);
     }
   }
 
   rehire(c,mass){
+    this.loading = true;
     const counselor = {
       "counselor": c,
       "session":{
@@ -295,8 +308,10 @@ export class CounselorsComponent implements OnInit {
     });
   }
   populateDivisions(){
+    this.loading = true;
     this.campsService.getAllDivisions().subscribe(data=>{
       this.dropdownDivisions = data;
+      this.loading = false;
       // if(this._gender=="female")
       //   this.divisions = data.divisions[0].divisions;
       // else if(this._gender=="male")
@@ -316,8 +331,10 @@ export class CounselorsComponent implements OnInit {
   }
 
   getSpecialties(){
+    this.loading = true;
     this.campsService.getAllSpecialties().subscribe(data=>{
       this.specialties = data.specialties;
+      this.loading = false;
     });
   }
 

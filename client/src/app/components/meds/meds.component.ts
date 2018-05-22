@@ -27,6 +27,7 @@ export class MedsComponent implements OnInit {
   enrolled;
   toAddType;
   options;
+  loading;
 
   constructor(
     private campsService: CampsService,
@@ -37,6 +38,7 @@ export class MedsComponent implements OnInit {
   ) { }
 
   getAllCampers(){
+    this.loading = true;
     this.campsService.getAllCampers().subscribe(data => {
       if(this.authService.isUser()){
         this.divisions = Object.keys(data.campers);
@@ -66,6 +68,7 @@ export class MedsComponent implements OnInit {
         }
       }
       }
+      this.loading = false;
     });
   }
 
@@ -86,6 +89,7 @@ export class MedsComponent implements OnInit {
   }
 
   addMed(camper){
+    this.loading = true;
     if(camper.toAdd){
       this.medsService.addMed(camper).subscribe(()=>{
         this.getAllCampers();
@@ -94,6 +98,7 @@ export class MedsComponent implements OnInit {
   }
 
   removeMed(med,camper){
+    this.loading = true;
     var data = {
       med:med,
       camper:camper
@@ -108,8 +113,10 @@ export class MedsComponent implements OnInit {
   }
 
   getOptions(){
+    this.loading = true;
     this.campsService.getOptions().subscribe(data => {
       this.options = data.options
+      this.loading = false;
     });
   }
 

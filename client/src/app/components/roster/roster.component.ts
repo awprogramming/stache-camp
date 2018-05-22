@@ -17,6 +17,7 @@ export class RosterComponent implements OnInit {
   options;
   internal;
   exclude = [];
+  loading;
 
   constructor(
     private route: ActivatedRoute,
@@ -27,21 +28,25 @@ export class RosterComponent implements OnInit {
   ) {}
 
   loadRoster(){
+    this.loading = true;
     if(this.internal == "true"){
       this.sportsService.getInternalRoster(this.sd_id,this.id).subscribe(data => {   
         this.roster = data.roster;
-        this.exclude = this.roster.campers;   
+        this.exclude = this.roster.campers;
+        this.loading = false;   
       });
     }
     else{
       this.sportsService.getRoster(this.sd_id,this.id).subscribe(data => {   
         this.roster = data.roster;
-        this.exclude = this.roster.campers;   
+        this.exclude = this.roster.campers; 
+        this.loading = false;  
       });
     }
   }
 
   addToRoster(e){
+    this.loading = true;
     this.exclude.push(e);
     const ids = {
       c_id:e._id,
@@ -61,6 +66,7 @@ export class RosterComponent implements OnInit {
   }
 
   removeFromRoster(c_id){
+    this.loading = true;
     for(var i = 0; i < this.exclude.length; i++){
       if(this.exclude[i]._id == c_id){
         this.exclude.splice(i,1);

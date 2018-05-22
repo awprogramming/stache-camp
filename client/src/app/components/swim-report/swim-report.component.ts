@@ -21,6 +21,7 @@ export class SwimReportComponent implements OnInit {
   camper;
   swimGroup;
   lifeguard;
+  loading;
 
   constructor(
     private route: ActivatedRoute,
@@ -31,6 +32,7 @@ export class SwimReportComponent implements OnInit {
   ) {}
 
   loadReport(){
+    this.loading = true;
     this.swimService.getSwimGroupGuest(this.campId,this.swimGroupId).subscribe(data => {
       this.swimGroup = data.group.data;
       this.lifeguard = data.group.lifeguard;
@@ -40,6 +42,7 @@ export class SwimReportComponent implements OnInit {
           break;
         }
       }
+      this.loading = false;;
     });
   }
 

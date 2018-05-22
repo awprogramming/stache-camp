@@ -20,6 +20,7 @@ export class SwimLevelsComponent implements OnInit {
   toAddLifeguard;
   options;
   levels;
+  loading;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -40,18 +41,22 @@ export class SwimLevelsComponent implements OnInit {
   }
 
   getLevels(){
+    this.loading = true;
     this.swimService.allLevels().subscribe(data => {
       this.levels = data.levels;
+      this.loading = false;
     });
   }
 
   removeLevel(id){
+    this.loading = true;
     this.swimService.removeLevel(id).subscribe(data => {
       this.getLevels();
     });
   }
 
   createSwimLevelSubmit(){
+    this.loading = true;
     var swimLevel = {
       name: this.form.get('name').value,
       rcLevel: this.form.get('num').value
@@ -63,8 +68,10 @@ export class SwimLevelsComponent implements OnInit {
   }
 
   getOptions(){
+    this.loading = true;
     this.campsService.getOptions().subscribe(data => {
       this.options = data.options
+      this.loading = false;
     });
   }
 

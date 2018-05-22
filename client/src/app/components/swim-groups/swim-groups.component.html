@@ -1,3 +1,4 @@
+<app-loading *ngIf="loading"></app-loading>
 <button class="btn btn-primary" (click)="generateGroups()" *ngIf="authService.userType() != 'lifeguard'">Auto-Generate Groups</button>
 <form [formGroup]="form" (submit)="createSwimGroupSubmit()" *ngIf="authService.userType() != 'lifeguard'">
   <div class="form-group">

@@ -19,6 +19,8 @@ export class GameCalendarComponent implements OnInit {
   form: FormGroup;
   monthView;
   specialties;
+  loading;
+
   constructor(
     private formBuilder: FormBuilder,
     private sportsService: SportsService,
@@ -38,6 +40,7 @@ export class GameCalendarComponent implements OnInit {
   }
 
   onScheduleSubmit() {
+    this.loading = true;
     var hour = this.selectedTime.hour;
     if(this.selectedTime.ampm == "AM" && this.selectedTime.hour == "12"){
       hour = "0";
@@ -75,6 +78,7 @@ export class GameCalendarComponent implements OnInit {
   }
 
   getGames(e){
+    this.loading = true;
     this.monthView = e;
     var type;
     if(this.authService.admin())
@@ -83,6 +87,7 @@ export class GameCalendarComponent implements OnInit {
       type = this.authService.userType();
     this.sportsService.getMonthGames(e,type).subscribe((data)=>{
       this.games = data.games;
+      this.loading = false;
     });
   }
   getMonthName(month){
@@ -96,8 +101,10 @@ export class GameCalendarComponent implements OnInit {
   }
 
   getSpecialties(){
+    this.loading = true;
     this.campsService.getAllSpecialties().subscribe(data=>{
       this.specialties = data.specialties;
+      this.loading = false;
     });
   }
 

@@ -19,6 +19,7 @@ export class HeadStaffComponent implements OnInit {
   newHead;
   toAddType;
   types;
+  loading;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -40,6 +41,7 @@ export class HeadStaffComponent implements OnInit {
 
   
   onRegistrationSubmit() {
+    this.loading = true;
     this.processing = true; 
     const headStaff = {
       email: this.form.get('email').value, 
@@ -64,12 +66,15 @@ export class HeadStaffComponent implements OnInit {
   }
 
   getAllHeads(){
+    this.loading = true;
     this.campsService.getAllHeads().subscribe(data => {
       this.heads = data.heads;
+      this.loading = false;
     })
   }
 
   remove(head){
+    this.loading = true;
     this.campsService.removeHead(head).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
@@ -84,6 +89,7 @@ export class HeadStaffComponent implements OnInit {
   }
 
   getTypes(){
+    this.loading = true;
     this.campsService.getOptions().subscribe(data=>{
       
       this.types = data.options.headStaff_types;
@@ -119,6 +125,7 @@ export class HeadStaffComponent implements OnInit {
   }
 
   addhType(head){
+    this.loading = true;
     this.campsService.addTypeToHead(head).subscribe(data => {
       this.getAllHeads();
     });

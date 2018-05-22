@@ -22,6 +22,7 @@ export class QuestionsComponent implements OnInit {
   toAddType;
   toAddhType;
   hsTypes;
+  loading;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -42,6 +43,7 @@ export class QuestionsComponent implements OnInit {
   }
 
   onRegistrationSubmit() {
+    this.loading = true;
     this.processing = true;
     const question = {
       content: this.form.get('content').value,
@@ -68,8 +70,10 @@ export class QuestionsComponent implements OnInit {
   }
 
   getAllQuestions(){
+    this.loading = true;
     this.evaluationsService.getAllQuestions().subscribe(data => {
       this.types = data.types;
+      this.loading = false;
     })
   }
 
@@ -82,6 +86,7 @@ export class QuestionsComponent implements OnInit {
   }
 
   remove(question){
+    this.loading = true;
     this.evaluationsService.removeQuestion(question).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
@@ -97,6 +102,7 @@ export class QuestionsComponent implements OnInit {
 
   
   getTypes(){
+    this.loading = true;
     this.campsService.getOptions().subscribe(data=>{
       this.hsTypes = data.options.headStaff_types;
       this.getAllQuestions();

@@ -130,10 +130,9 @@ module.exports = (router) => {
                                             div.campers["L"+camper.cSwimOpts.currentLevel.rcLevel] = [camper];
                                    }
                                }
+                               divs.push(div);
                             }
-                            divs.push(div);
                         }
-
                         for(let division of divs){
                             for(let level of Object.keys(division.campers)){
                                 var groupCount = 0;

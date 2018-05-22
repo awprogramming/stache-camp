@@ -23,6 +23,7 @@ export class OptionsComponent implements OnInit {
   perSessionForm;
   newType = false;
   newhType = false;
+  loading;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -53,6 +54,7 @@ export class OptionsComponent implements OnInit {
   
 
   onFormSubmit() {
+    this.loading = true;
     const session = {
       name: this.form.get('session_name').value
     }
@@ -63,6 +65,7 @@ export class OptionsComponent implements OnInit {
   }
 
   increasePeriod(){
+    this.loading = true;
     const newPeriod = {
       period: this.options.evaluationOpts.currentEval+1
     }
@@ -70,6 +73,7 @@ export class OptionsComponent implements OnInit {
   }
 
   decreasePeriod(){
+    this.loading = true;
     const newPeriod = {
       period: this.options.evaluationOpts.currentEval-1
     }
@@ -83,6 +87,7 @@ export class OptionsComponent implements OnInit {
   }
 
   onNewTypeSubmit() {
+    this.loading = true;
     const type = {
       type: this.newTypeForm.get('type').value
     }
@@ -92,6 +97,7 @@ export class OptionsComponent implements OnInit {
   }
 
   onNewhTypeSubmit() {
+    this.loading = true;
     const htype = {
       type: this.newhTypeForm.get('htype').value
     }
@@ -101,6 +107,7 @@ export class OptionsComponent implements OnInit {
   }
 
   onPerSessionSubmit(){
+    this.loading = true;
     const perSession = {
       perSession: this.perSessionForm.get('per_session').value
     }
@@ -126,6 +133,7 @@ export class OptionsComponent implements OnInit {
   }
 
   removeType(type){
+    this.loading = true;
     this.campsService.removeType(type).subscribe(data => {
         this.getOptions();
 
@@ -133,12 +141,14 @@ export class OptionsComponent implements OnInit {
   }
 
   removehType(type){
+    this.loading = true;
     this.campsService.removehType(type).subscribe(data => {
         this.getOptions();
     });
   }
 
   changeAGMax(e){
+    this.loading = true;
     if(e.target.value >= 1){
       this.swimService.changeAGMax(e.target.value).subscribe(data => {
         this.getOptions();
@@ -148,8 +158,10 @@ export class OptionsComponent implements OnInit {
 
 
   getOptions(){
+    this.loading = true;
     this.campsService.getOptions().subscribe(data => {
       this.options = data.options
+      this.loading = false;
     });
   }
 

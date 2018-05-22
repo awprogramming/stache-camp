@@ -19,6 +19,7 @@ export class SwimLevelComponent implements OnInit {
   options;
   addAnimal = false;
   exitSkill;
+  loading;
 
   constructor(
     private route: ActivatedRoute,
@@ -43,6 +44,7 @@ export class SwimLevelComponent implements OnInit {
   }
 
   createAnimalSubmit(){
+    this.loading = true;
     this.addAnimal = false;
     var swimAnimal = {
       name: this.form.get('aName').value,
@@ -53,6 +55,7 @@ export class SwimLevelComponent implements OnInit {
   }
 
   xySubmit(animal,skill){
+    this.loading = true;
     var pos = {
       x: this.xy.get('x').value,
       y: this.xy.get('y').value
@@ -70,12 +73,15 @@ export class SwimLevelComponent implements OnInit {
   }
 
   loadSwimLevel(){
+    this.loading = true;
     this.swimService.getSwimLevel(this.id).subscribe(data => {
       this.swimLevel = data.level;
+      this.loading = false;
     });
   }
 
   getOptions(){
+    this.loading = true;
     this.campsService.getOptions().subscribe(data => {
       this.options = data.options
       this.loadSwimLevel();
@@ -87,6 +93,7 @@ export class SwimLevelComponent implements OnInit {
   }
 
   addSkill(animal){
+    this.loading = true;
     this.swimService.registerAnimalSkill(this.id,animal).subscribe(data => {
       this.loadSwimLevel();
      });
@@ -97,18 +104,21 @@ export class SwimLevelComponent implements OnInit {
   }
 
   addExitSkill(){
+    this.loading = true;
     this.swimService.registerExitSkill(this.id,this.exitSkill).subscribe(data => {
       this.loadSwimLevel();
      });
   }
 
   removeAnimalSkill(animalId,skillId){
+    this.loading = true;
     this.swimService.removeAnimalSkill(this.id,animalId,skillId).subscribe(data => {
       this.loadSwimLevel();
     });
   }
 
   removeExitSkill(skillId){
+    this.loading = true;
     this.swimService.removeExitSkill(this.id,skillId).subscribe(data => {
       this.loadSwimLevel();
     });

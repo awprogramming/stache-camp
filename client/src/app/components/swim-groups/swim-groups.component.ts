@@ -20,6 +20,7 @@ export class SwimGroupsComponent implements OnInit {
   toAddLifeguard;
   options;
   groups;
+  loading;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -39,19 +40,22 @@ export class SwimGroupsComponent implements OnInit {
   }
 
   getGroups(){
+    this.loading = true;
     this.swimService.allGroups().subscribe(data => {
       this.groups = data.groups;
-      return this.groups.length > 0;
+      this.loading = false;
     });
   }
 
   removeGroup(id){
+    this.loading = true;
     this.swimService.removeGroup(id).subscribe(data => {
       this.getGroups();
     });
   }
 
   createSwimGroupSubmit(){
+    this.loading = true;
     var swimGroup = {
       name: this.form.get('name').value,
       sessionId: String(this.options.session._id),
@@ -64,17 +68,24 @@ export class SwimGroupsComponent implements OnInit {
   }
 
   generateGroups(){
+    this.loading = true;
     this.swimService.autoGenerateGroups().subscribe(data => {
       var checkGroups = setInterval(()=>{
-        if(this.getGroups())
+        if(this.groups.length != 0){
           clearInterval(checkGroups);
+        }
+        else{
+          this.getGroups();
+        }
       },5000);
     });
   }
 
   getOptions(){
+    this.loading = true;
     this.campsService.getOptions().subscribe(data => {
       this.options = data.options
+      this.loading = false;
     });
   }
 

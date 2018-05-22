@@ -12,6 +12,7 @@ export class SwimStatComponent implements OnInit {
   id;
   camper;
   toAddLevel;
+  loading;
 
   constructor(
     private route: ActivatedRoute,
@@ -21,8 +22,10 @@ export class SwimStatComponent implements OnInit {
   ) {}
 
   loadStat(){
+    this.loading = true;
     this.campsService.getCamper(this.id).subscribe(data => {
       this.camper = data.camper;
+      this.loading = false;
     });
   }
 
@@ -37,6 +40,7 @@ export class SwimStatComponent implements OnInit {
   }
 
   levelComplete(){
+    this.loading = true;
     this.swimService.levelComplete(this.id).subscribe(data=>{
       this.loadStat();
     });
@@ -47,12 +51,14 @@ export class SwimStatComponent implements OnInit {
   }
 
   levelSet(){
+    this.loading = true;
     this.swimService.setLevel(this.id,this.toAddLevel).subscribe(data=>{
       this.loadStat();
     });
   }
 
   changeBracelet(e){
+    this.loading = true;
     this.swimService.setBracelet(this.id,e.target.value).subscribe(data=>{
       this.loadStat();
     });

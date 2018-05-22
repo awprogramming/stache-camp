@@ -19,6 +19,7 @@ export class SwimGroupComponent implements OnInit {
   reportCamper;
   date;
   toAddLifeguard;
+  loading;
 
   constructor(
     private route: ActivatedRoute,
@@ -31,6 +32,7 @@ export class SwimGroupComponent implements OnInit {
   
 
   loadSwimGroup(){
+    this.loading = true;
     this.swimService.getSwimGroup(this.id).subscribe(data => {
       this.swimGroup = data.group;
       this.exclude = [];
@@ -41,16 +43,19 @@ export class SwimGroupComponent implements OnInit {
   fillExclude(){
     this.swimService.inGroups().subscribe(data => {
       this.exclude = data.campers;
+      this.loading = false;
     });
   }
 
   addToGroup(camper){
+    this.loading = true;
     this.swimService.addToSwimGroup(this.id,camper._id).subscribe(data => {
       this.loadSwimGroup();
     });
   }
 
   removeFromGroup(camper){
+    this.loading = true;
     this.swimService.removeFromSwimGroup(this.id,camper._id).subscribe(data => {
       this.loadSwimGroup();
     });
@@ -68,6 +73,7 @@ export class SwimGroupComponent implements OnInit {
     }
   }
   getOptions(){
+    this.loading = true;
     this.campsService.getOptions().subscribe(data => {
       this.options = data.options
       this.loadSwimGroup();
@@ -117,12 +123,14 @@ export class SwimGroupComponent implements OnInit {
   }
 
   assignLifeguard(){
+    this.loading = true;
     this.swimService.assignLifeguard(this.id,this.toAddLifeguard).subscribe(data => {
       this.loadSwimGroup();
     });
   }
 
   removeLifeguard(){
+    this.loading = true;
     this.swimService.removeLifeguard(this.id).subscribe(data => {
       this.loadSwimGroup();
     });
@@ -134,6 +142,7 @@ export class SwimGroupComponent implements OnInit {
   }
 
   sendReports(){
+    this.loading = true;
     this.swimService.sendReports(this.id).subscribe(data => {
       this.loadSwimGroup();
     });

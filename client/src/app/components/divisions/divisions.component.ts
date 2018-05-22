@@ -18,6 +18,7 @@ export class DivisionsComponent implements OnInit {
   newCamp = false;
   divisions;
   heads;
+  loading;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -36,6 +37,7 @@ export class DivisionsComponent implements OnInit {
   }
 
   onRegistrationSubmit() {
+    this.loading = true;
     this.processing = true;
     const division = {
       name: this.form.get('name').value,
@@ -61,12 +63,15 @@ export class DivisionsComponent implements OnInit {
     });
   }
   getAllDivisions(){
+    this.loading = true;
     this.campsService.getAllDivisions().subscribe(data => {
       this.divisions = data.divisions;
+      this.loading = false;
     })
   }
 
   remove(division){
+    this.loading = true;
     this.campsService.removeDivision(division).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
@@ -85,18 +90,21 @@ export class DivisionsComponent implements OnInit {
   }
 
   addHead(division){
+    this.loading = true;
     this.campsService.addHeadToDivision(division).subscribe(data => {
       this.getAllDivisions();
     });
   }
 
   removeHead(division_id,leader_id){
+    this.loading = true;
     this.campsService.removeHeadFromDivision(division_id,leader_id).subscribe(data =>{
       this.getAllDivisions();
     })
   }
 
   getHeads(){
+    this.loading = true;
     this.campsService.getAllHeads().subscribe(data=>{
       this.heads = data.heads;
       this.getAllDivisions();

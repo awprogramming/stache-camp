@@ -17,6 +17,7 @@ export class GameComponent implements OnInit {
   coaches;
   refs;
   exclude = [];
+  loading;
 
   constructor(
     private route: ActivatedRoute,
@@ -27,6 +28,7 @@ export class GameComponent implements OnInit {
   ) {}
 
   loadGame(){
+    this.loading = true;
     this.sportsService.getGame(this.id).subscribe(data => {
       this.game = data.game;
       this.campers = data.campers;
@@ -37,6 +39,8 @@ export class GameComponent implements OnInit {
         this.exclude.push(counselor);
       for(let counselor of this.refs)
         this.exclude.push(counselor);
+
+      this.loading = false;
     });
     
   }
@@ -46,12 +50,14 @@ export class GameComponent implements OnInit {
   }
 
   addRoster(){
+    this.loading = true;
     this.sportsService.addRosterToGame(this.id,this.roster._id).subscribe(data => {
       this.loadGame();
     });
   }
 
   removeRoster(){
+    this.loading = true;
     this.sportsService.removeRosterFromGame(this.id).subscribe(data => {
       this.loadGame();
     });
@@ -77,24 +83,28 @@ export class GameComponent implements OnInit {
   }
 
   addCoachToGame(e){
+    this.loading = true;
     this.sportsService.addCoachToGame(this.id,e._id).subscribe(data => {
       this.loadGame();
     });
   }
 
   removeCoachFromGame(e){
+    this.loading = true;
     this.sportsService.removeCoachFromGame(this.id,e._id).subscribe(data => {
       this.loadGame();
     });
   }
 
   addRefToGame(e){
+    this.loading = true;
     this.sportsService.addRefToGame(this.id,e._id).subscribe(data => {
       this.loadGame();
     });
   }
 
   removeRefFromGame(e){
+    this.loading = true;
     this.sportsService.removeRefFromGame(this.id,e._id).subscribe(data => {
       this.loadGame();
     });

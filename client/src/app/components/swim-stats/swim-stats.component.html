@@ -1,3 +1,4 @@
+<app-loading *ngIf="loading"></app-loading>
 <div *ngIf="authService.admin() && session">  
   <app-swim-level-dropdown (selectedChanged) = "filter($event)" [all]="true"></app-swim-level-dropdown>
   <div *ngFor="let division of session.divisions">

@@ -28,6 +28,7 @@ export class CampersComponent implements OnInit {
   options;
   dropdownDivisions;
   toMassReenroll = [];
+  loading;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -51,6 +52,7 @@ export class CampersComponent implements OnInit {
   }
 
   onRegistrationSubmit() {
+    this.loading = true;
     this.processing = true;
     const camper = {
       first: this.form.get('first').value,
@@ -145,6 +147,7 @@ gradeConversion(grade){
 }
 
   onBulkUploadSubmit(){
+    this.loading = true;
     var divisions = Math.ceil(this.uploaded_campers.length/20);
     for(var i = 0; i < divisions; i++){
       if(i+1==divisions)
@@ -196,6 +199,7 @@ gradeConversion(grade){
     });
   }
   getAllCampers(){
+    this.loading = true;
     this.campsService.getAllCampers().subscribe(data => {
       if(this.authService.isUser()){
         this.divisions = Object.keys(data.campers);
@@ -227,16 +231,20 @@ gradeConversion(grade){
         }
       }
       }
+      this.loading = false;
     });
   }
 
   getOptions(){
+    this.loading = true;
     this.campsService.getOptions().subscribe(data => {
-      this.options = data.options
+      this.options = data.options;
+      this.loading = false;
     });
   }
 
   remove(camper){
+    this.loading = true;
     this.campsService.removeCamper(camper).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
@@ -251,6 +259,7 @@ gradeConversion(grade){
   }
 
   addDivision(camper){
+    this.loading = true;
     this.campsService.addDivisionToCamper(camper).subscribe(data => {
       this.getAllCampers();
     });
@@ -261,6 +270,7 @@ gradeConversion(grade){
   }
 
   addSpecialty(counselor){
+    this.loading = true;
     this.campsService.addSpecialtyToCounselor(counselor).subscribe(data => {
       this.getAllCampers();
     });
@@ -301,12 +311,14 @@ gradeConversion(grade){
   }
 
   massReenroll(){
+    this.loading = true;
     for(let counselor of Object.keys(this.toMassReenroll)){
       this.reenroll(this.toMassReenroll[counselor],true);
     }
   }
 
   reenroll(c,mass){
+    this.loading = true;
     const camper = {
       "camper": c,
       "session":{

@@ -1,3 +1,4 @@
+<app-loading *ngIf="loading"></app-loading>
 <div *ngIf="swimGroup && camper" class="report">
 <img [src]="'./assets/'+camper.cSwimOpts.currentLevel.rcLevel+'.jpg'">
 <span [id]="'name-'+camper.cSwimOpts.currentLevel.rcLevel">{{camper.first}} {{camper.last}}</span>

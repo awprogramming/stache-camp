@@ -71,6 +71,9 @@ import { BackButtonComponent } from './components/back-button/back-button.compon
 import { SwimReportComponent } from './components/swim-report/swim-report.component';
 import { HeadStaffProfileComponent } from './components/head-staff-profile/head-staff-profile.component';
 import { PasswordResetComponent } from './components/password-reset/password-reset.component';
+import { LoadingComponent } from './components/loading/loading.component';
+
+import { SimpleModalModule } from 'ngx-simple-modal';
 
 @NgModule({
   declarations: [
@@ -123,6 +126,7 @@ import { PasswordResetComponent } from './components/password-reset/password-res
     SwimReportComponent,
     HeadStaffProfileComponent,
     PasswordResetComponent,
+    LoadingComponent,
 
   ],
   imports: [
@@ -134,6 +138,7 @@ import { PasswordResetComponent } from './components/password-reset/password-res
     NgbModule.forRoot(),
     BrowserAnimationsModule,
     CalendarModule.forRoot(),
+    SimpleModalModule
   ],
   providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard, AdminOrUserGuard, ModuleGuard,EvaluationsService,SportsService,MedsService,HttpClient,SwimService],
   bootstrap: [AppComponent]

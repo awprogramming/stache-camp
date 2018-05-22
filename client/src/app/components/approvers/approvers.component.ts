@@ -19,6 +19,7 @@ export class ApproversComponent implements OnInit {
   newCamp = false;
   divisions;
   heads;
+  loading;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -30,8 +31,10 @@ export class ApproversComponent implements OnInit {
 
  
   getAllDivisions(){
+    this.loading = true;
     this.campsService.getAllDivisions().subscribe(data => {
       this.divisions = data.divisions;
+      this.loading = false;
     })
   }
 
@@ -40,12 +43,14 @@ export class ApproversComponent implements OnInit {
   }
 
   addHead(division){
+    this.loading = true;
     this.evaluationsService.addApproverToDivision(division).subscribe(data => {
       this.getAllDivisions();
     });
   }
 
   removeHead(division_id,leader_id){
+    this.loading = true;
     this.evaluationsService.removeApproverFromDivision(division_id,leader_id).subscribe(data =>{
       this.getAllDivisions();
     })
@@ -56,6 +61,7 @@ export class ApproversComponent implements OnInit {
   }
 
   getHeads(){
+    this.loading = true;
     this.campsService.getAllHeads().subscribe(data=>{
       this.heads = data.heads;
       this.getAllDivisions();

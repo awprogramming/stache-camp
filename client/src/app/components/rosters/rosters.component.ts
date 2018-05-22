@@ -23,6 +23,7 @@ export class RostersComponent implements OnInit {
   d_keys;
   keys;
   internal;
+  loading;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -40,6 +41,7 @@ export class RostersComponent implements OnInit {
   }
 
   onRegistrationSubmit() {
+    this.loading = true;
     this.processing = true;
     const roster = {
       name: this.form.get('name').value,
@@ -70,6 +72,7 @@ export class RostersComponent implements OnInit {
   }
 
   remove(sd,roster,internal){
+    this.loading = true;
     if(internal){
       this.sportsService.removeInternalRoster(sd,roster).subscribe(data => {
         if (!data.success) {
@@ -113,10 +116,11 @@ export class RostersComponent implements OnInit {
   }
 
   getAllRosters(){
-    
+    this.loading = true;
     if(this.getType() == "Head Specialist"){
       this.sportsService.getAllRosters().subscribe(data => {
         this.specialties = data.specialties
+        this.loading = false;;
       });
     }
     else{
@@ -129,6 +133,7 @@ export class RostersComponent implements OnInit {
             this.keys[key] = Object.keys(this.divisions[key]["specialties"]);
           }
         }
+        this.loading = false;
       });
     }
   }

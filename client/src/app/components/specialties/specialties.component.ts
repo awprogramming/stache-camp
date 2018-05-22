@@ -19,6 +19,7 @@ export class SpecialtiesComponent implements OnInit {
   newCamp = false;
   specialties;
   heads;
+  loading;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -36,6 +37,7 @@ export class SpecialtiesComponent implements OnInit {
   }
 
   onRegistrationSubmit() {
+    this.loading = true;
     this.processing = true;
     const specialty = {
       name: this.form.get('name').value
@@ -59,12 +61,15 @@ export class SpecialtiesComponent implements OnInit {
     });
   }
   getAllSpecialties(){
+    this.loading = true;
     this.campsService.getAllSpecialties().subscribe(data => {
       this.specialties = data.specialties;
+      this.loading = false;
     })
   }
 
   remove(specialty){
+    this.loading = true;
     this.campsService.removeSpecialty(specialty).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
@@ -83,12 +88,14 @@ export class SpecialtiesComponent implements OnInit {
   }
 
   addHead(specialty){
+    this.loading = true;
     this.campsService.addHeadToSpecialty(specialty).subscribe(data => {
       this.getAllSpecialties();
     });
   }
 
   removeHead(specialty_id,leader_id){
+    this.loading = true;
     this.campsService.removeHeadFromSpecialty(specialty_id,leader_id).subscribe(data =>{
       this.getAllSpecialties();
     })
@@ -107,6 +114,7 @@ export class SpecialtiesComponent implements OnInit {
   }
 
   getHeads(){
+    this.loading = true;
     this.campsService.getAllHeads().subscribe(data=>{
       this.heads = data.heads;
       this.getAllSpecialties();

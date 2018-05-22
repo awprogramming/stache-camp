@@ -1,3 +1,4 @@
+<app-loading *ngIf="loading"></app-loading>
 <form [formGroup]="form" (submit)="createSwimLevelSubmit()">
   <div class="form-group">
       <label for="num">Level Number</label>

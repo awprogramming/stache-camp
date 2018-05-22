@@ -20,6 +20,7 @@ export class SwimStatsComponent implements OnInit {
   session;
   options;
   allCampers;
+  loading;
 
   constructor(
     private campsService: CampsService,
@@ -30,6 +31,7 @@ export class SwimStatsComponent implements OnInit {
 
   
   getAllCampers(){
+    this.loading = true;
     this.campsService.get_all_division_campers().subscribe(data => {
       if(this.authService.isUser()){
         this.divisions = Object.keys(data.campers);
@@ -38,12 +40,15 @@ export class SwimStatsComponent implements OnInit {
         this.allCampers = data.output;
         this.session = this.allCampers;
       }
+      this.loading = false;
     });
   }
 
   getOptions(){
+    this.loading = true;
     this.campsService.getOptions().subscribe(data => {
-      this.options = data.options
+      this.options = data.options;
+      this.loading = false;
     });
   }
 
@@ -61,6 +66,7 @@ export class SwimStatsComponent implements OnInit {
   }
 
   filter(e){
+    this.loading = true;
     if(e != "all"){
       this.session = {};
       this.session.divisions = [];
@@ -80,10 +86,12 @@ export class SwimStatsComponent implements OnInit {
         div.campers = campers;
         this.session.divisions.push(div);
       }
+
     }
     else{
       this.session = this.allCampers
     }
+    this.loading = false;
   }
 
   ngOnInit() {

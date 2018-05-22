@@ -22,6 +22,7 @@ export class EvaluateComponent implements OnInit {
   approver;
   private sub: any;
   type;
+  loading;
 
   constructor(
     private route: ActivatedRoute,
@@ -32,16 +33,19 @@ export class EvaluateComponent implements OnInit {
   ) {}
 
   loadEvaluation(){
+    this.loading = true;
     this.evaluationsService.getEvaluation(this.counselorId,this.id,this.type).subscribe(data => {
       
       this.evaluation = data.evaluation;
       this.calculate_percentage();
       this.viewing();
+      this.loading = false;
       
     });
   }
 
   getOptions(){
+    this.loading = true;
     this.campsService.getOptions().subscribe(data => {
       this.options = data.options
       this.loadEvaluation();
@@ -90,15 +94,18 @@ export class EvaluateComponent implements OnInit {
   }
 
   save(){
+    this.loading = true;
     this.evaluation.evaluation.started = true;
     this.evaluation.evaluation.submitted = false;
     this.evaluation.evaluation.approved = false;
     this.evaluationsService.saveEval(this.evaluation).subscribe(data=>{
       this.saved = true;
+      this.loading = false;
     });
   }
 
   submit(){
+    this.loading = true;
     this.evaluation.evaluation.submitted = true;
     this.evaluation.evaluation.approved = false;
     this.evaluationsService.saveEval(this.evaluation).subscribe(data=>{
@@ -107,6 +114,7 @@ export class EvaluateComponent implements OnInit {
   }
 
   approve(){
+    this.loading = true;
     this.evaluation.evaluation.approved = true;
     this.evaluationsService.saveEval(this.evaluation).subscribe(data=>{
       this.router.navigate(['/evaluations']);
@@ -118,8 +126,10 @@ export class EvaluateComponent implements OnInit {
   }
 
   userIsApprover(){
+    this.loading = true;
     this.evaluationsService.isApprover().subscribe(data => {
       this.approver = data.approver;
+      this.loading = false;
     });
   }
   ngOnInit() {
