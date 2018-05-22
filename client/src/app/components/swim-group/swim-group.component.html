@@ -29,6 +29,7 @@
         <th>Last</th>
         <th>Red Cross Level</th>
         <th>Swim Bracelet</th>
+        <th>Most Recent Report Sent</th>
         <th *ngIf="this.authService.userType() != 'lifeguard'"></th>
       </tr>
     </thead>
@@ -38,6 +39,7 @@
         <td (click)="goToStats(camper)">{{camper.last}}</td>
         <td (click)="goToStats(camper)">{{camper.cSwimOpts.currentLevel?.rcLevel}}</td>
         <td (click)="goToStats(camper)">{{camper.cSwimOpts.bracelet}}</td>
+        <td (click)="goToStats(camper)">{{displayDateHelper(camper.cSwimOpts.mostRecentReportSent)}}</td>
         <td *ngIf="this.authService.userType() != 'lifeguard'"><button class="btn btn-primary" (click)="removeFromGroup(camper)">x</button></td>
       </tr>
     </tbody>

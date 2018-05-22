@@ -15,7 +15,6 @@ export class HeadStaffTypeDropdownComponent implements OnInit {
   ) { }
 
   populateTypes(){
-    console.log(this.types);
       this.selectedChanged.emit(this.types[0]); 
   }
 

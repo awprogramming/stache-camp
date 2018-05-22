@@ -41,6 +41,7 @@ export class SwimGroupsComponent implements OnInit {
   getGroups(){
     this.swimService.allGroups().subscribe(data => {
       this.groups = data.groups;
+      return this.groups.length > 0;
     });
   }
 
@@ -64,7 +65,10 @@ export class SwimGroupsComponent implements OnInit {
 
   generateGroups(){
     this.swimService.autoGenerateGroups().subscribe(data => {
-      this.getGroups();
+      var checkGroups = setInterval(()=>{
+        if(this.getGroups())
+          clearInterval(checkGroups);
+      },5000);
     });
   }
 

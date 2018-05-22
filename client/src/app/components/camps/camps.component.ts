@@ -37,7 +37,6 @@ export class CampsComponent implements OnInit {
   }
 
   addModule(camp){
-    console.log(camp);
     const toAdd = {
       _id:camp._id,
       toAdd:camp.toAdd

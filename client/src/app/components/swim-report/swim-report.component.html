@@ -6,4 +6,4 @@
 <span [id]="'group-'+camper.cSwimOpts.currentLevel.rcLevel">{{swimGroup.name}}</span>
 <span *ngFor="let skill of completedSkills(camper.cSwimOpts.currentLevel)" [id]="generateSkillClass(camper.cSwimOpts.currentLevel.rcLevel,skill)">&#10004;</span>
 </div>
-<button (click)="downloadPDF()">Down that load!</button>
+<button (click)="downloadPDF()">Download report</button>

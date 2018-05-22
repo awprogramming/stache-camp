@@ -47,6 +47,15 @@ export class SwimStatsComponent implements OnInit {
     });
   }
 
+  displayDateHelper(d){
+    if(d){
+      d = new Date(d);
+      return d.getMonth()+1 + "/" + d.getDate() + "/" + d.getFullYear();
+    }
+    else
+      return "Report not yet sent.";
+  }
+
   goToStats(camper){
     this.router.navigate(['/swim-stat/'+camper._id]);
   }

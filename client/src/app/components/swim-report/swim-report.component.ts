@@ -60,7 +60,6 @@ export class SwimReportComponent implements OnInit {
       if(skill.completed)
         skills.push(skill);
     }
-    console.log(skills);
     return skills;
   }
 
@@ -70,7 +69,7 @@ export class SwimReportComponent implements OnInit {
 
   displayDate(){
     var d = new Date()
-    return d.getMonth() + "/" + d.getDate() + "/" + d.getFullYear();
+    return d.getMonth()+1 + "/" + d.getDate() + "/" + d.getFullYear();
   }
 
   downloadPDF(){

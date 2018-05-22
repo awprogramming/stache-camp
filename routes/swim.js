@@ -33,14 +33,13 @@ module.exports = (router) => {
             for(let group of camp.swimGroups){
                 if(group.sessionId == camp.options.session._id){
                    var lifeguard = camp.counselors.id(group.lifeguardId);
-                   console.log("Lifeguard"+lifeguard);
                    //if(lifeguard){
                     g = {
                         data:group,
                         lifeguard:lifeguard
                     }
                    if(user.type && user.type.type == "lifeguard"){
-                        if(lifeguard._id == user.counselorRef){
+                        if(lifeguard && lifeguard._id == user.counselorRef){
                             result.push(g);
                         }
                    }
@@ -112,7 +111,9 @@ module.exports = (router) => {
                 },
             ],(err,result)=>{
                 const agMax = camp.options.swimOpts.agMax;
+                var sess_count = 0;
                 for(let session of result){
+                    sess_count++;
                     if(session._id.equals(current_session._id)){
                         var divs = []
                         for(let division of session.divisions){
@@ -160,7 +161,6 @@ module.exports = (router) => {
                                 }
                                 if(campers.length > 0){
                                     groupCount++;
-                                    console.log(groupCount);
                                     groupName = name+groupCount;
                                     let newGroup =  new SwimGroup({
                                         name:groupName,
@@ -173,11 +173,19 @@ module.exports = (router) => {
                             }
                         }
                         camp.save({ validateBeforeSave: false });
-                        res.json({success:true});
+                        
                     }
                 }
+                if(sess_count==result.length){
+                    res.json({success:true});
+                }
+                    
             });
-        });
+        })
+        //.then(()=>{
+        //     console.log("done");
+        //     res.json({success:true});
+        // });
     });
     
     router.post('/add_to_swim_group/',(req,res) => {
@@ -435,6 +443,14 @@ module.exports = (router) => {
         });
     });
 
+    router.post('/set_bracelet', (req,res) => {
+        Camp.findById(req.decoded.campId, (err, camp)=>{
+            camp.campers.id(req.body.id).cSwimOpts.bracelet = req.body.bracelet;
+            camp.save({ validateBeforeSave: false });
+            res.json({success:true});
+        });
+    });
+
     router.post('/remove_lifeguard', (req,res) => {
         Camp.findById(req.decoded.campId, (err, camp)=>{
             camp.swimGroups.id(req.body.groupId).lifeguardId = undefined;
@@ -454,30 +470,37 @@ module.exports = (router) => {
 
     router.post('/send_reports',(req,res) => {
 
-        nodemailer.createTestAccount((err, account) => {
+        // nodemailer.createTestAccount((err, account) => {
             // create reusable transporter object using the default SMTP transport
-            let transporter = nodemailer.createTransport({
-                host: 'smtp.ethereal.email',
-                port: 587,
-                secure: false, // true for 465, false for other ports
+            // let transporter = nodemailer.createTransport({
+            //     host: 'smtp.ethereal.email',
+            //     port: 587,
+            //     secure: false, // true for 465, false for other ports
+            //     auth: {
+            //         user: account.user, // generated ethereal user
+            //         pass: account.pass // generated ethereal password
+            //     }
+            // });
+            var transporter = nodemailer.createTransport({
+                service: 'gmail',
                 auth: {
-                    user: account.user, // generated ethereal user
-                    pass: account.pass // generated ethereal password
-                }
-            });
+                       user: 'northshoredaycampswim@gmail.com',
+                       pass: 'NSDC!2018'
+                   }
+               });
             Camp.findById(req.decoded.campId, (err, camp)=>{
                 var group = camp.swimGroups.id(req.body.groupId);
-                console.log(group);
 
                 for(let cid of group.camperIds){
                     var camper = camp.campers.id(cid);
+                    camper.cSwimOpts.mostRecentReportSent = new Date();
                     setMessage(camp,group,camper,transporter);
                 }
 
                 camp.save({ validateBeforeSave: false });
                 res.json({success:true});
             });
-        });
+        // });
     });
     return router;
 }
@@ -487,22 +510,29 @@ function setMessage(camp,group,camper,transporter){
     //SET LINKS PROPERLY
 
     var text = "Please use the following link to view the swim report:\n";
-    text+= "http://localhost:4200/swim-report/"+camp._id+"/"+group._id+"/"+camper._id;
+    text+= "https://stachecamp.herokuapp.com/swim-report/"+camp._id+"/"+group._id+"/"+camper._id;
 
     var html = "Please use the following link to view the swim report:</br>";
-    html+= "<a href = http://localhost:4200/swim-report/"+camp._id+"/"+camper._id+"/"+group._id+">Click here to see the report</a>"
+    html+= "<a href = https://stachecamp.herokuapp.com/swim-report/"+camp._id+"/"+camper._id+"/"+group._id+">Click here to see the report</a>"
 
     //SET EMAILS PROPERLY!
-
-    let mailOptions = {
-        from: '"NSDC Swim Reports" <swim_reports@stachecamp.com>', // sender address
-        to: 'awprogramming@gmail.com', // list of receivers
-        subject: 'NSDC Swim Report', // Subject line
-        text: text, // plain text body
-        html: html // html body
-    };
-    var message = "Report Email Sent";
-    sendEmail(mailOptions,message,transporter);
+    var emails = [];
+    if(camper.p1Email)
+        emails.push(camper.p1Email)
+    if(camper.p2Email)
+        emails.push(camper.p2Email)
+    
+    for(let email of emails){
+        let mailOptions = {
+            from: '"NSDC Swim Reports" <swim_reports@stachecamp.com>', // sender address
+            to: email, // list of receivers
+            subject: 'NSDC Swim Report', // Subject line
+            text: text, // plain text body
+            html: html // html body
+        };
+        var message = "Report Email Sent To "+email;
+        sendEmail(mailOptions,message,transporter);
+    }
 }
 
 function sendEmail(mailOptions,message,transporter){
@@ -514,7 +544,7 @@ function sendEmail(mailOptions,message,transporter){
         console.log(message);
         console.log('Message sent: %s', info.messageId);
         // Preview only available when sending through an Ethereal account
-        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+        // console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 
         // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
         // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...

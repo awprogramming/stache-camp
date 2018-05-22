@@ -23,19 +23,16 @@ export class SwimStatComponent implements OnInit {
   loadStat(){
     this.campsService.getCamper(this.id).subscribe(data => {
       this.camper = data.camper;
-      console.log(this.camper);
     });
   }
 
   checkSkill(e,animal_id,skill_id){
     this.swimService.checkSkill(this.id,animal_id,skill_id,e.target.checked).subscribe(data=>{
-      console.log("done");
     });
   }
 
   checkExitSkill(e,skill_id){
     this.swimService.checkExitSkill(this.id,skill_id,e.target.checked).subscribe(data=>{
-      console.log("done");
     });
   }
 
@@ -54,6 +51,13 @@ export class SwimStatComponent implements OnInit {
       this.loadStat();
     });
   }
+
+  changeBracelet(e){
+    this.swimService.setBracelet(this.id,e.target.value).subscribe(data=>{
+      this.loadStat();
+    });
+  }
+
   ngOnInit() {
       this.route.paramMap.subscribe(params => {
         this.id = params.get('camperId');

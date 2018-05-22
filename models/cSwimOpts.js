@@ -7,7 +7,7 @@ const SwimLevelSchema = require('./swimLevel').schema;
 const cSwimOptsSchema = new Schema({
     currentLevel: SwimLevelSchema,
     completedLevels: [SwimLevelSchema],
-    bracelet: Boolean,
+    bracelet: {type:String, enum:['none','green','orange']},
     mostRecentReportSent: Date
 });
 

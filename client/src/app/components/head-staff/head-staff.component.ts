@@ -87,7 +87,6 @@ export class HeadStaffComponent implements OnInit {
     this.campsService.getOptions().subscribe(data=>{
       
       this.types = data.options.headStaff_types;
-      console.log(this.types);
       this.getAllHeads();
     });
   }

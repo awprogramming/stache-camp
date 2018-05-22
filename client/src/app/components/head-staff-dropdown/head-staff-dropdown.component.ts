@@ -21,8 +21,6 @@ export class HeadStaffDropdownComponent implements OnInit {
 
   populateHeads(){
     this.inDD = [];
-    console.log(this.heads);
-    console.log(this.exclude);
     if(this.exclude.length == 0){
       this.inDD = this.heads;
     }

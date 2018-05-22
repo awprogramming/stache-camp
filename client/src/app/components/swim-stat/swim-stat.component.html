@@ -1,4 +1,5 @@
 <app-back-button></app-back-button>
+
 <div *ngIf="camper?.cSwimOpts.currentLevel">
   <h1>{{camper.first}} {{camper.last}}</h1>
   <h1>Red Cross Level {{camper.cSwimOpts.currentLevel.rcLevel}} - {{camper.cSwimOpts.currentLevel.name}}</h1>
@@ -25,8 +26,14 @@
     <app-swim-level-dropdown (selectedChanged) = "preAddLevel($event)" [all]="false"></app-swim-level-dropdown>
     <button class="btn btn-primary" (click)="levelSet()">Set Level</button>
 </div>
+<h2 *ngIf="camper">Swim Bracelet: {{camper.cSwimOpts.bracelet}}</h2>
+<select (change)="changeBracelet($event);" class="form-control">
+  <option value="none">none</option>
+  <option value="green">green</option>
+  <option value="orange">orange</option>
+</select>
 <div *ngIf="camper?.cSwimOpts?.completedLevels">
-  <h1>Archive</h1>
+  <h2>Archive</h2>
   <div *ngFor="let level of camper.cSwimOpts.completedLevels">
       <h2>Red Cross Level {{level.rcLevel}} - {{level.name}} completed in {{level.sessionCompleted.name}}</h2>
   </div>

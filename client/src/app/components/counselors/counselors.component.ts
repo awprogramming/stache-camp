@@ -180,7 +180,6 @@ export class CounselorsComponent implements OnInit {
         this.counselors = data.counselors;
       }
       if(this.authService.admin()){
-        console.log(data);
         this.sessions = data.output.sessions;
         if(data.output.sessions[0]._id.session_id!=data.output.cur_session._id){
           const session = {
@@ -278,8 +277,6 @@ export class CounselorsComponent implements OnInit {
   }
 
   massRehire(){
-    console.log("hello world");
-    console.log(this.toMassRehire);
     for(let counselor of Object.keys(this.toMassRehire)){
       this.rehire(this.toMassRehire[counselor],true);
     }

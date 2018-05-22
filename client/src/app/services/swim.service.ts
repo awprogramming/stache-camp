@@ -220,4 +220,13 @@ export class SwimService {
     return this.http.post(this.domain + 'swim/send_reports',data,this.options).map(res => res.json());
   }
 
+  setBracelet(id,bracelet){
+    var data = {
+      id:id,
+      bracelet:bracelet
+    }
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'swim/set_bracelet',data,this.options).map(res => res.json());
+  }
+
 }

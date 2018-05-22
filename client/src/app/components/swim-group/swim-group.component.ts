@@ -99,8 +99,17 @@ export class SwimGroupComponent implements OnInit {
   }
   
   displayDate(){
-    var d = new Date()
-    return d.getMonth() + "/" + d.getDate() + "/" + d.getFullYear();
+    var d = new Date();
+    return this.displayDateHelper(d);
+  }
+
+  displayDateHelper(d){
+    if(d){
+      d = new Date(d);
+      return d.getMonth()+1 + "/" + d.getDate() + "/" + d.getFullYear();
+    }
+    else
+      return "Report not yet sent.";
   }
 
   preAssignLifeguard(lifeguard){
@@ -125,7 +134,6 @@ export class SwimGroupComponent implements OnInit {
   }
 
   sendReports(){
-    console.log("hello world");
     this.swimService.sendReports(this.id).subscribe(data => {
       this.loadSwimGroup();
     });

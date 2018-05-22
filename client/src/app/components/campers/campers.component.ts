@@ -97,6 +97,10 @@ export class CampersComponent implements OnInit {
           var data;
           if(cs.hasModule("swim")){
             var fname = vals[0].split('\n')[1];
+            var bracelet = vals[10].toLowerCase();
+            if(bracelet != "orange" && bracelet != "green")
+              bracelet = "none";
+            
             data = {
               divisionName:vals[4],
               camper:{
@@ -109,7 +113,7 @@ export class CampersComponent implements OnInit {
                   p2Name: vals[7],
                   p2Email: vals[8],
                   cSwimOpts: {
-                    bracelet: vals[10]
+                    bracelet: bracelet
                   },
               },
               cSwimOpts: {
