@@ -27,6 +27,7 @@ export class CampersComponent implements OnInit {
   toAddType;
   options;
   dropdownDivisions;
+  toMassReenroll = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -289,7 +290,23 @@ gradeConversion(grade){
     this.bulkAdd = false;
   }
 
-  reenroll(c){
+  preMassReenroll(e,counselor){
+    if(e.target.checked){
+      this.toMassReenroll[counselor._id] = counselor;
+    }
+    else{
+      delete this.toMassReenroll[counselor._id];
+    }
+    
+  }
+
+  massReenroll(){
+    for(let counselor of Object.keys(this.toMassReenroll)){
+      this.reenroll(this.toMassReenroll[counselor],true);
+    }
+  }
+
+  reenroll(c,mass){
     const camper = {
       "camper": c,
       "session":{

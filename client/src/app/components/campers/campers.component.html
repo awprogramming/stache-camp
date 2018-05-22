@@ -93,6 +93,7 @@
                               <th>Gender</th>
                               <th>Division</th>
                               <th *ngIf="i!=0"></th>
+                              <th *ngIf="i!=0"><button class="btn btn-primary" (click) = "massReenroll()">Reenroll Selected</button></th>
                               <th *ngIf="i==0"></th>
                             </tr>
                             <tr *ngFor="let camper of session.campers">
@@ -107,7 +108,11 @@
                         
                               <td *ngIf="i!=0 && camper.enrolled">Enrolled</td>
                               <td *ngIf="i!=0 && !camper.enrolled">
-                                  <button class="btn btn-primary" (click) = "reenroll(camper)">Re-enroll</button>
+                                  <button class="btn btn-primary" (click) = "reenroll(camper,false)">Re-enroll</button>
+                              </td>
+                              <td *ngIf="i!=0 && camper.enrolled"></td>
+                              <td *ngIf="i!=0 && !camper.enrolled">
+                                  <input type="checkbox" (change)="preMassReenroll($event,camper)">
                               </td>
                               <td *ngIf="i==0"><button class="btn btn-primary" (click) = "remove(camper)">X</button></td>
                             </tr>
