@@ -72,9 +72,6 @@ import { SwimReportComponent } from './components/swim-report/swim-report.compon
 import { HeadStaffProfileComponent } from './components/head-staff-profile/head-staff-profile.component';
 import { PasswordResetComponent } from './components/password-reset/password-reset.component';
 import { LoadingComponent } from './components/loading/loading.component';
-
-import { SimpleModalModule } from 'ngx-simple-modal';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -137,8 +134,7 @@ import { SimpleModalModule } from 'ngx-simple-modal';
     ReactiveFormsModule,
     NgbModule.forRoot(),
     BrowserAnimationsModule,
-    CalendarModule.forRoot(),
-    SimpleModalModule
+    CalendarModule.forRoot()
   ],
   providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard, AdminOrUserGuard, ModuleGuard,EvaluationsService,SportsService,MedsService,HttpClient,SwimService],
   bootstrap: [AppComponent]
