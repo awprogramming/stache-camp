@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SimpleModalComponent } from "ngx-simple-modal";
+import { SimpleModalService } from "ngx-simple-modal";
 
 @Component({
   selector: 'app-loading',
@@ -8,7 +9,9 @@ import { SimpleModalComponent } from "ngx-simple-modal";
 })
 export class LoadingComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private simpleModalService:SimpleModalService
+  ) { }
 
   ngOnInit() {
     
