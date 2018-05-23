@@ -89,6 +89,15 @@
       <!-- Submit Button -->
       <input class="btn btn-primary" type="submit" value="Submit" />
     </form>
+
+    <h3>Gold</h3>
+    <input class="form-control" type="number" name="gold" min=1 (input)="changeGold($event)" [value]="options?.evaluationOpts.gold">
+    <h3>Silver</h3>
+    <input class="form-control" type="number" name="silver" min=1 (input)="changeSilver($event)" [value]="options?.evaluationOpts.silver">
+    <h3>Green</h3>
+    <input class="form-control" type="number" name="green" min=1 (input)="changeGreen($event)" [value]="options?.evaluationOpts.green">
+
+
   </div>
 
   <div *ngIf="campsService.hasModule('swim')">

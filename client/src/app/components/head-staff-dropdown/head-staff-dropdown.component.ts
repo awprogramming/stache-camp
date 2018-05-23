@@ -38,8 +38,10 @@ export class HeadStaffDropdownComponent implements OnInit {
           this.inDD.push(this.heads[head]);
       }
     }
-    this.selectedChanged.emit(this.inDD[0]);
-    this.showAddButton.emit(this.inDD.length!=0);
+    if(this.inDD){
+      this.selectedChanged.emit(this.inDD[0]);
+      this.showAddButton.emit(this.inDD.length!=0);
+    }
   }
 
   handleChange(e){

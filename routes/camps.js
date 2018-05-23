@@ -273,10 +273,14 @@ module.exports = (router) => {
         
         if(req.params.eval==='true'){
             Camp.findById(req.decoded.campId,(err,camp)=>{
-                for(let counselor of req.body){
-                    var newCounselor = camp.counselors.create(counselor);
+                for(let counselorData of req.body){
+                    var newCounselor = camp.counselors.create(counselorData.counselor);
                     newCounselor.sessions = [];
                     newCounselor.sessions.push(camp.options.session);
+                    var newDivision = camp.getDivisionByName(counselorData.divisionName.trim(),counselorData.counselor.gender.toLowerCase());
+                    console.log(newDivision);
+                    if(newDivision)
+                        newCounselor.division = newDivision;
                     const evaluation = newCounselor.evaluations.create({
                         number: camp.options.evaluationOpts.currentEval,
                         session: camp.options.session,
@@ -287,6 +291,7 @@ module.exports = (router) => {
                     });
                     const answers = []
                     for(let question of camp.options.evaluationOpts.questions){
+                        console.log(newCounselor);
                         if(question.type._id.equals(newCounselor.type._id)){
                             const answer = {
                                 question:question
@@ -307,10 +312,13 @@ module.exports = (router) => {
         // else if(req.body.)
         else{
             Camp.findById(req.decoded.campId,(err,camp)=>{
-                for(let counselor of req.body){
-                    var newCounselor = camp.counselors.create(counselor);
+                for(let counselorData of req.body){
+                    var newCounselor = camp.counselors.create(counselorData.counselor);
                     newCounselor.sessions = [];
                     newCounselor.sessions.push(camp.options.session);
+                    var newDivision = camp.getDivisionByName(counselorData.divisionName.trim(),counselorData.counselor.gender.toLowerCase());
+                    if(newDivision)
+                        newCounselor.division = newDivision;
                     camp.counselors.push(newCounselor);
                 }
                 camp.save({ validateBeforeSave: false });
@@ -1045,6 +1053,12 @@ module.exports = (router) => {
             sessions.push(camp.options.session);
             const camper = req.body;
             camper.sessions = sessions;
+            
+            if(camp.hasModule("swim")){
+                camper.cSwimOpts = {
+                    bracelet: "none"
+                }
+            }
             const newCamper = camp.campers.create(camper);
             camp.campers.push(newCamper);
             camp.save({ validateBeforeSave: false });

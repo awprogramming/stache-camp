@@ -1,3 +1,3 @@
-<select (change) = "handleChange($event);">
+<select (change) = "handleChange($event);" *ngIf="specialties">
   <option *ngFor="let specialty of specialties; index as i" value="{{i}}">{{specialty.name}}</option>
 </select>  

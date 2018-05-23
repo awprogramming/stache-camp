@@ -156,6 +156,33 @@ export class OptionsComponent implements OnInit {
     }
   }
 
+  changeGold(e){
+    this.loading = true;
+    if(e.target.value >= 1){
+      this.evaluationsService.changeGold(e.target.value).subscribe(data => {
+        this.getOptions();
+      });
+    }
+  }
+
+  changeSilver(e){
+    this.loading = true;
+    if(e.target.value >= 1){
+      this.evaluationsService.changeSilver(e.target.value).subscribe(data => {
+        this.getOptions();
+      });
+    }
+  }
+
+  changeGreen(e){
+    this.loading = true;
+    if(e.target.value >= 1){
+      this.evaluationsService.changeGreen(e.target.value).subscribe(data => {
+        this.getOptions();
+      });
+    }
+  }
+
 
   getOptions(){
     this.loading = true;

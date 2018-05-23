@@ -54,7 +54,7 @@ export class CampersComponent implements OnInit {
   onRegistrationSubmit() {
     this.loading = true;
     this.processing = true;
-    const camper = {
+    var camper = {
       first: this.form.get('first').value,
       last: this.form.get('last').value,
       gender: this.form.get('gender').value,
@@ -315,6 +315,7 @@ gradeConversion(grade){
     for(let counselor of Object.keys(this.toMassReenroll)){
       this.reenroll(this.toMassReenroll[counselor],true);
     }
+    this.toMassReenroll = [];
   }
 
   reenroll(c,mass){

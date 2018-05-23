@@ -145,7 +145,7 @@ module.exports = (router) => {
                     { $group : { _id : {counselor_id:"$counselors._id",s_id:"$counselors.evaluations.session._id",s_name:"$counselors.evaluations.session.name"},  evaluations:{$push:"$counselors.evaluations"}}},
                     { $group : { _id:"$_id.s_id",counselors:{$push:{counselor:"$_id.counselor_id",evaluations:"$evaluations"}}}}
                 ],(err,result)=>{
-                    result = result.slice(0).reverse();
+                    //result = result.slice(0).reverse();
                     for(let session of result){
                         session.session = camp.sessions.id(session._id);
                         for(let counselor of session.counselors){
@@ -264,9 +264,11 @@ module.exports = (router) => {
 
     router.post('/save_eval',(req,res)=>{
         Camp.findById(req.decoded.campId,(err,camp)=>{
-            camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).started = req.body.evaluation.started;
-            camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).submitted = req.body.evaluation.submitted;
-            camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).approved = req.body.evaluation.approved;
+            if(camp.users.id(req.decoded.userId).type.type!="head_specialist"){
+                camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).started = req.body.evaluation.started;
+                camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).submitted = req.body.evaluation.submitted;
+                camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).approved = req.body.evaluation.approved;
+            }
             camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).additional_notes = req.body.evaluation.additional_notes;
             for(let answer of req.body.evaluation.answers){
                 camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).answers.pull(answer._id);
@@ -305,6 +307,30 @@ module.exports = (router) => {
             }
             
             res.json({success:true,approver:approver});
+        });
+    });
+
+    router.post('/change_gold',(req,res) => {
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            camp.options.evaluationOpts.gold = req.body.newGold;
+            camp.save({ validateBeforeSave: false });
+            res.json({success:true});
+        });
+    });
+
+    router.post('/change_silver',(req,res) => {
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            camp.options.evaluationOpts.silver = req.body.newSilver;
+            camp.save({ validateBeforeSave: false });
+            res.json({success:true});
+        });
+    });
+
+    router.post('/change_green',(req,res) => {
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            camp.options.evaluationOpts.green = req.body.newGreen;
+            camp.save({ validateBeforeSave: false });
+            res.json({success:true});
         });
     });
 

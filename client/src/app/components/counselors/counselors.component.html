@@ -130,11 +130,11 @@
                                 <app-divisions-dropdown *ngIf="i==0" (selectedChanged) = "preAdd($event,counselor)" [gender]="counselor.gender" [divisions]="divGenders(counselor.gender)"></app-divisions-dropdown>
                                 <button *ngIf="i==0" class="btn btn-primary" (click) = "addDivision(counselor)">Add</button>
                               </td>
-                              <td>{{counselor.type.type}}</td>
+                              <td>{{counselor.type?.type}}</td>
                               <td *ngIf="counselor.specialty">{{counselor.specialty.name}}</td>
                               <td *ngIf="!counselor.specialty">
-                                  <app-specialties-dropdown *ngIf="i==0 && counselor.type.type=='specialist'" (selectedChanged) = "preAddSpecialty($event,counselor)" [specialties]="specialties"></app-specialties-dropdown>
-                                  <button *ngIf="i==0 && counselor.type.type=='specialist'" class="btn btn-primary" (click) = "addSpecialty(counselor)">Add</button>
+                                  <app-specialties-dropdown *ngIf="i==0 && counselor.type?.type=='specialist'" (selectedChanged) = "preAddSpecialty($event,counselor)" [specialties]="specialties"></app-specialties-dropdown>
+                                  <button *ngIf="i==0 && counselor.type?.type=='specialist'" class="btn btn-primary" (click) = "addSpecialty(counselor)">Add</button>
                               </td>
                               <td *ngIf="i!=0 && counselor.hired">Hired</td>
                               <td *ngIf="i!=0 && !counselor.hired">

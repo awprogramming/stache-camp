@@ -83,4 +83,28 @@ export class EvaluationsService {
     return this.http.get(this.domain + 'evaluations/is_approver/',this.options).map(res => res.json());
   }
 
+  changeGold(newGold){
+    this.createAuthenticationHeaders();
+    var data = {
+      newGold:newGold
+    }
+    return this.http.post(this.domain + 'evaluations/change_gold',data,this.options).map(res => res.json());
+  }
+
+  changeSilver(newSilver){
+    this.createAuthenticationHeaders();
+    var data = {
+      newSilver:newSilver
+    }
+    return this.http.post(this.domain + 'evaluations/change_silver',data,this.options).map(res => res.json());
+  }
+
+  changeGreen(newGreen){
+    this.createAuthenticationHeaders();
+    var data = {
+      newGreen:newGreen
+    }
+    return this.http.post(this.domain + 'evaluations/change_green',data,this.options).map(res => res.json());
+  }
+
 }

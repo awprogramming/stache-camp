@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthGuard } from '../../guards/auth.guard';
 import { AuthService } from '../../services/auth.service';
 import { SwimService } from '../../services/swim.service';
+import { CATCH_ERROR_VAR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-counselors',
@@ -136,20 +137,23 @@ export class CounselorsComponent implements OnInit {
           skip = false;
         else{
           var vals = line.split(',');
-          const counselor = {
-            first: vals[0],
-            last: vals[1],
-            gender: vals[2],
-            type:  vals[3],
-            sessions: [session]
+          var data = {
+            divisionName:vals[4],
+            counselor: {
+              first: vals[0],
+              last: vals[1],
+              gender: vals[2],
+              sessions: [session],
+              type:vals[3]
+            }
           }
           for(let type of types){
             if(type.type == vals[3]){
-              counselor.type = type
+              data.counselor.type = type
               break;
             }
           }
-          counselors.push(counselor);
+          counselors.push(data);
         }
       }
     }
@@ -185,29 +189,32 @@ export class CounselorsComponent implements OnInit {
         this.counselors = data.counselors;
       }
       if(this.authService.admin()){
+        console.log(data.output);
         this.sessions = data.output.sessions;
-        if(data.output.sessions[0]._id.session_id!=data.output.cur_session._id){
-          const session = {
-            "_id": {
-              "session_id":data.output.cur_session._id,
-              "session_name":data.output.cur_session.name
-            },
-            "counselors":[]
+        if(this.sessions.length != 0){
+          if(data.output.sessions[0]._id.session_id!=data.output.cur_session._id){
+            const session = {
+              "_id": {
+                "session_id":data.output.cur_session._id,
+                "session_name":data.output.cur_session.name
+              },
+              "counselors":[]
+            }
+            this.sessions.unshift(session);
           }
-          this.sessions.unshift(session);
-        }
-        else{
-        this.hired = data.output.sessions[0].counselors;
-        
-        for(var i = 1; i < this.sessions.length; i++){
-          for(let counselor of this.sessions[i].counselors){
-            for(let h of this.hired)
-              if(h._id == counselor._id)
-                counselor.hired = true;
+          else{
+          this.hired = data.output.sessions[0].counselors;
+          
+          for(var i = 1; i < this.sessions.length; i++){
+            for(let counselor of this.sessions[i].counselors){
+              for(let h of this.hired)
+                if(h._id == counselor._id)
+                  counselor.hired = true;
+            }
           }
         }
+        } 
       }
-      } 
       this.loading = false;
     });
   }
@@ -292,6 +299,7 @@ export class CounselorsComponent implements OnInit {
     for(let counselor of Object.keys(this.toMassRehire)){
       this.rehire(this.toMassRehire[counselor],true);
     }
+    this.toMassRehire = [];
   }
 
   rehire(c,mass){

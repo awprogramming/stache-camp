@@ -17,6 +17,7 @@ export class SpecialtiesDropdownComponent implements OnInit {
   ) { }
 
   populateSpecialties(){
+    if(this.specialties)
       this.selectedChanged.emit(this.specialties[0]);
   }
 
