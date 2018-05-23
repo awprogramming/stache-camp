@@ -36233,6 +36233,7 @@ var CampersComponent = (function () {
             var counselor = _a[_i];
             this.reenroll(this.toMassReenroll[counselor], true);
         }
+        this.toMassReenroll = [];
     };
     CampersComponent.prototype.reenroll = function (c, mass) {
         var _this = this;
@@ -36578,7 +36579,7 @@ module.exports = ""
 /***/ "./src/app/components/counselors/counselors.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<div *ngIf=\"newCamp\">\n    <h2 class=\"page-header\">Register Counselor</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n    \n      <div class=\"form-group\">\n        <label for=\"first\">First Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"first\" formControlName=\"first\" />\n        </div>\n      </div>\n    \n      <div class=\"form-group\">\n        <label for=\"last\">Last Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"last\" formControlName=\"last\" />\n        </div>\n      </div>\n      \n      <div class=\"form-group\">\n        <label for=\"gender\">Gender</label>\n        <div>\n          <div>\n            <input class=\"form-check-input\" formControlName=\"gender\" type=\"radio\" name=\"gender\" value=\"male\">\n            <label class=\"form-check-label\">Male</label>\n          </div>\n          <div>\n              <input class=\"form-check-input\" formControlName=\"gender\" type=\"radio\" name=\"gender\" value=\"female\">\n              <label class=\"form-check-label\">Female</label>\n          </div>\n        </div>\n      </div>\n\n      <div *ngIf=\"lgReg\">\n        <div class=\"form-group\">\n            <label for=\"email\">Email</label>\n            <div>\n              <input class=\"form-control\" type=\"text\" name=\"email\" formControlName=\"email\" />\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label for=\"password\">Password</label>\n            <div>\n              <input class=\"form-control\" type=\"password\" name=\"password\" formControlName=\"password\" />\n            </div>\n          </div>\n        </div>\n      <div *ngIf=\"!lgReg\">\n        <div class=\"form-group\">\n          <label for=\"type\">Type</label>\n          <div>\n              <app-counselor-types-dropdown (selectedChanged) = \"preAddType($event,type)\"></app-counselor-types-dropdown>\n          </div>\n        </div>\n      </div>\n    \n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n    </form>\n</div>\n\n<div *ngIf=\"bulkAdd\">\n    <h2 class=\"page-header\">Bulk Upload Counselor</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    \n    <form [formGroup]=\"bulkAddForm\" (submit)=\"onBulkUploadSubmit()\">\n    \n      <div class=\"form-group\">\n        <label for=\"counselor_file\">Counselor CSV File</label>\n        <div>\n          <input class=\"form-control\" type=\"file\" (change)=\"fileUploaded($event)\" name=\"counselor_file\" formControlName=\"counselor_file\" />\n        </div>\n      </div>\n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Upload\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelBulkAdd()\" value=\"Cancel Add\" />\n    </form>\n</div>\n\n    \n    <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newCamp && authService.admin()\">Add</button>\n    \n    <button class=\"btn btn-primary\" (click) = \"showBulkAdd()\" *ngIf = \"!bulkAdd && authService.admin()\">Upload Counselor CSV File</button>\n    \n    <div *ngIf=\"authService.admin()\">\n        <div class=\"panel with-nav-tabs\">\n            <div class=\"panel-heading\">\n                    <ul class=\"nav nav-tabs\">\n                        <li class=\"nav-item\" [ngClass] = \"{'active':i==0}\" *ngFor=\"let session of sessions; let i = index\">\n                          <a  class=\"nav-link\" id=\"{{session._id.session_name}}-tab\" data-toggle=\"tab\" href=\"#{{session._id.session_name}}\" role=\"tab\" attr.aria-controls=\"{{session._id.session_name}}\" aria-selected=\"true\">{{session._id.session_name}}</a>\n                        </li>\n                    </ul>\n            </div>\n            <div class=\"panel-body\">\n                <div class=\"tab-content\">\n                    <div *ngFor=\"let session of sessions; let i = index\" [ngClass] = \"{'in active':i==0}\" class=\"tab-pane fade\" id=\"{{session._id.session_name}}\">\n                        <h2>{{session._id.session_name}}</h2>\n                        <table class=\"table\" >\n                            <tr>\n                              <th>First</th>\n                              <th>Last</th>\n                              <th>Gender</th>\n                              <th>Division</th>\n                              <th>Type</th>\n                              <th>Specialty</th>\n                              <th *ngIf=\"i!=0\"></th>\n                              <th *ngIf=\"i!=0\"><button class=\"btn btn-primary\" (click) = \"massRehire()\">Rehire Selected</button></th>\n                              <th *ngIf=\"i==0\"></th>\n                            </tr>\n                            <tr *ngFor=\"let counselor of session.counselors\">\n                              <td>{{counselor.first}}</td>\n                              <td>{{counselor.last}}</td>\n                              <td>{{counselor.gender}}</td>\n                              <td *ngIf=\"counselor.division \">{{counselor.division.name}}</td>\n                              <td *ngIf=\"!counselor.division\">\n                                <app-divisions-dropdown *ngIf=\"i==0\" (selectedChanged) = \"preAdd($event,counselor)\" [gender]=\"counselor.gender\" [divisions]=\"divGenders(counselor.gender)\"></app-divisions-dropdown>\n                                <button *ngIf=\"i==0\" class=\"btn btn-primary\" (click) = \"addDivision(counselor)\">Add</button>\n                              </td>\n                              <td>{{counselor.type.type}}</td>\n                              <td *ngIf=\"counselor.specialty\">{{counselor.specialty.name}}</td>\n                              <td *ngIf=\"!counselor.specialty\">\n                                  <app-specialties-dropdown *ngIf=\"i==0 && counselor.type.type=='specialist'\" (selectedChanged) = \"preAddSpecialty($event,counselor)\" [specialties]=\"specialties\"></app-specialties-dropdown>\n                                  <button *ngIf=\"i==0 && counselor.type.type=='specialist'\" class=\"btn btn-primary\" (click) = \"addSpecialty(counselor)\">Add</button>\n                              </td>\n                              <td *ngIf=\"i!=0 && counselor.hired\">Hired</td>\n                              <td *ngIf=\"i!=0 && !counselor.hired\">\n                                  <button class=\"btn btn-primary\" (click) = \"rehire(counselor,false)\">Rehire</button>\n                              </td>\n                              <td *ngIf=\"i!=0 && counselor.hired\"></td>\n                              <td *ngIf=\"i!=0 && !counselor.hired\">\n                                  <input type=\"checkbox\" (change)=\"preMassRehire($event,counselor)\">\n                              </td>\n                              <td *ngIf=\"i==0\"><button class=\"btn btn-primary\" (click) = \"remove(counselor)\">X</button></td>\n                            </tr>\n                          </table>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div *ngIf=\"authService.isUser()\">\n      <div *ngFor=\"let division of divisions\">\n      <h2>{{division}}</h2>\n      <table class=\"table\" >\n          <tr>\n            <th>First</th>\n            <th>Last</th>\n            <th>Gender</th>\n            <th>Type</th>\n            <th>Specialty</th>\n          </tr>\n          <tr *ngFor=\"let counselor of counselors[division]\">\n            <td>{{counselor.first}}</td>\n            <td>{{counselor.last}}</td>\n            <td>{{counselor.gender}}</td>\n            <td>{{counselor.type.type}}</td>\n            <td>{{counselor.specialty?.name}}</td>\n          </tr>\n        </table>\n      </div>\n    </div>\n    "
+module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<div *ngIf=\"newCamp\">\n    <h2 class=\"page-header\">Register Counselor</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n    \n      <div class=\"form-group\">\n        <label for=\"first\">First Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"first\" formControlName=\"first\" />\n        </div>\n      </div>\n    \n      <div class=\"form-group\">\n        <label for=\"last\">Last Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"last\" formControlName=\"last\" />\n        </div>\n      </div>\n      \n      <div class=\"form-group\">\n        <label for=\"gender\">Gender</label>\n        <div>\n          <div>\n            <input class=\"form-check-input\" formControlName=\"gender\" type=\"radio\" name=\"gender\" value=\"male\">\n            <label class=\"form-check-label\">Male</label>\n          </div>\n          <div>\n              <input class=\"form-check-input\" formControlName=\"gender\" type=\"radio\" name=\"gender\" value=\"female\">\n              <label class=\"form-check-label\">Female</label>\n          </div>\n        </div>\n      </div>\n\n      <div *ngIf=\"lgReg\">\n        <div class=\"form-group\">\n            <label for=\"email\">Email</label>\n            <div>\n              <input class=\"form-control\" type=\"text\" name=\"email\" formControlName=\"email\" />\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label for=\"password\">Password</label>\n            <div>\n              <input class=\"form-control\" type=\"password\" name=\"password\" formControlName=\"password\" />\n            </div>\n          </div>\n        </div>\n      <div *ngIf=\"!lgReg\">\n        <div class=\"form-group\">\n          <label for=\"type\">Type</label>\n          <div>\n              <app-counselor-types-dropdown (selectedChanged) = \"preAddType($event,type)\"></app-counselor-types-dropdown>\n          </div>\n        </div>\n      </div>\n    \n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n    </form>\n</div>\n\n<div *ngIf=\"bulkAdd\">\n    <h2 class=\"page-header\">Bulk Upload Counselor</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    \n    <form [formGroup]=\"bulkAddForm\" (submit)=\"onBulkUploadSubmit()\">\n    \n      <div class=\"form-group\">\n        <label for=\"counselor_file\">Counselor CSV File</label>\n        <div>\n          <input class=\"form-control\" type=\"file\" (change)=\"fileUploaded($event)\" name=\"counselor_file\" formControlName=\"counselor_file\" />\n        </div>\n      </div>\n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Upload\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelBulkAdd()\" value=\"Cancel Add\" />\n    </form>\n</div>\n\n    \n    <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newCamp && authService.admin()\">Add</button>\n    \n    <button class=\"btn btn-primary\" (click) = \"showBulkAdd()\" *ngIf = \"!bulkAdd && authService.admin()\">Upload Counselor CSV File</button>\n    \n    <div *ngIf=\"authService.admin()\">\n        <div class=\"panel with-nav-tabs\">\n            <div class=\"panel-heading\">\n                    <ul class=\"nav nav-tabs\">\n                        <li class=\"nav-item\" [ngClass] = \"{'active':i==0}\" *ngFor=\"let session of sessions; let i = index\">\n                          <a  class=\"nav-link\" id=\"{{session._id.session_name}}-tab\" data-toggle=\"tab\" href=\"#{{session._id.session_name}}\" role=\"tab\" attr.aria-controls=\"{{session._id.session_name}}\" aria-selected=\"true\">{{session._id.session_name}}</a>\n                        </li>\n                    </ul>\n            </div>\n            <div class=\"panel-body\">\n                <div class=\"tab-content\">\n                    <div *ngFor=\"let session of sessions; let i = index\" [ngClass] = \"{'in active':i==0}\" class=\"tab-pane fade\" id=\"{{session._id.session_name}}\">\n                        <h2>{{session._id.session_name}}</h2>\n                        <table class=\"table\" >\n                            <tr>\n                              <th>First</th>\n                              <th>Last</th>\n                              <th>Gender</th>\n                              <th>Division</th>\n                              <th>Type</th>\n                              <th>Specialty</th>\n                              <th *ngIf=\"i!=0\"></th>\n                              <th *ngIf=\"i!=0\"><button class=\"btn btn-primary\" (click) = \"massRehire()\">Rehire Selected</button></th>\n                              <th *ngIf=\"i==0\"></th>\n                            </tr>\n                            <tr *ngFor=\"let counselor of session.counselors\">\n                              <td>{{counselor.first}}</td>\n                              <td>{{counselor.last}}</td>\n                              <td>{{counselor.gender}}</td>\n                              <td *ngIf=\"counselor.division \">{{counselor.division.name}}</td>\n                              <td *ngIf=\"!counselor.division\">\n                                <app-divisions-dropdown *ngIf=\"i==0\" (selectedChanged) = \"preAdd($event,counselor)\" [gender]=\"counselor.gender\" [divisions]=\"divGenders(counselor.gender)\"></app-divisions-dropdown>\n                                <button *ngIf=\"i==0\" class=\"btn btn-primary\" (click) = \"addDivision(counselor)\">Add</button>\n                              </td>\n                              <td>{{counselor.type?.type}}</td>\n                              <td *ngIf=\"counselor.specialty\">{{counselor.specialty.name}}</td>\n                              <td *ngIf=\"!counselor.specialty\">\n                                  <app-specialties-dropdown *ngIf=\"i==0 && counselor.type?.type=='specialist'\" (selectedChanged) = \"preAddSpecialty($event,counselor)\" [specialties]=\"specialties\"></app-specialties-dropdown>\n                                  <button *ngIf=\"i==0 && counselor.type?.type=='specialist'\" class=\"btn btn-primary\" (click) = \"addSpecialty(counselor)\">Add</button>\n                              </td>\n                              <td *ngIf=\"i!=0 && counselor.hired\">Hired</td>\n                              <td *ngIf=\"i!=0 && !counselor.hired\">\n                                  <button class=\"btn btn-primary\" (click) = \"rehire(counselor,false)\">Rehire</button>\n                              </td>\n                              <td *ngIf=\"i!=0 && counselor.hired\"></td>\n                              <td *ngIf=\"i!=0 && !counselor.hired\">\n                                  <input type=\"checkbox\" (change)=\"preMassRehire($event,counselor)\">\n                              </td>\n                              <td *ngIf=\"i==0\"><button class=\"btn btn-primary\" (click) = \"remove(counselor)\">X</button></td>\n                            </tr>\n                          </table>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div *ngIf=\"authService.isUser()\">\n      <div *ngFor=\"let division of divisions\">\n      <h2>{{division}}</h2>\n      <table class=\"table\" >\n          <tr>\n            <th>First</th>\n            <th>Last</th>\n            <th>Gender</th>\n            <th>Type</th>\n            <th>Specialty</th>\n          </tr>\n          <tr *ngFor=\"let counselor of counselors[division]\">\n            <td>{{counselor.first}}</td>\n            <td>{{counselor.last}}</td>\n            <td>{{counselor.gender}}</td>\n            <td>{{counselor.type.type}}</td>\n            <td>{{counselor.specialty?.name}}</td>\n          </tr>\n        </table>\n      </div>\n    </div>\n    "
 
 /***/ }),
 
@@ -36715,21 +36716,24 @@ var CounselorsComponent = (function () {
                     skip = false;
                 else {
                     var vals = line.split(',');
-                    var counselor = {
-                        first: vals[0],
-                        last: vals[1],
-                        gender: vals[2],
-                        type: vals[3],
-                        sessions: [session]
+                    var data = {
+                        divisionName: vals[4],
+                        counselor: {
+                            first: vals[0],
+                            last: vals[1],
+                            gender: vals[2],
+                            sessions: [session],
+                            type: vals[3]
+                        }
                     };
                     for (var _a = 0, types_1 = types; _a < types_1.length; _a++) {
                         var type = types_1[_a];
                         if (type.type == vals[3]) {
-                            counselor.type = type;
+                            data.counselor.type = type;
                             break;
                         }
                     }
-                    counselors.push(counselor);
+                    counselors.push(data);
                 }
             }
         };
@@ -36766,26 +36770,29 @@ var CounselorsComponent = (function () {
                 _this.counselors = data.counselors;
             }
             if (_this.authService.admin()) {
+                console.log(data.output);
                 _this.sessions = data.output.sessions;
-                if (data.output.sessions[0]._id.session_id != data.output.cur_session._id) {
-                    var session = {
-                        "_id": {
-                            "session_id": data.output.cur_session._id,
-                            "session_name": data.output.cur_session.name
-                        },
-                        "counselors": []
-                    };
-                    _this.sessions.unshift(session);
-                }
-                else {
-                    _this.hired = data.output.sessions[0].counselors;
-                    for (var i = 1; i < _this.sessions.length; i++) {
-                        for (var _i = 0, _a = _this.sessions[i].counselors; _i < _a.length; _i++) {
-                            var counselor = _a[_i];
-                            for (var _b = 0, _c = _this.hired; _b < _c.length; _b++) {
-                                var h = _c[_b];
-                                if (h._id == counselor._id)
-                                    counselor.hired = true;
+                if (_this.sessions.length != 0) {
+                    if (data.output.sessions[0]._id.session_id != data.output.cur_session._id) {
+                        var session = {
+                            "_id": {
+                                "session_id": data.output.cur_session._id,
+                                "session_name": data.output.cur_session.name
+                            },
+                            "counselors": []
+                        };
+                        _this.sessions.unshift(session);
+                    }
+                    else {
+                        _this.hired = data.output.sessions[0].counselors;
+                        for (var i = 1; i < _this.sessions.length; i++) {
+                            for (var _i = 0, _a = _this.sessions[i].counselors; _i < _a.length; _i++) {
+                                var counselor = _a[_i];
+                                for (var _b = 0, _c = _this.hired; _b < _c.length; _b++) {
+                                    var h = _c[_b];
+                                    if (h._id == counselor._id)
+                                        counselor.hired = true;
+                                }
                             }
                         }
                     }
@@ -36867,6 +36874,7 @@ var CounselorsComponent = (function () {
             var counselor = _a[_i];
             this.rehire(this.toMassRehire[counselor], true);
         }
+        this.toMassRehire = [];
     };
     CounselorsComponent.prototype.rehire = function (c, mass) {
         var _this = this;
@@ -38400,8 +38408,10 @@ var HeadStaffDropdownComponent = (function () {
                     this.inDD.push(this.heads[head]);
             }
         }
-        this.selectedChanged.emit(this.inDD[0]);
-        this.showAddButton.emit(this.inDD.length != 0);
+        if (this.inDD) {
+            this.selectedChanged.emit(this.inDD[0]);
+            this.showAddButton.emit(this.inDD.length != 0);
+        }
     };
     HeadStaffDropdownComponent.prototype.handleChange = function (e) {
         this.selectedChanged.emit(this.inDD[e.target.value]);
@@ -38597,7 +38607,7 @@ module.exports = ""
 /***/ "./src/app/components/head-staff/head-staff.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<div *ngIf=\"newHead\">\n  <h2 class=\"page-header\">Register Head Staff Member</h2>\n\n  <!-- Custom Success/Error Message -->\n  <div class=\"row show-hide-message\">\n    <div [ngClass]=\"messageClass\">\n      {{ message }}\n    </div>\n  </div>\n\n  <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"first\">First</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"first\" formControlName=\"first\" />\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label for=\"last\">Last</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"last\" formControlName=\"last\" />\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label for=\"type\">Type</label>\n        <div>\n            <app-head-staff-type-dropdown (selectedChanged) = \"preAddType($event,type)\" [types]=\"types\"></app-head-staff-type-dropdown>\n        </div>\n      </div>\n    <div class=\"form-group\">\n      <label for=\"email\">Email</label>\n      <div>\n        <input class=\"form-control\" type=\"text\" name=\"email\" formControlName=\"email\" />\n      </div>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"password\">Password</label>\n      <div>\n        <input class=\"form-control\" type=\"password\" name=\"password\" formControlName=\"password\" />\n      </div>\n    </div>\n    <!-- Submit Button -->\n    <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n  </form>\n</div>\n<button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newHead\">Add</button>\n<table class=\"table table-hover\">\n    <tr>\n      <th>First</th>\n      <th>Last</th>\n      <th>Email</th>\n      <th>Type</th>\n      <th></th>\n    </tr>\n    <tr *ngFor=\"let head of heads\" (click)=\"goToHead(head)\">\n      <td>{{head.first}}</td>\n      <td>{{head.last}}</td>\n      <td>{{head.email}}</td>\n      <td *ngIf=\"head.type\">{{head.type.type}}</td>\n      <td *ngIf=\"!head.type\">\n          <app-head-staff-type-dropdown (selectedChanged) = \"preAddhType($event,head)\" [types]=\"types\"></app-head-staff-type-dropdown>\n          <button class=\"btn btn-primary\" (click) = \"addhType(head)\">Add</button>\n      </td>\n      <td><button class=\"btn btn-primary\" (click) = \"remove(head)\">X</button></td>\n    </tr>\n  </table>"
+module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<div *ngIf=\"newHead\">\n  <h2 class=\"page-header\">Register Head Staff Member</h2>\n\n  <!-- Custom Success/Error Message -->\n  <div class=\"row show-hide-message\">\n    <div [ngClass]=\"messageClass\">\n      {{ message }}\n    </div>\n  </div>\n\n  <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"first\">First</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"first\" formControlName=\"first\" />\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label for=\"last\">Last</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"last\" formControlName=\"last\" />\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label for=\"type\">Type</label>\n        <div>\n            <app-head-staff-type-dropdown (selectedChanged) = \"preAddType($event,type)\" [types]=\"types\"></app-head-staff-type-dropdown>\n        </div>\n      </div>\n    <div class=\"form-group\">\n      <label for=\"email\">Email</label>\n      <div>\n        <input class=\"form-control\" type=\"text\" name=\"email\" formControlName=\"email\" />\n      </div>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"password\">Password</label>\n      <div>\n        <input class=\"form-control\" type=\"password\" name=\"password\" formControlName=\"password\" />\n      </div>\n    </div>\n    <!-- Submit Button -->\n    <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n  </form>\n</div>\n<button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newHead\">Add</button>\n<table class=\"table table-hover\">\n    <tr>\n      <th>First</th>\n      <th>Last</th>\n      <th>Email</th>\n      <th>Type</th>\n      <th></th>\n    </tr>\n    <tr *ngFor=\"let head of heads\">\n      <td (click)=\"goToHead(head)\">{{head.first}}</td>\n      <td (click)=\"goToHead(head)\">{{head.last}}</td>\n      <td (click)=\"goToHead(head)\">{{head.email}}</td>\n      <td  (click)=\"goToHead(head)\" *ngIf=\"head.type\">{{head.type.type}}</td>\n      <td *ngIf=\"!head.type\">\n          <app-head-staff-type-dropdown (selectedChanged) = \"preAddhType($event,head)\" [types]=\"types\"></app-head-staff-type-dropdown>\n          <button class=\"btn btn-primary\" (click) = \"addhType(head)\">Add</button>\n      </td>\n      <td><button class=\"btn btn-primary\" (click) = \"remove(head)\">X</button></td>\n    </tr>\n  </table>"
 
 /***/ }),
 
@@ -39620,7 +39630,7 @@ module.exports = ""
 /***/ "./src/app/components/options/options.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<h2>Options</h2>\n\n<app-password-reset [user]=\"-1\"></app-password-reset>\n\n<div *ngIf=\"authService.admin()\">\n  <h3>Session</h3>\n  <p *ngIf=\"options?.session\">{{options?.session.name}}</p>\n  <form [formGroup]=\"form\" (submit)=\"onFormSubmit()\">\n    <div class=\"form-group\">\n      <label for=\"session_name\">New Session</label>\n      <div>\n        <input class=\"form-control\" type=\"text\" name=\"session_name\" formControlName=\"session_name\" />\n      </div>\n    </div>\n    <!-- Submit Button -->\n    <input class=\"btn btn-primary\" type=\"submit\" value=\"Submit\" />\n  </form>\n\n  <h3>Head Staff Types</h3>\n  <table class=\"table\">\n    <tr>\n      <th>Type</th>\n      <th></th>\n    </tr>\n    <tr *ngFor=\"let type of options?.headStaff_types\">\n      <td>{{type.type}}</td>\n      <td><button class=\"btn btn-primary\" (click) = \"removehType(type)\">X</button></td>\n    </tr>\n  </table>\n  <div *ngIf=\"newhType\">\n    <form [formGroup]=\"newhTypeForm\" (submit)=\"onNewhTypeSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"type\">Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"htype\" formControlName=\"htype\" />\n        </div>\n      </div>\n\n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelhAdd()\" value=\"Cancel Add\" />\n    </form>\n  </div>\n  <button class=\"btn btn-primary\" (click) = \"showhAdd()\" *ngIf = \"!newType\">Add</button>\n\n  <h3>Counselor Types</h3>\n  <table class=\"table\">\n    <tr>\n      <th>Type</th>\n      <th></th>\n    </tr>\n    <tr *ngFor=\"let type of options?.counselor_types\">\n      <td>{{type.type}}</td>\n      <td><button class=\"btn btn-primary\" (click) = \"removeType(type)\">X</button></td>\n    </tr>\n  </table>\n  <div *ngIf=\"newType\">\n    <form [formGroup]=\"newTypeForm\" (submit)=\"onNewTypeSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"type\">Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"type\" formControlName=\"type\" />\n        </div>\n      </div>\n\n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n    </form>\n  </div>\n  <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newType\">Add</button>\n\n  <div *ngIf=\"campsService.hasModule('eval')\">\n    <h2>Evaluation Options</h2>\n    <h3>Current Evaluation Period</h3>\n    <button class=\"btn btn-primary\" [disabled]=\"options?.evaluationOpts.currentEval==1\" (click)=\"decreasePeriod()\">&lt;</button> \n    {{options?.evaluationOpts.currentEval}} \n    <button class=\"btn btn-primary\" [disabled]=\"options?.evaluationOpts.currentEval==options?.evaluationOpts.perSession\" (click)=\"increasePeriod()\">&gt;</button>\n    <h3>Evaluations Per Session</h3>\n    <p>{{options?.evaluationOpts.perSession}}</p>\n    <form [formGroup]=\"perSessionForm\" (submit)=\"onPerSessionSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"per_session\">New Evaluations Per Session Value</label>\n        <div>\n          <input class=\"form-control\" type=\"number\" name=\"per_session\" formControlName=\"per_session\" />\n        </div>\n      </div>\n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Submit\" />\n    </form>\n  </div>\n\n  <div *ngIf=\"campsService.hasModule('swim')\">\n    <h2>Swim Options</h2>\n    <h3>Auto-Generation Max Campers</h3>\n    <input class=\"form-control\" type=\"number\" name=\"ag-max-swim\" min=1 (input)=\"changeAGMax($event)\" [value]=\"options?.swimOpts.agMax\">\n  </div>\n</div>"
+module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<h2>Options</h2>\n\n<app-password-reset [user]=\"-1\"></app-password-reset>\n\n<div *ngIf=\"authService.admin()\">\n  <h3>Session</h3>\n  <p *ngIf=\"options?.session\">{{options?.session.name}}</p>\n  <form [formGroup]=\"form\" (submit)=\"onFormSubmit()\">\n    <div class=\"form-group\">\n      <label for=\"session_name\">New Session</label>\n      <div>\n        <input class=\"form-control\" type=\"text\" name=\"session_name\" formControlName=\"session_name\" />\n      </div>\n    </div>\n    <!-- Submit Button -->\n    <input class=\"btn btn-primary\" type=\"submit\" value=\"Submit\" />\n  </form>\n\n  <h3>Head Staff Types</h3>\n  <table class=\"table\">\n    <tr>\n      <th>Type</th>\n      <th></th>\n    </tr>\n    <tr *ngFor=\"let type of options?.headStaff_types\">\n      <td>{{type.type}}</td>\n      <td><button class=\"btn btn-primary\" (click) = \"removehType(type)\">X</button></td>\n    </tr>\n  </table>\n  <div *ngIf=\"newhType\">\n    <form [formGroup]=\"newhTypeForm\" (submit)=\"onNewhTypeSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"type\">Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"htype\" formControlName=\"htype\" />\n        </div>\n      </div>\n\n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelhAdd()\" value=\"Cancel Add\" />\n    </form>\n  </div>\n  <button class=\"btn btn-primary\" (click) = \"showhAdd()\" *ngIf = \"!newType\">Add</button>\n\n  <h3>Counselor Types</h3>\n  <table class=\"table\">\n    <tr>\n      <th>Type</th>\n      <th></th>\n    </tr>\n    <tr *ngFor=\"let type of options?.counselor_types\">\n      <td>{{type.type}}</td>\n      <td><button class=\"btn btn-primary\" (click) = \"removeType(type)\">X</button></td>\n    </tr>\n  </table>\n  <div *ngIf=\"newType\">\n    <form [formGroup]=\"newTypeForm\" (submit)=\"onNewTypeSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"type\">Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"type\" formControlName=\"type\" />\n        </div>\n      </div>\n\n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n    </form>\n  </div>\n  <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newType\">Add</button>\n\n  <div *ngIf=\"campsService.hasModule('eval')\">\n    <h2>Evaluation Options</h2>\n    <h3>Current Evaluation Period</h3>\n    <button class=\"btn btn-primary\" [disabled]=\"options?.evaluationOpts.currentEval==1\" (click)=\"decreasePeriod()\">&lt;</button> \n    {{options?.evaluationOpts.currentEval}} \n    <button class=\"btn btn-primary\" [disabled]=\"options?.evaluationOpts.currentEval==options?.evaluationOpts.perSession\" (click)=\"increasePeriod()\">&gt;</button>\n    <h3>Evaluations Per Session</h3>\n    <p>{{options?.evaluationOpts.perSession}}</p>\n    <form [formGroup]=\"perSessionForm\" (submit)=\"onPerSessionSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"per_session\">New Evaluations Per Session Value</label>\n        <div>\n          <input class=\"form-control\" type=\"number\" name=\"per_session\" formControlName=\"per_session\" />\n        </div>\n      </div>\n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Submit\" />\n    </form>\n\n    <h3>Gold</h3>\n    <input class=\"form-control\" type=\"number\" name=\"gold\" min=1 (input)=\"changeGold($event)\" [value]=\"options?.evaluationOpts.gold\">\n    <h3>Silver</h3>\n    <input class=\"form-control\" type=\"number\" name=\"silver\" min=1 (input)=\"changeSilver($event)\" [value]=\"options?.evaluationOpts.silver\">\n    <h3>Green</h3>\n    <input class=\"form-control\" type=\"number\" name=\"green\" min=1 (input)=\"changeGreen($event)\" [value]=\"options?.evaluationOpts.green\">\n\n\n  </div>\n\n  <div *ngIf=\"campsService.hasModule('swim')\">\n    <h2>Swim Options</h2>\n    <h3>Auto-Generation Max Campers</h3>\n    <input class=\"form-control\" type=\"number\" name=\"ag-max-swim\" min=1 (input)=\"changeAGMax($event)\" [value]=\"options?.swimOpts.agMax\">\n  </div>\n</div>"
 
 /***/ }),
 
@@ -39772,6 +39782,33 @@ var OptionsComponent = (function () {
         this.loading = true;
         if (e.target.value >= 1) {
             this.swimService.changeAGMax(e.target.value).subscribe(function (data) {
+                _this.getOptions();
+            });
+        }
+    };
+    OptionsComponent.prototype.changeGold = function (e) {
+        var _this = this;
+        this.loading = true;
+        if (e.target.value >= 1) {
+            this.evaluationsService.changeGold(e.target.value).subscribe(function (data) {
+                _this.getOptions();
+            });
+        }
+    };
+    OptionsComponent.prototype.changeSilver = function (e) {
+        var _this = this;
+        this.loading = true;
+        if (e.target.value >= 1) {
+            this.evaluationsService.changeSilver(e.target.value).subscribe(function (data) {
+                _this.getOptions();
+            });
+        }
+    };
+    OptionsComponent.prototype.changeGreen = function (e) {
+        var _this = this;
+        this.loading = true;
+        if (e.target.value >= 1) {
+            this.evaluationsService.changeGreen(e.target.value).subscribe(function (data) {
                 _this.getOptions();
             });
         }
@@ -39932,7 +39969,7 @@ module.exports = ""
 /***/ "./src/app/components/questions/questions.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<div *ngIf=\"newQuestion\">\n    <h2 class=\"page-header\">Register Question</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    \n    <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"content\">Content</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"content\" formControlName=\"content\" />\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"type\">Type</label>\n        <div>\n            <app-counselor-types-dropdown (selectedChanged) = \"preAddType($event,type)\"></app-counselor-types-dropdown>\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"headStaff-type\">Type</label>\n        <div>\n            <app-head-staff-type-dropdown (selectedChanged) = \"preAddhType($event,type)\" [types]=\"hsTypes\"></app-head-staff-type-dropdown>\n        </div>\n      </div>\n    \n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n    </form>\n    </div>\n    <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newQuestion\">Add</button>\n\n    <div *ngFor=\"let type of types\">\n      <h2>{{type?._id.type.type}}</h2>\n      <table class=\"table\">\n          <tr>\n            <th>Content</th>\n            <th>Evaluated By</th>\n            <th></th>\n          </tr>\n          <tr *ngFor=\"let question of type.questions\">\n            <td>{{question.content}}</td>\n            <td>{{question.byWho.type}}</td>\n            <td><button class=\"btn btn-primary\" (click) = \"remove(question)\">X</button></td>\n          </tr>\n        </table>\n    </div>"
+module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<div *ngIf=\"newQuestion\">\n    <h2 class=\"page-header\">Register Question</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    \n    <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"content\">Content</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"content\" formControlName=\"content\" />\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"type\">Counselor Type</label>\n        <div>\n            <app-counselor-types-dropdown (selectedChanged) = \"preAddType($event,type)\"></app-counselor-types-dropdown>\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"headStaff-type\">Evaluator Type</label>\n        <div>\n            <app-head-staff-type-dropdown (selectedChanged) = \"preAddhType($event,type)\" [types]=\"hsTypes\"></app-head-staff-type-dropdown>\n        </div>\n      </div>\n    \n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n    </form>\n    </div>\n    <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newQuestion\">Add</button>\n\n    <div *ngFor=\"let type of types\">\n      <h2>{{type?._id.type.type}}</h2>\n      <table class=\"table\">\n          <tr>\n            <th>Content</th>\n            <th>Evaluated By</th>\n            <th></th>\n          </tr>\n          <tr *ngFor=\"let question of type.questions\">\n            <td>{{question.content}}</td>\n            <td>{{question.byWho.type}}</td>\n            <td><button class=\"btn btn-primary\" (click) = \"remove(question)\">X</button></td>\n          </tr>\n        </table>\n    </div>"
 
 /***/ }),
 
@@ -40613,7 +40650,7 @@ module.exports = ""
 /***/ "./src/app/components/specialties-dropdown/specialties-dropdown.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<select (change) = \"handleChange($event);\">\n  <option *ngFor=\"let specialty of specialties; index as i\" value=\"{{i}}\">{{specialty.name}}</option>\n</select>  "
+module.exports = "<select (change) = \"handleChange($event);\" *ngIf=\"specialties\">\n  <option *ngFor=\"let specialty of specialties; index as i\" value=\"{{i}}\">{{specialty.name}}</option>\n</select>  "
 
 /***/ }),
 
@@ -40641,7 +40678,8 @@ var SpecialtiesDropdownComponent = (function () {
         this.selectedChanged = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
     }
     SpecialtiesDropdownComponent.prototype.populateSpecialties = function () {
-        this.selectedChanged.emit(this.specialties[0]);
+        if (this.specialties)
+            this.selectedChanged.emit(this.specialties[0]);
     };
     SpecialtiesDropdownComponent.prototype.handleChange = function (e) {
         this.selectedChanged.emit(this.specialties[e.target.value]);
@@ -41033,7 +41071,7 @@ module.exports = ""
 /***/ "./src/app/components/swim-groups/swim-groups.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<button class=\"btn btn-primary\" (click)=\"generateGroups()\" *ngIf=\"authService.userType() != 'lifeguard'\">Auto-Generate Groups</button>\n<form [formGroup]=\"form\" (submit)=\"createSwimGroupSubmit()\" *ngIf=\"authService.userType() != 'lifeguard'\">\n  <div class=\"form-group\">\n    <label for=\"name\">Name</label>\n    <div>\n      <input class=\"form-control\" type=\"text\" name=\"name\" formControlName=\"name\" />\n    </div>\n  </div>\n\n  <label for=\"lifeguard\">Lifeguard</label>\n  <app-lifeguard-dropdown (selectedChanged)=\"preAddLifeguard($event)\"></app-lifeguard-dropdown>\n\n  <!-- Submit Button -->\n  <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n  <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n</form>\n\n<table class=\"table\" >\n  <tr>\n    <th>Name</th>\n    <th>Lifeguard</th>\n    <th></th>\n  </tr>\n  <tr *ngFor=\"let group of groups\">\n    <td>{{group.data.name}}</td>\n    <td>{{group.lifeguard?.first}} {{group.lifeguard?.last}}</td>\n    <td><a class=\"btn btn-primary\" [routerLink]=\"['/swim-group',group.data._id]\">View</a><button class=\"btn btn-primary\" (click) = \"removeGroup(group.data._id)\">X</button></td>\n  </tr>\n</table>\n"
+module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<button class=\"btn btn-primary\" (click)=\"generateGroups()\" *ngIf=\"authService.userType() != 'lifeguard'\">Auto-Generate Groups</button>\n<form [formGroup]=\"form\" (submit)=\"createSwimGroupSubmit()\" *ngIf=\"authService.userType() != 'lifeguard'\">\n  <div class=\"form-group\">\n    <label for=\"name\">Name</label>\n    <div>\n      <input class=\"form-control\" type=\"text\" name=\"name\" formControlName=\"name\" />\n    </div>\n  </div>\n\n  <label for=\"lifeguard\">Lifeguard</label>\n  <app-lifeguard-dropdown (selectedChanged)=\"preAddLifeguard($event)\"></app-lifeguard-dropdown>\n\n  <!-- Submit Button -->\n  <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n  <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n</form>\n\n<table class=\"table\" >\n  <tr>\n    <th>Name</th>\n    <th>Lifeguard</th>\n    <th></th>\n  </tr>\n  <tr *ngFor=\"let group of groups\">\n    <td>{{group.data.name}}</td>\n    <td>{{group.lifeguard?.first}} {{group.lifeguard?.last}}</td>\n    <td><a class=\"btn btn-primary\" [routerLink]=\"['/swim-group',group.data._id]\">View</a><button *ngIf=\"authService.admin()\" class=\"btn btn-primary\" (click) = \"removeGroup(group.data._id)\">X</button></td>\n  </tr>\n</table>\n"
 
 /***/ }),
 
@@ -42810,6 +42848,27 @@ var EvaluationsService = (function () {
     EvaluationsService.prototype.isApprover = function () {
         this.createAuthenticationHeaders();
         return this.http.get(this.domain + 'evaluations/is_approver/', this.options).map(function (res) { return res.json(); });
+    };
+    EvaluationsService.prototype.changeGold = function (newGold) {
+        this.createAuthenticationHeaders();
+        var data = {
+            newGold: newGold
+        };
+        return this.http.post(this.domain + 'evaluations/change_gold', data, this.options).map(function (res) { return res.json(); });
+    };
+    EvaluationsService.prototype.changeSilver = function (newSilver) {
+        this.createAuthenticationHeaders();
+        var data = {
+            newSilver: newSilver
+        };
+        return this.http.post(this.domain + 'evaluations/change_silver', data, this.options).map(function (res) { return res.json(); });
+    };
+    EvaluationsService.prototype.changeGreen = function (newGreen) {
+        this.createAuthenticationHeaders();
+        var data = {
+            newGreen: newGreen
+        };
+        return this.http.post(this.domain + 'evaluations/change_green', data, this.options).map(function (res) { return res.json(); });
     };
     EvaluationsService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
