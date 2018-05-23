@@ -118,6 +118,7 @@ module.exports = (router) => {
                         var divs = []
                         for(let division of session.divisions){
                             if(division.d_id){
+                                console.log("hello world 3");
                                var div = {
                                     _id:division.d_id,
                                     campers:[]
