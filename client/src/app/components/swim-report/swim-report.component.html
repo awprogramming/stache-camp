@@ -1,10 +1,11 @@
+<app-back-button *ngIf="authService.loggedIn()"></app-back-button>
 <app-loading *ngIf="loading"></app-loading>
 <div *ngIf="swimGroup && camper" class="report">
-<img [src]="'./assets/'+camper.cSwimOpts.currentLevel.rcLevel+'.jpg'">
-<span [id]="'name-'+camper.cSwimOpts.currentLevel.rcLevel">{{camper.first}} {{camper.last}}</span>
-<span [id]="'date-'+camper.cSwimOpts.currentLevel.rcLevel">{{displayDate()}}</span>
-<span [id]="'instructor-'+camper.cSwimOpts.currentLevel.rcLevel">{{lifeguard?.first}} {{lifeguard?.last}}</span>
-<span [id]="'group-'+camper.cSwimOpts.currentLevel.rcLevel">{{swimGroup.name}}</span>
-<span *ngFor="let skill of completedSkills(camper.cSwimOpts.currentLevel)" [id]="generateSkillClass(camper.cSwimOpts.currentLevel.rcLevel,skill)">&#10004;</span>
+<img [src]="'./assets/'+report.rcLevel+'.jpg'">
+<span [id]="'name-'+report.rcLevel">{{camper.first}} {{camper.last}}</span>
+<span [id]="'date-'+report.rcLevel">{{displayDate()}}</span>
+<span [id]="'instructor-'+report.rcLevel">{{lifeguard?.first}} {{lifeguard?.last}}</span>
+<span [id]="'group-'+report.rcLevel">{{camper.division.name}}</span>
+<span *ngFor="let skill of completedSkills(report)" [id]="generateSkillClass(report.rcLevel,skill)">&#10004;</span>
 </div>
 <button (click)="downloadPDF()">Download report</button>

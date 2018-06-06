@@ -99,38 +99,40 @@ export class CampersComponent implements OnInit {
           var vals = line.split(',');
           var data;
           if(cs.hasModule("swim")){
-            var fname = vals[0].split('\n')[1];
-            var bracelet = vals[10].toLowerCase();
+            var _id = vals[0].split('\n')[1];
+            var bracelet = vals[11].toLowerCase();
             if(bracelet != "orange" && bracelet != "green")
               bracelet = "none";
             
             data = {
-              divisionName:vals[4],
+              divisionName:vals[5],
               camper:{
-                  first: fname,
-                  last: vals[1],
-                  gender: vals[3],
-                  grade: vals[2],
-                  p1Name: vals[5],
-                  p1Email: vals[6],
-                  p2Name: vals[7],
-                  p2Email: vals[8],
+                  _id: _id,
+                  first: vals[1],
+                  last: vals[2],
+                  gender: vals[4],
+                  grade: vals[3],
+                  p1Name: vals[6],
+                  p1Email: vals[7],
+                  p2Name: vals[8],
+                  p2Email: vals[9],
                   cSwimOpts: {
                     bracelet: bracelet
                   },
               },
               cSwimOpts: {
-                rcLevel: vals[9]
+                rcLevel: vals[10]
               },
             }
-            if(fname != "")
+            if(vals[1] != "")
               campers.push(data);
           }
           else{
             data = {
-              first: vals[0],
-              last: vals[1],
-              gender: vals[2],
+              _id: vals[0],
+              first: vals[1],
+              last: vals[2],
+              gender: vals[3],
             }
             campers.push(data);
           }

@@ -3,21 +3,21 @@
 <div *ngIf="swimGroup && swimGroup.data">
   <h1>{{swimGroup.data.name}}</h1>
   <div *ngIf="swimGroup.lifeguard">
-    <h2>{{swimGroup.lifeguard.first}} {{swimGroup.lifeguard.last}}</h2><button class="btn btn-primary" *ngIf="this.authService.userType() != 'lifeguard'" (click)="removeLifeguard()">X</button>
+    <h2>{{swimGroup.lifeguard.first}} {{swimGroup.lifeguard.last}}</h2><button class="btn btn-primary" *ngIf="this.authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())" (click)="removeLifeguard()">X</button>
   </div>
-  <div *ngIf="!swimGroup.lifeguard">
+  <div *ngIf="!swimGroup.lifeguard && (authService.userType() != 'leader'|| authService.admin())">
     <h2>Assign Lifeguard</h2>
-    <app-lifeguard-dropdown (selectedChanged)="preAssignLifeguard($event)"></app-lifeguard-dropdown>
+    <app-lifeguard-dropdown (selectedChanged)="preAssignLifeguard($event)" [addAll]="false"></app-lifeguard-dropdown>
     <button class="btn btn-primary" (click)="assignLifeguard()">Assign</button>
   </div>
-  <button class="btn btn-primary" (click)="generateReports()" *ngIf="authService.userType() != 'lifeguard'">Generate Reports</button>
+  <button class="btn btn-primary" (click)="generateReports()" *ngIf="authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())">Generate Reports</button>
   <div *ngIf="generating">
     <div *ngFor="let camper of swimGroup.campers" [id]="camper._id" class="report" (click)="goToReport(camper._id)">
       <img [src]="'./assets/'+camper.cSwimOpts.currentLevel.rcLevel+'.jpg'">
       <span [id]="'name-'+camper.cSwimOpts.currentLevel.rcLevel">{{camper.first}} {{camper.last}}</span>
       <span [id]="'date-'+camper.cSwimOpts.currentLevel.rcLevel">{{displayDate()}}</span>
       <span [id]="'instructor-'+camper.cSwimOpts.currentLevel.rcLevel">{{swimGroup.lifeguard?.first}} {{swimGroup.lifeguard?.last}}</span>
-      <span [id]="'group-'+camper.cSwimOpts.currentLevel.rcLevel">{{swimGroup.data.name}}</span>
+      <span [id]="'group-'+camper.cSwimOpts.currentLevel.rcLevel">{{camper.division.name}}</span>
       <span *ngFor="let skill of completedSkills(camper.cSwimOpts.currentLevel)" [id]="generateSkillClass(camper.cSwimOpts.currentLevel.rcLevel,skill)">&#10004;</span>
     </div>
     <button class="btn btn-primary" (click)="sendReports()">Send Reports</button>
@@ -31,7 +31,7 @@
         <th>Red Cross Level</th>
         <th>Swim Bracelet</th>
         <th>Most Recent Report Sent</th>
-        <th *ngIf="this.authService.userType() != 'lifeguard'"></th>
+        <th *ngIf="this.authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())"></th>
       </tr>
     </thead>
     <tbody>
@@ -41,9 +41,9 @@
         <td (click)="goToStats(camper)">{{camper.cSwimOpts.currentLevel?.rcLevel}}</td>
         <td (click)="goToStats(camper)">{{camper.cSwimOpts.bracelet}}</td>
         <td (click)="goToStats(camper)">{{displayDateHelper(camper.cSwimOpts.mostRecentReportSent)}}</td>
-        <td *ngIf="this.authService.userType() != 'lifeguard'"><button class="btn btn-primary" (click)="removeFromGroup(camper)">x</button></td>
+        <td *ngIf="this.authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())"><button class="btn btn-primary" (click)="removeFromGroup(camper)">x</button></td>
       </tr>
     </tbody>
   </table>
-  <app-camper-selector *ngIf="this.authService.userType() != 'lifeguard'" [exclude]="exclude" (selection)="addToGroup($event)"></app-camper-selector>
+  <app-camper-selector *ngIf="this.authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())" [exclude]="exclude" (selection)="addToGroup($event)"></app-camper-selector>
 </div>

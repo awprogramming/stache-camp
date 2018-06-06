@@ -54,8 +54,9 @@ export class CounselorSelectorComponent implements OnInit {
     }
     else{
       this.campService.get_division_counselors(divisonId,this.options.session._id).subscribe(data => {
-        if(data.success == false)
+        if(data.success == false){
           this.counselors = [];
+        }
         else{
           this.counselors = [];
           for(let counselor of data.division.counselors){

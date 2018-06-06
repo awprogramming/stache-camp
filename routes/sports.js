@@ -161,7 +161,8 @@ module.exports = (router) => {
                 for(let roster of specialty.rosters){
                     for(let camper of roster.campers){
                         camper = camp.campers.id(camper);
-                        for(let leader of camper.division.leaders){
+                        var division = camp.divisions.id(camper.division._id);
+                        for(let leader of division.leaders){
                             if(leader._id == leader_id){
                                 if(rosters[camper.division.name]){
                                     if(rosters[camper.division.name]["specialties"][specialty.name])
@@ -265,7 +266,7 @@ module.exports = (router) => {
                     if(game.games.date.getMonth() == req.params.month && game.games.date.getFullYear() == req.params.year){
                         if(req.params.type == "admin")
                             games.push(game.games);  
-                        else if(req.params.type == "Head Specialist"){
+                        else if(req.params.type == "head_specialist"){
                             for(let hs of game.games.specialty.head_specialists){
                                 if(hs._id == req.decoded.userId){
                                     games.push(game.games);
@@ -278,7 +279,7 @@ module.exports = (router) => {
                                 var roster = camp.specialties.id(game.games.specialty._id).rosters.id(game.games.rosterId);
                                 for(let camper of roster.campers){
                                     var pushed = false;
-                                    division = camp.campers.id(camper).division;
+                                    division = camp.divisions.id(camp.campers.id(camper).division._id);
                                     for(let leader of division.leaders){
                                         if(leader._id == req.decoded.userId)
                                             games.push(game.games);

@@ -8,6 +8,7 @@ import { CampsService } from '../../services/camps.service';
   styleUrls: ['./lifeguard-dropdown.component.css']
 })
 export class LifeguardDropdownComponent implements OnInit {
+  @Input() addAll: String;
   @Output() selectedChanged = new EventEmitter();
   lifeguards;
   constructor(
@@ -17,7 +18,15 @@ export class LifeguardDropdownComponent implements OnInit {
   populateTypes(){
     this.campService.getAllLifeguards().subscribe(data=>{
       this.lifeguards = data.lifeguards['Lifeguard'];
-      this.selectedChanged.emit(this.lifeguards[0]);
+      if(this.addAll){
+        this.lifeguards.unshift({
+          first:"All",
+          last:"Lifeguards"
+        })
+      }
+      else if(this.lifeguards && this.lifeguards.length > 0){
+        this.selectedChanged.emit(this.lifeguards[0]);
+      }
       
     });
     

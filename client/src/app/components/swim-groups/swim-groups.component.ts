@@ -20,7 +20,16 @@ export class SwimGroupsComponent implements OnInit {
   toAddLifeguard;
   options;
   groups;
+  allGroups;
   loading;
+  divisions;
+  showing = {
+    name:"Show All"
+  };
+  lgShowing = {
+    first:"All",
+    last:"Lifeguards"
+  }
 
   constructor(
     private formBuilder: FormBuilder,
@@ -42,9 +51,21 @@ export class SwimGroupsComponent implements OnInit {
   getGroups(){
     this.loading = true;
     this.swimService.allGroups().subscribe(data => {
-      this.groups = data.groups;
-      this.loading = false;
+      if(data.success){
+        this.groups = data.groups;
+        this.allGroups = data.groups;
+        this.loading = false;
+      }
+      else{
+        this.groups = {};
+        this.allGroups = {};
+      }
+      this.getDivisions();
     });
+  }
+
+  getGroupDivisions(){
+    return Object.keys(this.groups);
   }
 
   removeGroup(id){
@@ -54,6 +75,53 @@ export class SwimGroupsComponent implements OnInit {
     });
   }
 
+  showDivision(e){
+    this.showing = e;
+    if(e.name == "Show All"){
+      this.groups = this.allGroups;
+    }
+    else{
+      this.groups = [];
+      this.groups[e.name] = this.allGroups[e.name];
+    }
+
+    if(this.lgShowing.first !="All" && this.lgShowing.last != "Lifeguards"){
+      this.lifeguardFilter(this.lgShowing);
+    }
+  }
+
+  lifeguardFilter(lg){
+    this.lgShowing = lg;
+    if(lg.first == "All" && lg.last == "Lifeguards"){
+      this.showDivision(this.showing);
+    }
+    else{
+      var tempGroups = [];
+      for(let group of this.getGroupDivisions()){
+        for(let sGroup of this.groups[group]){
+          if(sGroup.lifeguard && sGroup.lifeguard._id==lg._id){
+            if(tempGroups[group])
+              tempGroups[group].push(sGroup);
+            else
+              tempGroups[group] = [sGroup];
+          }
+        }
+      }
+      this.groups = tempGroups;
+    }
+  }
+
+  getDivisions(){
+    this.campsService.getAllDivisions().subscribe(data=>{
+      console.log(data.divisions[0].divisions); 
+      this.divisions = data.divisions[0].divisions;
+      var all = {
+        name:"Show All"
+      }
+      this.divisions.unshift(all);
+      console.log(this.divisions);
+    });
+  }
   createSwimGroupSubmit(){
     this.loading = true;
     var swimGroup = {
@@ -71,8 +139,9 @@ export class SwimGroupsComponent implements OnInit {
     this.loading = true;
     this.swimService.autoGenerateGroups().subscribe(data => {
       var checkGroups = setInterval(()=>{
-        if(this.groups.length != 0){
+        if(this.getGroupDivisions().length != 0){
           clearInterval(checkGroups);
+          this.loading = false;
         }
         else{
           this.getGroups();
@@ -92,6 +161,7 @@ export class SwimGroupsComponent implements OnInit {
   preAddLifeguard(lifeguard){
     this.toAddLifeguard = String(lifeguard._id);
   }
+
 
   ngOnInit() {
     if(this.authGuard.redirectUrl){

@@ -72,6 +72,8 @@ import { SwimReportComponent } from './components/swim-report/swim-report.compon
 import { HeadStaffProfileComponent } from './components/head-staff-profile/head-staff-profile.component';
 import { PasswordResetComponent } from './components/password-reset/password-reset.component';
 import { LoadingComponent } from './components/loading/loading.component';
+import { HowWeSayComponent } from './components/how-we-say/how-we-say.component';
+import { LevelCompletedComponent } from './components/level-completed/level-completed.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -124,6 +126,8 @@ import { LoadingComponent } from './components/loading/loading.component';
     HeadStaffProfileComponent,
     PasswordResetComponent,
     LoadingComponent,
+    HowWeSayComponent,
+    LevelCompletedComponent,
 
   ],
   imports: [

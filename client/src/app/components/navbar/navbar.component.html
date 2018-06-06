@@ -48,6 +48,7 @@
                 <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/swim-groups">Swim Groups</a></li>
                 <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/swim-stats">Camper Stats</a></li>
                 <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/swim-levels">Swim Levels</a></li>
+                <li *ngIf="authService.admin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/level-completed">Level Completed</a></li>
                 <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/register-lifeguard">Register Lifeguard</a></li>
             </ul>
         </li>

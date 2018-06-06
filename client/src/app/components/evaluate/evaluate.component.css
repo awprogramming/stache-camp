@@ -69,3 +69,8 @@
 .full{
     width: 100%;
 }
+
+@media print
+{
+    .noprint {display:none;}
+}

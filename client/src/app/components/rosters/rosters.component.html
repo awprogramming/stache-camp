@@ -23,7 +23,9 @@
     <input class="btn btn-primary" (click) = "cancelAdd()" value="Cancel Add" />
   </form>
 </div>
-<div *ngIf="getType()=='Head Specialist'">    
+
+<div *ngIf="getType()=='head_specialist'"> 
+    
     <div *ngFor="let specialty of specialties">
       <h2>{{specialty.name}} <button class="btn btn-primary" (click) = "showAdd(specialty,false)" *ngIf = "!newRoster">Add</button></h2>
       <table class="table">

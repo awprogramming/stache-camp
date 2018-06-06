@@ -9,7 +9,12 @@
       </div>
     </div>
     <form [formGroup]="form" (submit)="onRegistrationSubmit()">
-    
+      <div class="form-group">
+        <label for="_id">PersonID</label>
+        <div>
+          <input class="form-control" type="text" name="_id" formControlName="_id" />
+        </div>
+      </div>
       <div class="form-group">
         <label for="first">First Name</label>
         <div>
@@ -106,6 +111,12 @@
                     </ul>
             </div>
             <div class="panel-body">
+                <select class="form-control" (change) = "filterGender($event.target.value)">
+                  <option value="all">All</option>
+                  <option value="male">Boys</option>
+                  <option value="female">Girls</option>
+                </select>
+                <app-divisions-dropdown (selectedChanged) = "filterDivision($event)" [gender] = "male" [divisions]="divGenders('male')" *ngIf="dropdownDivisions"></app-divisions-dropdown>
                 <div class="tab-content">
                     <div *ngFor="let session of sessions; let i = index" [ngClass] = "{'in active':i==0}" class="tab-pane fade" id="{{session._id.session_name}}">
                         <h2>{{session._id.session_name}}</h2>
@@ -114,7 +125,7 @@
                               <th>First</th>
                               <th>Last</th>
                               <th>Gender</th>
-                              <th>Division</th>
+                              <th *ngIf="!campsService.hasModule('swim')">{{options.howWeSay.division}}</th>
                               <th>Type</th>
                               <th>Specialty</th>
                               <th *ngIf="i!=0"></th>
@@ -125,8 +136,8 @@
                               <td>{{counselor.first}}</td>
                               <td>{{counselor.last}}</td>
                               <td>{{counselor.gender}}</td>
-                              <td *ngIf="counselor.division ">{{counselor.division.name}}</td>
-                              <td *ngIf="!counselor.division">
+                              <td *ngIf="counselor.division && !campsService.hasModule('swim')">{{counselor.division.name}}</td>
+                              <td *ngIf="!counselor.division && !campsService.hasModule('swim')">
                                 <app-divisions-dropdown *ngIf="i==0" (selectedChanged) = "preAdd($event,counselor)" [gender]="counselor.gender" [divisions]="divGenders(counselor.gender)"></app-divisions-dropdown>
                                 <button *ngIf="i==0" class="btn btn-primary" (click) = "addDivision(counselor)">Add</button>
                               </td>

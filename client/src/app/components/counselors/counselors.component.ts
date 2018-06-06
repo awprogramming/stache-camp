@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthGuard } from '../../guards/auth.guard';
 import { AuthService } from '../../services/auth.service';
 import { SwimService } from '../../services/swim.service';
-import { CATCH_ERROR_VAR } from '@angular/compiler/src/output/output_ast';
+import { all } from 'q';
 
 @Component({
   selector: 'app-counselors',
@@ -26,6 +26,7 @@ export class CounselorsComponent implements OnInit {
   divisions;
   dropdownDivisions;
   sessions;
+  allSessions;
   hired;
   toAddType;
   options;
@@ -33,6 +34,10 @@ export class CounselorsComponent implements OnInit {
   toMassRehire = [];
   specialties;
   loading;
+  divisionShowing = {
+    name:"Show All"
+  };
+  genderShowing = "all";
 
   constructor(
     private formBuilder: FormBuilder,
@@ -50,6 +55,7 @@ export class CounselorsComponent implements OnInit {
 
   createForm() {
     this.form = this.formBuilder.group({
+      _id: ['', Validators.required],
       first: ['', Validators.required],
       last:['', Validators.required],
       email: ['', Validators.required],
@@ -66,6 +72,7 @@ export class CounselorsComponent implements OnInit {
     this.loading = true;
     if(this.lgReg){
       const counselor = {
+        _id: this.form.get('_id').value,
         first: this.form.get('first').value,
         last: this.form.get('last').value,
         gender: this.form.get('gender').value,
@@ -95,6 +102,7 @@ export class CounselorsComponent implements OnInit {
     }
     else{
       const counselor = {
+        _id: this.form.get('_id').value,
         first: this.form.get('first').value,
         last: this.form.get('last').value,
         gender: this.form.get('gender').value,
@@ -136,19 +144,23 @@ export class CounselorsComponent implements OnInit {
         if(skip)
           skip = false;
         else{
+          
           var vals = line.split(',');
+          var id = vals[0].split('\n')[1];
           var data = {
             divisionName:vals[4],
+            specialtyName:vals[6],
             counselor: {
-              first: vals[0],
-              last: vals[1],
-              gender: vals[2],
+              _id: id,
+              first: vals[1],
+              last: vals[2],
+              gender: vals[3],
               sessions: [session],
-              type:vals[3]
+              type:vals[5]
             }
           }
           for(let type of types){
-            if(type.type == vals[3]){
+            if(type.type.toLowerCase() == vals[5].toLowerCase()){
               data.counselor.type = type
               break;
             }
@@ -189,7 +201,6 @@ export class CounselorsComponent implements OnInit {
         this.counselors = data.counselors;
       }
       if(this.authService.admin()){
-        console.log(data.output);
         this.sessions = data.output.sessions;
         if(this.sessions.length != 0){
           if(data.output.sessions[0]._id.session_id!=data.output.cur_session._id){
@@ -213,7 +224,8 @@ export class CounselorsComponent implements OnInit {
             }
           }
         }
-        } 
+        }
+        this.allSessions = Object.assign([],this.sessions);
       }
       this.loading = false;
     });
@@ -226,6 +238,8 @@ export class CounselorsComponent implements OnInit {
       this.loading = false;
     });
   }
+
+  
 
   remove(counselor){
     this.loading = true;
@@ -319,6 +333,14 @@ export class CounselorsComponent implements OnInit {
     this.loading = true;
     this.campsService.getAllDivisions().subscribe(data=>{
       this.dropdownDivisions = data;
+      if(this.authService.admin()){
+        this.dropdownDivisions.divisions[0].divisions.unshift({
+          name:"Show All"
+        });
+        this.dropdownDivisions.divisions[1].divisions.unshift({
+          name:"Show All"
+        });
+      }
       this.loading = false;
       // if(this._gender=="female")
       //   this.divisions = data.divisions[0].divisions;
@@ -329,10 +351,38 @@ export class CounselorsComponent implements OnInit {
     });
   }
 
+  filterDivision(e){
+    this.divisionShowing = e;
+    this.filter();
+
+  }
+  filterGender(e){
+    this.genderShowing = e;
+    this.filter()
+  }
+
+  filter(){
+      this.sessions = this.allSessions;
+      var allGenders = this.genderShowing == "all";
+      var allDivisions = this.divisionShowing.name == "Show All"
+      var tempSessions = [];
+      for(let session of this.sessions){
+        var tempSession = Object.assign({},session);;
+        var tempCounselors = [];
+        for(let counselor of session.counselors){
+          if((counselor.gender.toLowerCase() == this.genderShowing || allGenders) && (counselor.division.name == this.divisionShowing.name || allDivisions)){
+            tempCounselors.push(counselor);
+          }
+        }
+        tempSession.counselors = tempCounselors
+        tempSessions.push(tempSession);
+      }
+      this.sessions = tempSessions;
+  }
+
   divGenders(gender){
     if(gender.toLowerCase()=="female"){
       return this.dropdownDivisions.divisions[0].divisions;
-      
     }
     else if(gender.toLowerCase()=="male")
       return this.dropdownDivisions.divisions[1].divisions;

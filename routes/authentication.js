@@ -33,7 +33,7 @@ module.exports = (router) => {
             options:{
                 counselor_types:[
                     {
-                        type: "general"
+                        type: "general counselor"
                     },
                     {
                         type: "specialist"

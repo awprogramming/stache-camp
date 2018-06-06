@@ -26,32 +26,133 @@ module.exports = (router) => {
         });
     });
 
-    router.get('/all_groups',(req,res) => {
+    router.get('/get_camper_group/:camperId',(req,res) => {
         Camp.findById(req.decoded.campId, (err,camp)=>{
-            var result = [];
-            var user = camp.users.id(req.decoded.userId);
+            var camperGroup;
             for(let group of camp.swimGroups){
-                if(group.sessionId == camp.options.session._id){
-                   var lifeguard = camp.counselors.id(group.lifeguardId);
-                   //if(lifeguard){
-                    g = {
-                        data:group,
-                        lifeguard:lifeguard
+                var found = false;
+                for(let camperId of group.camperIds){
+                    if(req.params.camperId == camperId){
+                        found = true
+                        break;
                     }
-                   if(user.type && user.type.type == "lifeguard"){
-                        if(lifeguard && lifeguard._id == user.counselorRef){
-                            result.push(g);
-                        }
-                   }
-                   else{
-                        result.push(g);
-                    }
-                //}
                 }
-                
+                if(found){
+                    camperGroup = group;
+                    break;
+                }
             }
-            res.json({success:true,groups:result});
+            if(camperGroup)
+                res.json({success:true,group:camperGroup});
+            else
+                res.json({success:false});
         });
+    });
+    
+
+    // router.get('/all_groups',(req,res) => {
+    //     Camp.findById(req.decoded.campId, (err,camp)=>{
+    //         var result = [];
+    //         var user = camp.users.id(req.decoded.userId);
+    //         for(let group of camp.swimGroups){
+    //             if(group.sessionId == camp.options.session._id){
+    //                var lifeguard = camp.counselors.id(group.lifeguardId);
+    //                 g = {
+    //                     data:group,
+    //                     lifeguard:lifeguard
+    //                 }
+    //                if(user.type && user.type.type == "lifeguard"){
+    //                     if(lifeguard && lifeguard._id == user.counselorRef){
+    //                         result.push(g);
+    //                     }
+    //                }
+    //                else{
+    //                     result.push(g);
+    //                 }
+    //             }  
+    //         }
+    //         res.json({success:true,groups:result});
+    //     });
+    // });
+
+    router.get('/all_groups',(req,res) => {
+        Camp.findById(req.decoded.campId).exec().then((camp)=>{
+            var result = {};
+            var user = camp.users.id(req.decoded.userId);
+            var count = 0;
+            if(camp.swimGroups.length == 0){
+                res.json({success:false});
+            }
+            else{
+                for(let group of camp.swimGroups){
+                    count++;
+                    if(group.sessionId == camp.options.session._id){
+                    var lifeguard = camp.counselors.id(group.lifeguardId);
+                        g = {
+                            data:group,
+                            lifeguard:lifeguard
+                        }
+                    if(user.type && user.type.type == "lifeguard"){
+                            if(lifeguard && lifeguard._id == user.counselorRef){
+                                var divisions = [];
+                                for(let id of group.camperIds){
+                                    var camper = camp.campers.id(id);
+                                    if(!divisions[camper.division.name]){
+                                            if(result[camper.division.name])
+                                                result[camper.division.name].push(g);
+                                            else
+                                                result[camper.division.name] = [g];
+                                    }
+                                    divisions[camper.division.name] = true;
+                                }
+                            }
+                    }
+                    else if(user.type && user.type.type == "leader"){
+                        var divisions = [];
+                        for(let id of group.camperIds){
+                            var camper = camp.campers.id(id);
+                            var div = camp.divisions.id(camper.division._id);
+                            for(let leader of div.leaders){
+                                console.log(leader._id,user._id);
+                                if(String(leader._id) == String(user._id)){
+                                    if(!divisions[camper.division.name]){
+                                        if(result[camper.division.name])
+                                            result[camper.division.name].push(g);
+                                        else
+                                            result[camper.division.name] = [g];
+                                    }
+                                    divisions[camper.division.name] = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else{
+                        if(group.camperIds.length==0){
+                            if(result["No Division"])
+                                result["No Division"].push(g);
+                            else
+                                result["No Division"] = [g];
+                        }
+                        else{
+                            var divisions = [];
+                            for(let id of group.camperIds){
+                                var camper = camp.campers.id(id);
+                                if(!divisions[camper.division.name]){
+                                        if(result[camper.division.name])
+                                            result[camper.division.name].push(g);
+                                        else
+                                            result[camper.division.name] = [g];
+                                }
+                                divisions[camper.division.name] = true;
+                            }
+                        }
+                    }
+                    }  
+                }
+                res.json({success:true,groups:result});
+            }
+        })
     });
 
     router.get('/in_groups',(req,res) => {
@@ -118,7 +219,6 @@ module.exports = (router) => {
                         var divs = []
                         for(let division of session.divisions){
                             if(division.d_id){
-                                console.log("hello world 3");
                                var div = {
                                     _id:division.d_id,
                                     campers:[]
@@ -176,10 +276,7 @@ module.exports = (router) => {
                         
                     }
                 }
-                if(sess_count==result.length){
-                    res.json({success:true});
-                }
-                    
+                    res.json({success:true});      
             });
         })
         //.then(()=>{
@@ -322,6 +419,11 @@ module.exports = (router) => {
     router.post('/level_complete/',(req,res) => {
         Camp.findById(req.decoded.campId, (err, camp)=>{
             var cSwimOpts = camp.campers.id(req.body.camperId).cSwimOpts;
+            var completed = {
+                camper: camp.campers.id(req.body.camperId),
+                level: cSwimOpts.currentLevel.rcLevel
+            }
+            camp.options.swimOpts.completed.push(completed);
             cSwimOpts.currentLevel.completed = true;
             cSwimOpts.currentLevel.sessionCompleted = camp.options.session;
             cSwimOpts.completedLevels.push(cSwimOpts.currentLevel);

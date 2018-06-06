@@ -5,7 +5,7 @@
   <h3>@ {{game.location}}</h3>
   <h3>Against {{game.opponent}}</h3>
   <div *ngIf="game.rosterId">
-    <h3>Roster <button *ngIf="authService.userType() =='Head Specialist'" class="btn btn-primary" (click)="removeRoster()">Remove Roster</button></h3>
+    <h3>Roster <button *ngIf="authService.userType() =='head_specialist'" class="btn btn-primary" (click)="removeRoster()">Remove Roster</button></h3>
     <ul>
       <li *ngFor="let camper of campers">{{camper.first}} {{camper.last}}</li>
     </ul>

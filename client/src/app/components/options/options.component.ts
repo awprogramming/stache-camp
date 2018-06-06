@@ -183,6 +183,20 @@ export class OptionsComponent implements OnInit {
     }
   }
 
+  getHWS(){
+    return Object.keys(this.options.howWeSay);
+  }
+
+  getHWSValue(term){
+    return this.options.howWeSay[term];
+  }
+
+  changeHWS(e,term){
+    this.campsService.changeHWS(term,e.target.value).subscribe(data => {
+      console.log(term,e.target.value);
+      this.getOptions();
+    });
+  }
 
   getOptions(){
     this.loading = true;

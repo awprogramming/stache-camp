@@ -12,7 +12,14 @@ const optionsSchema = new Schema({
     counselor_types:[CounselorTypeSchema],
     headStaff_types:[HeadStaffTypeSchema],
     evaluationOpts: EvalOptsSchema,
-    swimOpts: SwimOptsSchema
+    swimOpts: SwimOptsSchema,
+    howWeSay: {
+        division:{type:String,default:"division"},
+        gold:{type:String,default:"gold"},
+        silver:{type:String,default:"silver"},
+        green:{type:String,default:"green"},
+        red:{type:String,default:"red"}
+    }
 });
 
 module.exports = mongoose.model('Options',optionsSchema);

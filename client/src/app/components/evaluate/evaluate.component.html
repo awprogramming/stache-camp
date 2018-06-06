@@ -1,5 +1,5 @@
 <app-loading *ngIf="loading"></app-loading>
-<app-back-button></app-back-button>
+<app-back-button class="noprint"></app-back-button>
 <h2>Evaluation #{{evaluation?.evaluation.number}} for {{evaluation?.counselor.first}} {{evaluation?.counselor.last}}</h2>
 <h3>Session: {{evaluation?.evaluation.session.name}}</h3>
 
@@ -17,14 +17,19 @@
     <hr>
 </div>
 <div *ngIf="type=='leader'">
-<span>Additional Notes</span>
-<textarea class="full form-control" [disabled] = "view || approver" (focusout)="additional_change($event)">{{evaluation?.evaluation.additional_notes}}</textarea>
+  <span>Additional Notes</span>
+  <textarea class="full form-control" [disabled] = "view || approver" (focusout)="additional_change($event)">{{evaluation?.evaluation.additional_notes}}</textarea>
+</div>
+<hr>
+<div>
+  <span>Approver Notes</span>
+  <textarea class="full form-control" [disabled] = "view || !approver" (input)="approver_change($event)">{{evaluation?.evaluation.approver_notes}}</textarea>
 </div>
 
 <div id="filler"></div>
 
 
-<div class="eval_summary">
+<div class="eval_summary noprint">
   <hr>
   <div class="flex">
     <span class="flex-1">Score: {{percentage}}%</span>
@@ -36,9 +41,13 @@
         <button *ngIf="type != 'head_specialist'" class="btn btn-primary" (click) = "submit()">Submit</button>
       </div>
       <div *ngIf="approver">
-        <span *ngIf="!evaluation?.evaluation.submitted">Evaluation Not Yet Submitted</span>
+        
+        <button *ngIf="!saved" class="btn btn-primary" (click) = "save()">Save Notes</button>
+        <span *ngIf="saved">Notes Saved</span>
         <button *ngIf="!evaluation?.evaluation.approved && evaluation?.evaluation?.submitted" class="btn btn-primary" (click) = "approve()">Approve</button>
         <span *ngIf="evaluation?.evaluation.approved">Approved</span>
+        <br>
+        <span *ngIf="!evaluation?.evaluation.submitted">Evaluation Not Yet Submitted</span>
       </div>
     </div>
   </div>

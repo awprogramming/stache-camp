@@ -95,7 +95,7 @@ export class RosterComponent implements OnInit {
   }
 
   isViewing(){
-    this.viewing = (this.getType() != "Head Specialist") && (this.internal != "true");
+    this.viewing = (this.getType() != "head_specialist") && (this.internal != "true");
   }
 
   ngOnInit() {

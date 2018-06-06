@@ -1,0 +1,13 @@
+<h1>Campers who have completed a level in this session:</h1>
+<table class="table table-hover" *ngIf="options"> 
+  <tr>
+    <th>First</th>
+    <th>Last</th>
+    <th>Level Completed</th>
+  </tr>
+  <tr *ngFor="let completed of options.swimOpts.completed">
+    <td>{{completed.camper.first}}</td>
+    <td>{{completed.camper.last}}</td>
+    <td>{{completed.level}}</td>
+  </tr>
+</table>

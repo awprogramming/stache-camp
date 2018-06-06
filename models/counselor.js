@@ -8,6 +8,7 @@ const CounselorTypeSchema = require('./counselorType').schema;
 const EvaluationSchema = require('./evaluation').schema;
 
 const counselorSchema = new Schema({
+    _id: { type: String },
     first: {type:String, required: true},
     last: {type:String, required: true},
     gender: {type:String, enum:['male','female'], required: true},

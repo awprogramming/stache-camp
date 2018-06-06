@@ -273,35 +273,58 @@ module.exports = (router) => {
         
         if(req.params.eval==='true'){
             Camp.findById(req.decoded.campId,(err,camp)=>{
+                
                 for(let counselorData of req.body){
-                    var newCounselor = camp.counselors.create(counselorData.counselor);
-                    newCounselor.sessions = [];
-                    newCounselor.sessions.push(camp.options.session);
-                    var newDivision = camp.getDivisionByName(counselorData.divisionName.trim(),counselorData.counselor.gender.toLowerCase());
-                    console.log(newDivision);
-                    if(newDivision)
-                        newCounselor.division = newDivision;
-                    const evaluation = newCounselor.evaluations.create({
-                        number: camp.options.evaluationOpts.currentEval,
-                        session: camp.options.session,
-                        started: false,
-                        submitted: false,
-                        approved: false,
-                        answers: []
-                    });
-                    const answers = []
-                    for(let question of camp.options.evaluationOpts.questions){
-                        console.log(newCounselor);
-                        if(question.type._id.equals(newCounselor.type._id)){
-                            const answer = {
-                                question:question
-                            };
-                            evaluation.answers.create(answer);
-                            evaluation.answers.push(answer);
-                        }
+                    var newCounselor;
+                    var oldCounselor = false;
+                    if(camp.counselors.id(counselorData.counselor._id)){
+                        newCounselor = camp.counselors.id(counselorData.counselor._id)
+                        oldCounselor = true;
                     }
-                    newCounselor.evaluations.push(evaluation);
-                    camp.counselors.push(newCounselor);
+                    else{
+                        newCounselor = camp.counselors.create(counselorData.counselor);
+                        newCounselor.sessions = [];
+                    }
+                    var hired = false;
+                    for(let session of newCounselor.sessions){
+                        if(session._id.equals(camp.options.session._id)){
+                            hired = true;
+                            break;
+                        } 
+                    }
+                    if(!hired){
+                        newCounselor.sessions.push(camp.options.session);
+                        newCounselor.type = counselorData.counselor.type;
+                        var newDivision = camp.getDivisionByName(counselorData.divisionName.trim(),counselorData.counselor.gender.toLowerCase());
+                        if(newDivision)
+                            newCounselor.division = newDivision;
+
+                        var newSpecialty = camp.getSpecialtyByName(counselorData.specialtyName.trim());
+                        if(newDivision)
+                            newCounselor.specialty = newSpecialty;
+
+                        const evaluation = newCounselor.evaluations.create({
+                            number: camp.options.evaluationOpts.currentEval,
+                            session: camp.options.session,
+                            started: false,
+                            submitted: false,
+                            approved: false,
+                            answers: []
+                        });
+                        const answers = []
+                        for(let question of camp.options.evaluationOpts.questions){
+                            if(question.type._id.equals(newCounselor.type._id)){
+                                const answer = {
+                                    question:question
+                                };
+                                evaluation.answers.create(answer);
+                                evaluation.answers.push(answer);
+                            }
+                        }
+                        newCounselor.evaluations.push(evaluation);
+                        if(!oldCounselor)
+                            camp.counselors.push(newCounselor);
+                    }
                 }
                 camp.save({ validateBeforeSave: false });
             })
@@ -309,17 +332,37 @@ module.exports = (router) => {
                 res.json({success:true});
             });
         }
-        // else if(req.body.)
         else{
             Camp.findById(req.decoded.campId,(err,camp)=>{
                 for(let counselorData of req.body){
-                    var newCounselor = camp.counselors.create(counselorData.counselor);
-                    newCounselor.sessions = [];
-                    newCounselor.sessions.push(camp.options.session);
-                    var newDivision = camp.getDivisionByName(counselorData.divisionName.trim(),counselorData.counselor.gender.toLowerCase());
-                    if(newDivision)
-                        newCounselor.division = newDivision;
-                    camp.counselors.push(newCounselor);
+                    var newCounselor;
+                    var oldCounselor = false;
+                    if(camp.counselors.id(counselorData.counselor._id)){
+                        newCounselor = camp.counselors.id(counselorData.counselor._id)
+                        oldCounselor = true;
+                    }
+                    else{
+                        newCounselor = camp.counselors.create(counselorData.counselor);
+                        newCounselor.sessions = [];
+                    }
+                    var hired = false;
+                    for(let session of newCounselor.sessions){
+                        if(session._id.equals(camp.options.session._id)){
+                            hired = true;
+                            break;
+                        } 
+                    }
+                    if(!hired){
+                        newCounselor.sessions.push(camp.options.session);
+                        var newDivision = camp.getDivisionByName(counselorData.divisionName.trim(),counselorData.counselor.gender.toLowerCase());
+                        if(newDivision)
+                            newCounselor.division = newDivision;
+                        var newSpecialty = camp.getSpecialtyByName(counselorData.specialtyName.trim());
+                        if(newDivision)
+                            newCounselor.specialty = newSpecialty;
+                        if(!oldCounselor)
+                            camp.counselors.push(newCounselor);
+                    }
                 }
                 camp.save({ validateBeforeSave: false });
                 res.json({success:true});
@@ -805,6 +848,9 @@ module.exports = (router) => {
                 camp.options.evaluationOpts.currentEval = 1;
                 camp.options.evaluationOpts.furthestReached = 1;
             }
+            if(camp.options.swimOpts){
+                camp.options.swimOpts.completed = [];
+            }
             camp.save({ validateBeforeSave: false });
             res.json({success:true});
         });
@@ -869,6 +915,19 @@ module.exports = (router) => {
             });
         }
       });
+
+      router.post('/change_HWS',(req,res) =>{
+        Camp.findOne({_id:req.decoded.campId},(err,camp) => {
+            if(err){
+                res.json({success:false,message:err});
+            }
+            else{
+                camp.options.howWeSay[req.body.term] = req.body.newTerm;
+                camp.save({ validateBeforeSave: false });
+                res.json({success:true,options:camp.options});
+            }
+        });
+    });
 
     /* Campers */
 
@@ -1003,6 +1062,7 @@ module.exports = (router) => {
     });
 
     router.get('/get_division_campers/:divisionId/:sessionId',(req,res) => {
+        console.log("hello world");
         Camp.aggregate([
             { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
             { $unwind: '$campers'},
@@ -1028,6 +1088,7 @@ module.exports = (router) => {
             for(let session of result){
                 if(session._id.equals(req.params.sessionId)){
                     for(let division of session.divisions){
+                        console.log(division);
                         if(division.d_id && division.d_id.equals(req.params.divisionId)){
                             success = true;
                             res.json({success:success,division:division});
@@ -1071,28 +1132,67 @@ module.exports = (router) => {
         Camp.findById(req.decoded.campId,(err,camp)=>{
             if(camp.hasModule("swim")){
                 for(let camper of req.body){
-                    var newCamper = camp.campers.create(camper.camper);
-                    newCamper.sessions = [];
-                    newCamper.sessions.push(camp.options.session);
-                    var newDivision = camp.getDivisionByName(camper.divisionName.trim(),newCamper.gender.toLowerCase());
-                    if(newDivision)
-                    newCamper.division = newDivision;
-                    var level = camper.cSwimOpts.rcLevel;
-                    var complete = false;
-                    for(let l of camp.options.swimOpts.swimLevels){
-                        if(l.rcLevel == level){
-                           newCamper.cSwimOpts.currentLevel = l;
+                    var newCamper;
+                    var oldCamper = false;
+                    if(camp.campers.id(camper.camper._id)){
+                        newCamper = camp.campers.id(camper.camper._id);
+                        oldCamper = true;
+                    }
+                    else{
+                        var newCamper = camp.campers.create(camper.camper);
+                        newCamper.sessions = [];
+                    }
+                    var reenrolled = false;
+                    for(let session of newCamper.sessions){
+                        if(sessions._id.equals(camp.options.session._id)){
+                            reenrolled = true;
+                            break;
                         }
                     }
-                    camp.campers.push(newCamper);
+                    if(!reenrolled){
+                        newCamper.sessions.push(camp.options.session);
+                        var newDivision = camp.getDivisionByName(camper.divisionName.trim(),newCamper.gender.toLowerCase());
+                        if(newDivision)
+                            newCamper.division = newDivision;
+                    }
+                    if(!oldCamper){
+                        var level = camper.cSwimOpts.rcLevel;
+                        var complete = false;
+                        for(let l of camp.options.swimOpts.swimLevels){
+                            if(l.rcLevel == level){
+                            newCamper.cSwimOpts.currentLevel = l;
+                            }
+                        }
+                        if(!oldCamper)
+                            camp.campers.push(newCamper);
+                    }
                 }
             }
             else{
                 for(let camper of req.body){
-                    var newCamper = camp.campers.create(camper);
-                    newCamper.sessions = [];
-                    newCamper.sessions.push(camp.options.session);
-                    camp.campers.push(newCamper);
+                    var newCamper;
+                    var oldCamper = false;
+                    if(camp.campers.id(camper._id)){
+                        newCamper = camp.campers.id(camper._id);
+                        oldCamper = true;
+                    }
+                    else{
+                        var newCamper = camp.campers.create(camper);
+                        newCamper.sessions = [];
+                    }
+                    var reenrolled = false;
+                    for(let session of newCamper.sessions){
+                        if(sessions._id.equals(camp.options.session._id)){
+                            reenrolled = true;
+                            break;
+                        }
+                    }
+                    if(!reenrolled){
+                        var newCamper = camp.campers.create(camper);
+                        newCamper.sessions = [];
+                        newCamper.sessions.push(camp.options.session);
+                        camp.campers.push(newCamper);
+                    }
                 }
             }
             camp.save({ validateBeforeSave: false });

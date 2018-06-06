@@ -37,6 +37,7 @@ import { SwimLevelsComponent } from './components/swim-levels/swim-levels.compon
 import { SwimLevelComponent } from './components/swim-level/swim-level.component';
 import { SwimReportComponent } from './components/swim-report/swim-report.component';
 import { HeadStaffProfileComponent } from './components/head-staff-profile/head-staff-profile.component';
+import { LevelCompletedComponent } from './components/level-completed/level-completed.component';
 
 const appRoutes: Routes = [
     {
@@ -190,7 +191,13 @@ const appRoutes: Routes = [
         data: {module: 'swim'}
     },
     {
-        path:'swim-report/:campId/:camperId/:swimGroupId',
+        path:'level-completed',
+        component: LevelCompletedComponent,
+        canActivate: [AuthGuard,ModuleGuard],
+        data: {module: 'swim'}
+    },
+    {
+        path:'swim-report/:campId/:camperId/:swimGroupId/:level',
         component: SwimReportComponent,
     },
     {

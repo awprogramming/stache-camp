@@ -24,6 +24,12 @@ export class EvaluationsComponent implements OnInit {
   sessions;
   ready = false;
   loading;
+  allSessions;
+  divisionShowing = {
+    name:"Show All"
+  };
+  genderShowing = "all";
+  dropdownDivisions;
 
   constructor(
     private campsService: CampsService,
@@ -64,6 +70,7 @@ export class EvaluationsComponent implements OnInit {
             
           }
         }
+        this.allSessions = Object.assign([],this.sessions);
       }
       else{
       for(let counselor of data.output){
@@ -214,16 +221,16 @@ export class EvaluationsComponent implements OnInit {
 
   getLevel(score){
       if(score >= this.options.evaluationOpts.gold){
-        return "Gold";
+        return this.options.howWeSay["gold"];
       }
       else if(score >= this.options.evaluationOpts.silver){
-        return "Silver";
+        return this.options.howWeSay["silver"];
       }
       else if(score >= this.options.evaluationOpts.green){
-        return "Green";
+        return this.options.howWeSay["green"];
       }
       else{
-        return "Red";
+        return this.options.howWeSay["red"];
       }
   }
 
@@ -243,11 +250,13 @@ export class EvaluationsComponent implements OnInit {
       last:"Last"
     };
       
-    for(var i = 0; i < this.options.evaluationOpts.perSession;i++)
+    for(var i = 0; i < this.options.evaluationOpts.perSession;i++){
       for(let type of this.options.headStaff_types){
         labels[type.type+(i+1)+" Score"] = type.type+(i+1)+" Score";
         labels[type.type+(i+1)+" Level"] = type.type+(i+1)+" Level";
       }
+      labels[(i+1)+" Average"] = (i+1)+" Average";
+    }
     
     data.push(labels);
 
@@ -264,20 +273,32 @@ export class EvaluationsComponent implements OnInit {
             rowObj[type.type+"score"+count] = "-"; 
             rowObj[type.type+"level"+count] = "-"; 
           }
+          rowObj["avg"+count] = "-";
         }
       }
       for(let evaluation of counselor.evaluations){
         count++;
+        var score_total = 0;
+        var num_subs = 0;
         for(let type of this.options.headStaff_types){
           if(evaluation.sub_evals[type.type]){
-            rowObj[type.type+"score"+count] = this.getScore(evaluation.sub_evals[type.type]);
-            rowObj[type.type+"level"+count] = this.getLevel(evaluation.sub_evals[type.type]);
+            var sub_eval_score = this.getScore(evaluation.sub_evals[type.type]);
+            score_total += sub_eval_score;
+            num_subs++;
+            rowObj[type.type+"score"+count] = sub_eval_score;
+            rowObj[type.type+"level"+count] = this.getLevel(sub_eval_score);
           }
           else{
             rowObj[type.type+"score"+count] = "-"; 
-            rowObj[type.type+"level"+count] = "-"; 
+            rowObj[type.type+"level"+count] = "-";
           }
-          
+        }
+        if(num_subs!= 0){
+          var avg = score_total/num_subs;
+          rowObj["avg"+count] = avg;
+        }
+        else{
+          rowObj["avg"+count] = "-";
         }
       }
       if(counselor.postFiller){
@@ -287,6 +308,7 @@ export class EvaluationsComponent implements OnInit {
             rowObj[type.type+"score"+count] = "-"; 
             rowObj[type.type+"level"+count] = "-"; 
           }
+          rowObj["avg"+count] = "-";
         }
       }
       data.push(rowObj)
@@ -300,6 +322,66 @@ export class EvaluationsComponent implements OnInit {
     return JSON.parse(localStorage.getItem('user')).type.type;
   }
 
+  filterDivision(e){
+    this.divisionShowing = e;
+    this.filter();
+
+  }
+  filterGender(e){
+    this.genderShowing = e;
+    this.filter()
+  }
+
+  filter(){
+      this.sessions = this.allSessions;
+      var allGenders = this.genderShowing == "all";
+      var allDivisions = this.divisionShowing.name == "Show All"
+      var tempSessions = [];
+      for(let session of this.sessions){
+        var tempSession = Object.assign({},session);;
+        var tempCounselors = [];
+        for(let counselor of session.counselors){
+
+          if((counselor.counselor.gender.toLowerCase() == this.genderShowing || allGenders) && (counselor.counselor.division.name == this.divisionShowing.name || allDivisions)){
+            tempCounselors.push(counselor);
+          }
+        }
+        tempSession.counselors = tempCounselors
+        tempSessions.push(tempSession);
+      }
+      this.sessions = tempSessions;
+  }
+
+  divGenders(gender){
+    if(gender.toLowerCase()=="female"){
+      return this.dropdownDivisions.divisions[0].divisions;
+    }
+    else if(gender.toLowerCase()=="male")
+      return this.dropdownDivisions.divisions[1].divisions;
+  }
+
+  populateDivisions(){
+    this.loading = true;
+    this.campsService.getAllDivisions().subscribe(data=>{
+      this.dropdownDivisions = data;
+      if(this.authService.admin()){
+        this.dropdownDivisions.divisions[0].divisions.unshift({
+          name:"Show All"
+        });
+        this.dropdownDivisions.divisions[1].divisions.unshift({
+          name:"Show All"
+        });
+      }
+      this.loading = false;
+      // if(this._gender=="female")
+      //   this.divisions = data.divisions[0].divisions;
+      // else if(this._gender=="male")
+      //   this.divisions = data.divisions[1].divisions;
+      
+      // this.selectedChanged.emit(this.divisions[0]);
+    });
+  }
+
   ngOnInit() {
     if(this.authGuard.redirectUrl){
       this.messageClass = 'alert alert-danger';
@@ -309,6 +391,7 @@ export class EvaluationsComponent implements OnInit {
     }
     this.userIsApprover();
     this.getOptions();
+    this.populateDivisions();
     
   }
 

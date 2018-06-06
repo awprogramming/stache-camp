@@ -68,6 +68,12 @@ export class EvaluateComponent implements OnInit {
     this.saved = false;
   }
 
+  approver_change(e){
+    this.evaluation.evaluation.approver_notes = e.target.value;
+    this.saved = false;
+    console.log(this.saved);
+  }
+
   calculate_percentage(){
     var total = 0;
     
@@ -80,19 +86,19 @@ export class EvaluateComponent implements OnInit {
 
   calculate_level(){
     if(this.percentage >= this.options.evaluationOpts.gold){
-      this.level = "Gold";
+      this.level = this.options.howWeSay["gold"];
     }
     else if(this.percentage >= this.options.evaluationOpts.silver){
-      this.level = "Silver";
+      this.level = this.options.howWeSay["silver"];
     }
     else if(this.percentage >= this.options.evaluationOpts.green){
-      this.level = "Green";
+      this.level = this.options.howWeSay["green"];
     }
     else{
-      this.level = "Red";
+      this.level = this.options.howWeSay["red"];
     }
   }
-
+  
   save(){
     this.loading = true;
     this.evaluation.evaluation.started = true;

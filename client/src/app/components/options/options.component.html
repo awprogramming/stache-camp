@@ -2,7 +2,6 @@
 <h2>Options</h2>
 
 <app-password-reset [user]="-1"></app-password-reset>
-
 <div *ngIf="authService.admin()">
   <h3>Session</h3>
   <p *ngIf="options?.session">{{options?.session.name}}</p>
@@ -16,6 +15,13 @@
     <!-- Submit Button -->
     <input class="btn btn-primary" type="submit" value="Submit" />
   </form>
+
+  <h2>How We Say</h2>
+  <div *ngIf="options?.howWeSay">
+    <div *ngFor="let term of getHWS()">
+      <span>{{term}}</span><input class="form-control" type="text" value="{{getHWSValue(term)}}" (input)="changeHWS($event,term)" />
+    </div>
+  </div>
 
   <h3>Head Staff Types</h3>
   <table class="table">

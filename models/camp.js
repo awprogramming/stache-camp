@@ -49,4 +49,13 @@ campSchema.methods.getDivisionByName = function(div,gender){
     return false;
 }
 
+campSchema.methods.getSpecialtyByName = function(spec){
+    for(let specialty of this.specialties){
+        if(specialty.name.toLowerCase() == spec.toLowerCase()){
+            return specialty;
+        }
+    }
+    return false;
+}
+
 module.exports = mongoose.model('Camp',campSchema);

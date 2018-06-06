@@ -229,4 +229,9 @@ export class SwimService {
     return this.http.post(this.domain + 'swim/set_bracelet',data,this.options).map(res => res.json());
   }
 
+  getCamperGroup(camperId){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'swim/get_camper_group/'+camperId,this.options).map(res => res.json());
+  }
+
 }

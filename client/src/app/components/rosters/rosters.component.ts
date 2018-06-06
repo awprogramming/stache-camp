@@ -117,7 +117,8 @@ export class RostersComponent implements OnInit {
 
   getAllRosters(){
     this.loading = true;
-    if(this.getType() == "Head Specialist"){
+
+    if(this.getType() == "head_specialist"){
       this.sportsService.getAllRosters().subscribe(data => {
         this.specialties = data.specialties
         this.loading = false;;
@@ -126,6 +127,7 @@ export class RostersComponent implements OnInit {
     else{
       this.sportsService.getLeaderRosters().subscribe(data => {
         this.divisions = data.rosters;
+        console.log(this.divisions);
         if(this.divisions){
           this.d_keys = Object.keys(this.divisions);
           this.keys = []

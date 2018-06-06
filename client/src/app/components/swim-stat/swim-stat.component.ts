@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute,Router } from '@angular/router';
 import { CampsService } from '../../services/camps.service';
+import { AuthService } from '../../services/auth.service';
 import { SwimService } from '../../services/swim.service';
 
 @Component({
@@ -13,10 +14,12 @@ export class SwimStatComponent implements OnInit {
   camper;
   toAddLevel;
   loading;
+  camperGroup;
 
   constructor(
     private route: ActivatedRoute,
     private campsService: CampsService,
+    private authService: AuthService,
     private swimService: SwimService,
     private router: Router,
   ) {}
@@ -26,7 +29,26 @@ export class SwimStatComponent implements OnInit {
     this.campsService.getCamper(this.id).subscribe(data => {
       this.camper = data.camper;
       this.loading = false;
+      this.getCamperGroup();
     });
+  }
+
+  getCamperGroup(){
+    this.swimService.getCamperGroup(this.camper._id).subscribe(data => {
+      this.camperGroup = data.group;
+    });
+  }
+
+  goToReport(level){
+    if(level==-1){
+     level = {
+       rcLevel:-1
+     };
+    }
+    if(this.camperGroup){
+    var camp = JSON.parse(localStorage.getItem('user')).camp_id;
+    this.router.navigate(['/swim-report/'+camp+"/"+this.camper._id+'/'+this.camperGroup._id+'/'+level.rcLevel]);
+    }
   }
 
   checkSkill(e,animal_id,skill_id){

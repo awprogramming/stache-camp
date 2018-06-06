@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute,Router } from '@angular/router';
 import { EvaluationsService } from '../../services/evaluations.service';
+import { AuthService } from '../../services/auth.service';
 import { CampsService } from '../../services/camps.service';
 import { SwimService } from '../../services/swim.service';
 
@@ -22,10 +23,13 @@ export class SwimReportComponent implements OnInit {
   swimGroup;
   lifeguard;
   loading;
+  level;
+  report;
 
   constructor(
     private route: ActivatedRoute,
     private evaluationsService: EvaluationsService,
+    private authService: AuthService,
     private campsService: CampsService,
     private swimService: SwimService,
     private router: Router,
@@ -42,7 +46,20 @@ export class SwimReportComponent implements OnInit {
           break;
         }
       }
-      this.loading = false;;
+      if(this.level == -1){
+        this.report = this.camper.cSwimOpts.currentLevel;
+        this.loading = false;
+      }
+      else{
+        for(let lev of this.camper.cSwimOpts.completedLevels){
+          if(lev.rcLevel == this.level){
+            this.report = lev;
+            break;
+          }
+        }
+      }
+      console.log(this.report);
+      this.loading = false;
     });
   }
 
@@ -146,6 +163,7 @@ export class SwimReportComponent implements OnInit {
         this.campId = params.get('campId');
         this.camperId = params.get('camperId');
         this.swimGroupId = params.get('swimGroupId');
+        this.level = params.get('level');
         this.loadReport();
       });
   }

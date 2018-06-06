@@ -11,7 +11,8 @@ const evaluationSchema = new Schema({
     started: Boolean,
     submitted: Boolean,
     approved: Boolean,
-    additional_notes:String
+    additional_notes:String,
+    approver_notes:String
 });
 
 module.exports = mongoose.model('Evaluation',evaluationSchema);

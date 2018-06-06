@@ -263,6 +263,7 @@ module.exports = (router) => {
     });
 
     router.post('/save_eval',(req,res)=>{
+        console.log("hello world");
         Camp.findById(req.decoded.campId,(err,camp)=>{
             if(camp.users.id(req.decoded.userId).type.type!="head_specialist"){
                 camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).started = req.body.evaluation.started;
@@ -270,11 +271,13 @@ module.exports = (router) => {
                 camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).approved = req.body.evaluation.approved;
             }
             camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).additional_notes = req.body.evaluation.additional_notes;
+            camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).approver_notes = req.body.evaluation.approver_notes;
             for(let answer of req.body.evaluation.answers){
                 camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).answers.pull(answer._id);
                 camp.counselors.id(req.body.counselor._id).evaluations.id(req.body.evaluation._id).answers.push(answer);
 
             }
+            
             //started,submitted, additional notes;
             camp.save({ validateBeforeSave: false });
             res.json({success:true});

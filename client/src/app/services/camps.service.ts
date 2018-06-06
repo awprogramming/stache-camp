@@ -224,6 +224,15 @@ export class CampsService {
     return this.http.delete(this.domain + 'camps/remove_htype/'+type._id,this.options).map(res => res.json());
   }
 
+  changeHWS(term,newTerm){
+    const data = {
+      term:term,
+      newTerm:newTerm
+    }
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/change_HWS',data,this.options).map(res => res.json());
+  }
+
   /* CAMPERS */
   getAllCampers(){
     this.createAuthenticationHeaders();
