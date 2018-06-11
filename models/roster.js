@@ -7,7 +7,7 @@ const SessionSchema = require('./session').schema;
 
 const rosterSchema = new Schema({
     name: {type:String, required: true},
-    campers: [ObjectId],
+    campers: [String],
     session: SessionSchema
 });
 

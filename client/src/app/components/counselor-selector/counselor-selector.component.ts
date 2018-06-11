@@ -22,6 +22,9 @@ export class CounselorSelectorComponent implements OnInit {
   gender = "male";
   division
   counselors;
+  divisionsShowing;
+  dropdownDivisions;
+
   constructor(
     private campService: CampsService
   ) { }
@@ -45,6 +48,24 @@ export class CounselorSelectorComponent implements OnInit {
   getOptions(){
     this.campService.getOptions().subscribe(data => {
       this.options = data.options
+    });
+  }
+
+  divGenders(gender){
+    if(gender.toLowerCase()=="female"){
+      this.divisionsShowing = this.dropdownDivisions.divisions[0].divisions;
+    }
+    else if(gender.toLowerCase()=="male")
+      this.divisionsShowing = this.dropdownDivisions.divisions[1].divisions;
+    else
+      return [];
+  }
+
+
+  populateDivisions(){
+    this.campService.getAllDivisions().subscribe(data=>{
+      this.dropdownDivisions = data;
+      this.divGenders("male");
     });
   }
 
@@ -77,6 +98,7 @@ export class CounselorSelectorComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.populateDivisions();
   }
 
 }

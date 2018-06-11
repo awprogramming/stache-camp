@@ -94,6 +94,11 @@ export class SportsService {
     return this.http.get(this.domain + 'sports/get_month_games/'+date.month+'/'+date.year+'/'+type,this.options).map(res => res.json());
   }
 
+  getDivisionMonthGames(date,division){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'sports/get_division_month_games/'+date.month+'/'+date.year+'/'+division._id,this.options).map(res => res.json());
+  }
+
   getGame(id){
     this.createAuthenticationHeaders();
     return this.http.get(this.domain + 'sports/get_game/'+id,this.options).map(res => res.json());
@@ -150,6 +155,14 @@ export class SportsService {
     }
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + 'sports/remove_ref_from_game',data,this.options).map(res => res.json());
+  }
+
+  removeGame(gameId){
+    var data = {
+      gameId:gameId
+    }
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'sports/remove_game',data,this.options).map(res => res.json());
   }
 
   

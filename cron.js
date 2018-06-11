@@ -4,42 +4,48 @@
 // const Camp = require('./models/camp');
 // var CronJob = cron.CronJob;
 
-// nodemailer.createTestAccount((err, account) => {
-//     // create reusable transporter object using the default SMTP transport
-//     let transporter = nodemailer.createTransport({
-//         host: 'smtp.ethereal.email',
-//         port: 587,
-//         secure: false, // true for 465, false for other ports
-//         auth: {
-//             user: account.user, // generated ethereal user
-//             pass: account.pass // generated ethereal password
-//         }
-//     });
+// // nodemailer.createTestAccount((err, account) => {
+// //     // create reusable transporter object using the default SMTP transport
+// var transporter = nodemailer.createTransport({
+//     service: 'gmail',
+//     auth: {
+//            user: 'tylerhillsports@gmail.com',
+//            pass: 'THC!2018'
+//        }
+//    });
 
-// // new CronJob('*/20 * * * * *', function() {
+// new CronJob('0 0 23 * * *', function() {
 //    Camp.find({}, (err, camps)=>{
 //             console.log("***CRON START***");
 //             for(let camp of camps){
 //                 for(let game of camp.games){
-//                     //CHECK FOR RIGHT DATE
-//                     console.log("**GAME***")
-//                     for(let hs of game.specialty.head_specialists){
-//                         sendRoster(hs.email,game,camp);
-//                     }
-//                     if(game.needsLunch)
-//                         sendKitchen("awprogramming@gmail.com",game,camp); //ADD OPTION TO ADD KITCHEN EMAIL
-//                     if(game.location != "home")
-//                         sendHealthCenter("awprogramming@gmail.com",game,camp); //ADD OPTION TO ADD HEALTH CENTER EMAIL
-                    
-//                     if(game.rosterId){
-//                         var roster = camp.specialties.id(game.specialty._id).rosters.id(game.rosterId);
-//                         var leaders = [];
-//                         for(let camper of roster.campers){
-//                             var c = camp.campers.id(camper);
-//                             for(let leader of c.division.leaders){
-//                                 if(leaders.indexOf(String(leader._id))==-1){
-//                                     leaders.push(String(leader._id));
-//                                     sendRoster(leader.email,game,camp);
+//                     var three_before = new Date(game.date);
+//                     three_before.setDate(three_before.getDate()-3);
+//                     console.log(game.date)
+//                     console.log(three_before);
+//                     console.log(new Date());
+//                     if(new Date().getDate() == three_before.getDate()){
+//                         //CHECK FOR RIGHT DATE
+//                         console.log("**GAME***")
+//                         for(let hs of game.specialty.head_specialists){
+//                             sendRoster(hs.email,game,camp);
+//                         }
+//                         if(game.needsLunch)
+//                             sendKitchen("awprogramming@gmail.com",game,camp); //ADD OPTION TO ADD KITCHEN EMAIL
+//                         if(game.location != "home")
+//                             sendHealthCenter("awprogramming@gmail.com",game,camp); //ADD OPTION TO ADD HEALTH CENTER EMAIL
+                        
+//                         if(game.rosterId){
+//                             var roster = camp.specialties.id(game.specialty._id).rosters.id(game.rosterId);
+//                             var leaders = [];
+//                             for(let camper of roster.campers){
+//                                 var c = camp.campers.id(camper);
+//                                 for(let leader of c.division.leaders){
+//                                     if(leaders.indexOf(String(leader._id))==-1){
+//                                         leaders.push(String(leader._id));
+//                                         sendRoster("awprogramming@gmail.com",game,camp);
+//                                         //sendRoster(leader.email,game,camp);
+//                                     }
 //                                 }
 //                             }
 //                         }
@@ -49,7 +55,7 @@
 //             console.log("***CRON END***");
 //         });
 
-// // }, null, true, 'America/New_York');
+// }, null, true, 'America/New_York');
 
 
 
@@ -60,18 +66,20 @@
 //     for(let c of roster.campers){
 //         var camper = camp.campers.id(c);
 //         text += camper.first + " " + camper.last;
-//         if(camper.meds.epi)
-//             text += " (epi)";
-//         if(camper.meds.inhaler)
-//             text += " (inhaler)";
-//         if(camper.meds.other.length!=0){
-//             text += " ("
-//             for(var i = 0; i <camper.meds.other.length; i++){
-//                 text +=camper.meds.other[i].name;
-//                 if(i!=camper.meds.other.length-1)
-//                     text += ", ";
+//         if(camper.meds){
+//             if(camper.meds.epi)
+//                 text += " (epi)";
+//             if(camper.meds.inhaler)
+//                 text += " (inhaler)";
+//             if(camper.meds.other.length!=0){
+//                 text += " ("
+//                 for(var i = 0; i <camper.meds.other.length; i++){
+//                     text +=camper.meds.other[i].name;
+//                     if(i!=camper.meds.other.length-1)
+//                         text += ", ";
+//                 }
+//                 text += ")";
 //             }
-//             text += ")";
 //         }
 //         text+="\n";
 //     }
@@ -272,4 +280,14 @@
 //         // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
 //     });
 // }
-// });
+
+// function displayDateTime(date){
+//     var d = new Date(date)
+//     var time = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+//     var day = this.getDayName(d.getDay());
+//     var month = this.getMonthName(d.getMonth());
+//     return time + " on " + day+ ", " + month + " " + d.getDate();
+
+// }
+// // });
+

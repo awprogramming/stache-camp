@@ -29,6 +29,7 @@ export class CamperSelectorComponent implements OnInit {
 
   divisionChange(e){
     this.division = e._id
+    this.campers = [];
     this.populateDivision(e._id);
   }
 
@@ -36,6 +37,7 @@ export class CamperSelectorComponent implements OnInit {
 
     this.gender = e;
     this.divisions = this.divGenders();
+    this.campers = [];
     this.divGenders();
     this.populateDivision(this.division);
   }

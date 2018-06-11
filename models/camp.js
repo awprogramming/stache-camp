@@ -58,4 +58,6 @@ campSchema.methods.getSpecialtyByName = function(spec){
     return false;
 }
 
+
+
 module.exports = mongoose.model('Camp',campSchema);

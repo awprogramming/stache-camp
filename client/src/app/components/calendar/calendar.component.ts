@@ -37,7 +37,7 @@ export class CalendarComponent implements OnInit {
       lastMonth = 11;
       lastMonthYear = year - 1;
     }
-    var firstDate = year + '-' + month + '-01';
+    var firstDate = year + '-' + (month+1) + '-01';
     var firstDay = new Date(firstDate).getDay();
     this.monthStart = firstDay;
     var days = [];
@@ -110,19 +110,31 @@ export class CalendarComponent implements OnInit {
   }
 
   populateEvents(){
+    
     if(this.days){
       for(let day of this.days){
         delete day.events;
       }
     }
-    for(let event of this._events){
-      var day = this.days[new Date(event.date).getDate()+this.monthStart-1];
-      if(day.events)
-        day.events.push(event);
-      else
-        day.events = [event];
+    if(this._events){
+      for(let event of this._events){
+        var day = this.days[new Date(event.date).getDate()+this.monthStart-1];
+        if(day.events)
+          day.events.push(event);
+        else
+          day.events = [event];
         this.days[new Date(event.date).getDate()+this.monthStart-1] = day;
+      }
     }
+  }
+
+  eventClass(day){
+    for(let event of day.events){
+      if(!event.rosterId){
+        return "no-roster";
+      }
+    }
+    return "event-num";
   }
 
   ngOnInit() {

@@ -8,6 +8,7 @@ const DietarySchema = require('./dietary').schema;
 const cSwimOptsSchema = require('./cSwimOpts').schema;
 
 const camperSchema = new Schema({
+    _id:String,
     first: {type:String, required: true},
     last: {type:String, required: true},
     gender: {type:String, enum:['male','female'], required: true},

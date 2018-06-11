@@ -25,3 +25,11 @@ td{
     text-align: center;
     border-radius: 10px;
 }
+
+.no-roster{
+    color:white;
+    background: red;
+    text-align: center;
+    border-radius: 10px;
+}
+

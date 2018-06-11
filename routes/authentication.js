@@ -45,7 +45,11 @@ module.exports = (router) => {
                     },
                     {
                         type:"head_specialist"
+                    },
+                    {
+                        type:"admin"
                     }
+
                 ]
             }
         });
@@ -149,8 +153,9 @@ module.exports = (router) => {
                             res.json({success:false,message:"Password is not valid"});
                         }
                         else{
+                            console.log(camp.users[0].type);
                             const token = jwt.sign({userId:camp.users[0]._id,campId:camp._id}, config.secret,{ expiresIn:'100d'});
-                            if(camp.users[0]._id.equals(admin)){
+                            if(camp.users[0]._id.equals(admin)||(camp.users[0].type && camp.users[0].type.type == "admin")){
                                 res.json({success:true,message:"Success",token:token, user:{_id:camp.users[0]._id,type:{type:"leader"},email:camp.users[0].email,permissions:"admin",camp_id:camp._id,modules:camp.modules}});
                             }
                             else{
@@ -200,7 +205,6 @@ module.exports = (router) => {
     
     router.post('/change_password',(req,res)=>{
         Camp.findById(req.decoded.campId).exec().then((camp)=>{
-            console.log(req.body);
             if(req.body.user_id == -1)
                 camp.users.id(req.decoded.userId).password = req.body.password;
             else

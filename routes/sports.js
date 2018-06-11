@@ -2,6 +2,7 @@ const Camp = require('../models/camp');
 const User = require('../models/user');
 const config = require('../config/database');
 const mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
 
 module.exports = (router) => {
    
@@ -247,9 +248,21 @@ module.exports = (router) => {
     router.post('/schedule_game',(req,res) => {
         Camp.findById(req.decoded.campId,(err,camp)=>{
             var game = camp.games.create(req.body);
+            
             camp.games.push(game);
             camp.save({ validateBeforeSave: false });
+            if(game.divisionId)
+                game.division = camp.divisions.id(game.divisionId)
+            gameScheduledEmail(game);
             res.send({success:true,game:game});
+        });
+    });
+
+    router.post('/remove_game',(req,res) => {
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            var game = camp.games.pull(req.body.gameId);
+            camp.save({ validateBeforeSave: false });
+            res.send({success:true});
         });
     });
 
@@ -264,11 +277,16 @@ module.exports = (router) => {
             Camp.findById(req.decoded.campId,(err,camp)=>{
                 for(let game of gamesList){
                     if(game.games.date.getMonth() == req.params.month && game.games.date.getFullYear() == req.params.year){
-                        if(req.params.type == "admin")
+                        if(req.params.type == "admin"){
+                            if(game.games.divisionId)
+                                game.games.division = camp.divisions.id(game.games.divisionId);
                             games.push(game.games);  
+                        }
                         else if(req.params.type == "head_specialist"){
                             for(let hs of game.games.specialty.head_specialists){
                                 if(hs._id == req.decoded.userId){
+                                    if(game.games.divisionId)
+                                        game.games.division = camp.divisions.id(game.games.divisionId);
                                     games.push(game.games);
                                     break;
                                 }
@@ -281,16 +299,58 @@ module.exports = (router) => {
                                     var pushed = false;
                                     division = camp.divisions.id(camp.campers.id(camper).division._id);
                                     for(let leader of division.leaders){
-                                        if(leader._id == req.decoded.userId)
+                                        if(leader._id == req.decoded.userId){
+                                            if(game.games.divisionId)
+                                                game.games.division = camp.divisions.id(game.games.divisionId);
                                             games.push(game.games);
+                                        
                                             pushed = true;
                                             break;
+                                        } /* could be error location */
                                     }
                                     if(pushed)
                                         break;
                                 }
                             }
                         }  
+                    }
+                }
+                res.send({success:true,games:games});
+            })
+        })
+    });
+
+    router.get('/get_division_month_games/:month/:year/:divisionId',(req,res) => {
+        Camp.aggregate([
+            { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
+            { $unwind: '$games'},
+            { $project: {games:1}},
+            { $sort: {'games.date':1}},
+        ]).exec().then((gamesList)=>{
+            var games = [];
+            Camp.findById(req.decoded.campId,(err,camp)=>{
+                for(let game of gamesList){
+                    if(game.games.date.getMonth() == req.params.month && game.games.date.getFullYear() == req.params.year){
+                        if(game.games.divisionId && game.games.divisionId == req.params.divisionId){
+                            game.games.division = camp.divisions.id(game.games.divisionId);
+                            games.push(game.games);
+                        }
+                        else if(game.games.rosterId){
+                            var roster = camp.specialties.id(game.games.specialty._id).rosters.id(game.games.rosterId);
+                            for(let camper of roster.campers){
+                                var pushed = false;
+                                
+                                if(camp.campers.id(camper) && camp.campers.id(camper).division && camp.campers.id(camper).division._id == req.params.divisionId){
+                                    if(game.games.divisionId)
+                                         game.games.division = camp.divisions.id(game.games.divisionId);
+                                    games.push(game.games);
+                                    pushed = true;
+                                    break;
+                                }
+                                if(pushed)
+                                    break;
+                            }
+                        } 
                     }
                 }
                 res.send({success:true,games:games});
@@ -331,6 +391,15 @@ module.exports = (router) => {
             var game = camp.games.id(req.body.gameId);
             game.rosterId = req.body.roster;
             camp.save({ validateBeforeSave: false });
+            game.roster = camp.specialties.id(game.specialty._id).rosters.id(game.rosterId);
+            game.roster.camperObjs = []
+            game.division = camp.divisions.id(game.divisionId);
+            for(let camperId of game.roster.campers){
+                var camper = camp.campers.id(camperId);
+                camper.division = camp.divisions.id(camper.division._id);
+                game.roster.camperObjs.push(camper);
+            }
+            rosterSubmittedEmail(game);
             res.send({success:true});
         });
     });
@@ -389,6 +458,110 @@ module.exports = (router) => {
         });
     });
 
-
     return router;
+}
+
+function gameScheduledEmail(game){
+    //SET LINKS PROPERLY
+    var text = "A game has been scheduled:\n";
+    // text+= "https://stachecamp.herokuapp.com/game/"+game._id;
+    text+= game.name + "\n";
+    text+= "localhost:4200/game/"+game._id;
+    var html = "A game has been scheduled:</br>";
+    html+= game.name + "</br>";
+    html+= "<a href='localhost:4200/game/"+game._id+"'>Click here to view the game</a>"
+
+    if(game.division){
+        console.log(game.division)
+        for(let leader of game.division.leaders){
+            console.log(leader.email);
+            //ADD THIS EMAIL TO THE LIST
+        }
+    }
+    //ADD HC EMAILS HERE
+    //SET EMAILS PROPERLY!
+    var emails = ['awprogramming@gmail.com'];
+    
+    for(let email of emails){
+        let mailOptions = {
+            from: '"Tyler Hill Sports" <tylerhillsports@stachecamp.com>', // sender address
+            to: email, // list of receivers
+            subject: 'Game Scheduled', // Subject line
+            text: text, // plain text body
+            html: html // html body
+        };
+        var message = "Email Sent To "+email;
+        sendEmail(mailOptions,message);
+    }
+
+
+}
+
+function rosterSubmittedEmail(game){
+    //SET LINKS PROPERLY
+    var text = "A roster has been submitted:\n";
+    // text+= "https://stachecamp.herokuapp.com/game/"+game._id;
+    text+= game.name + "\n";
+    text+= "localhost:4200/game/"+game._id;
+    var html = "A roster has been submitted:</br>";
+    html+= "<span>"+game.name+"</span>" + "</br>";
+    html+= "<a href='localhost:4200/game/"+game._id+"'>Click here to view the game</a>"
+    divisions = {}
+    for(let camper of game.roster.camperObjs){
+
+        divisions[camper.division.name] = camper.division;
+    }
+    console.log(divisions);
+    for(let division of Object.keys(divisions)){
+        for(let leader of divisions[division].leaders)
+            console.log(leader.email);
+    }
+
+    //ADD HC EMAILS HERE
+    //SET EMAILS PROPERLY!
+    var emails = ['awprogramming@gmail.com'];
+    
+    for(let email of emails){
+        let mailOptions = {
+            from: '"Tyler Hill Sports" <tylerhillsports@stachecamp.com>', // sender address
+            to: email, // list of receivers
+            subject: 'Roster Submitted', // Subject line
+            text: text, // plain text body
+            html: html // html body
+        };
+        var message = "Email Sent To "+email;
+        sendEmail(mailOptions,message);
+    }
+}
+
+function sendEmail(mailOptions,message){
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+               user: 'tylerhillsports@gmail.com',
+               pass: 'THC!2018'
+           }
+       });
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log(error);
+        }
+        console.log(message);
+        console.log('Message sent: %s', info.messageId);
+        // Preview only available when sending through an Ethereal account
+        // console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+        // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    });
+}
+
+function displayDateTime(date){
+    var d = new Date(date)
+    var time = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    var day = this.getDayName(d.getDay());
+    var month = this.getMonthName(d.getMonth());
+    return time + " on " + day+ ", " + month + " " + d.getDate();
+
 }

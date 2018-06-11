@@ -20,6 +20,16 @@ export class GameCalendarComponent implements OnInit {
   monthView;
   specialties;
   loading;
+  divisionShowing = -1;
+  genderShowing = "all";
+  dropdownDivisions;
+  dropdownDivisionsShowing;
+  schedGender;
+  schedDivisions;
+  preSchedDivision;
+
+
+
 
   constructor(
     private formBuilder: FormBuilder,
@@ -56,6 +66,7 @@ export class GameCalendarComponent implements OnInit {
       date: date,
       specialty: this.selectedSpecialty,
       needsLunch: this.form.get('needsLunch').value,
+      divisionId: this.preSchedDivision
     }
 
     this.sportsService.scheduleGame(game).subscribe((data)=>{
@@ -80,16 +91,31 @@ export class GameCalendarComponent implements OnInit {
   getGames(e){
     this.loading = true;
     this.monthView = e;
-    var type;
-    if(this.authService.admin())
-      type = "admin";
-    else
-      type = this.authService.userType();
-    this.sportsService.getMonthGames(e,type).subscribe((data)=>{
+    if(this.divisionShowing == -1){
+      var type;
+      if(this.authService.admin())
+        type = "admin";
+      else
+        type = this.authService.userType();
+      this.sportsService.getMonthGames(e,type).subscribe((data)=>{
+        this.games = data.games;
+        this.loading = false;
+      });
+    }
+    else{
+      this.getDivisionGames();
+    }
+  }
+
+  getDivisionGames(){
+
+    this.loading = true;
+    this.sportsService.getDivisionMonthGames(this.monthView,this.divisionShowing).subscribe((data)=>{
       this.games = data.games;
       this.loading = false;
     });
   }
+
   getMonthName(month){
     var monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     return monthNames[month];
@@ -112,8 +138,69 @@ export class GameCalendarComponent implements OnInit {
     return new Date(date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
   }
 
+  filterDivision(e){
+    if(this.genderShowing != "all"){
+      this.divisionShowing = e;
+      this.filter();
+    }
+  }
+  filterGender(e){
+    this.genderShowing = e;
+    this.dropdownDivisionsShowing = this.divGenders(e);
+    this.divisionShowing = this.dropdownDivisionsShowing[0];
+
+    this.filter();
+  }
+
+  filter(){
+      if(this.genderShowing == "all"){
+        this.divisionShowing = -1;
+        this.getGames(this.monthView);
+      }
+      else{
+        this.getDivisionGames();
+      }
+  }
+
+  divGenders(gender){
+    if(gender.toLowerCase()=="female"){
+      return this.dropdownDivisions.divisions[0].divisions;
+    }
+    else if(gender.toLowerCase()=="male")
+      return this.dropdownDivisions.divisions[1].divisions;
+    else
+      return [];
+  }
+  schedGenderChange(e){
+    this.schedDivisions = this.divGenders(e);
+  }
+  schedDivisionChange(e){
+    this.preSchedDivision = e._id;
+  }
+
+  removeGame(game){
+    this.sportsService.removeGame(game._id).subscribe((data)=>{
+      this.getGames(this.monthView);
+    });
+  }
+
+  logGame(game){
+    console.log(game);
+  }
+
+
+  populateDivisions(){
+    this.loading = true;
+    this.campsService.getAllDivisions().subscribe(data=>{
+      this.dropdownDivisions = data;
+      this.schedDivisions = this.divGenders("male");
+      this.loading = false;
+    });
+  }
+
   ngOnInit() {
     this.getSpecialties();
+    this.populateDivisions();
   }
 
 }

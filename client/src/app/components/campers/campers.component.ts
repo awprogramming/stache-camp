@@ -42,6 +42,7 @@ export class CampersComponent implements OnInit {
 
   createForm() {
     this.form = this.formBuilder.group({
+      pID:['', Validators.required],
       first: ['', Validators.required],
       last:['', Validators.required],
       gender: ['', Validators.required]
@@ -54,12 +55,13 @@ export class CampersComponent implements OnInit {
   onRegistrationSubmit() {
     this.loading = true;
     this.processing = true;
+    
     var camper = {
+      _id: this.form.get('pID').value,
       first: this.form.get('first').value,
       last: this.form.get('last').value,
       gender: this.form.get('gender').value,
     }
-  
     this.campsService.registerCamper(camper).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
@@ -184,7 +186,9 @@ gradeConversion(grade){
 
   bulkHelper(subset){
     this.campsService.bulkRegisterCampers(subset).subscribe(data => {
+
       if (!data.success) {
+        console.log(data);
         this.messageClass = 'alert alert-danger';
         this.message = data.message;
         this.processing = false;

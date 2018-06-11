@@ -127,7 +127,6 @@ export class RostersComponent implements OnInit {
     else{
       this.sportsService.getLeaderRosters().subscribe(data => {
         this.divisions = data.rosters;
-        console.log(this.divisions);
         if(this.divisions){
           this.d_keys = Object.keys(this.divisions);
           this.keys = []
