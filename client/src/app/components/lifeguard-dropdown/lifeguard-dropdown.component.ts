@@ -17,6 +17,7 @@ export class LifeguardDropdownComponent implements OnInit {
 
   populateTypes(){
     this.campService.getAllLifeguards().subscribe(data=>{
+      console.log(data);
       this.lifeguards = data.lifeguards['Lifeguard'];
       if(this.addAll){
         this.lifeguards.unshift({

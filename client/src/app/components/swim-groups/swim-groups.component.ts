@@ -122,6 +122,7 @@ export class SwimGroupsComponent implements OnInit {
       console.log(this.divisions);
     });
   }
+
   createSwimGroupSubmit(){
     this.loading = true;
     var swimGroup = {
@@ -129,7 +130,7 @@ export class SwimGroupsComponent implements OnInit {
       sessionId: String(this.options.session._id),
       lifeguardId: this.toAddLifeguard,
     }
-
+    console.log(swimGroup);
     this.swimService.registerSwimGroup(swimGroup).subscribe(data => {
       this.getGroups();
     });

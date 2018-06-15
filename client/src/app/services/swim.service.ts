@@ -41,6 +41,7 @@ export class SwimService {
   }
 
   registerSwimGroup(group){
+    console.log(group);
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + 'swim/register_group',group,this.options).map(res => res.json());
   }
@@ -232,6 +233,15 @@ export class SwimService {
   getCamperGroup(camperId){
     this.createAuthenticationHeaders();
     return this.http.get(this.domain + 'swim/get_camper_group/'+camperId,this.options).map(res => res.json());
+  }
+
+  changeGroupName(groupId,newName){
+    this.createAuthenticationHeaders();
+    var data = {
+      groupId:groupId,
+      newName: newName
+    }
+    return this.http.post(this.domain + 'swim/change_group_name',data,this.options).map(res => res.json());
   }
 
 }

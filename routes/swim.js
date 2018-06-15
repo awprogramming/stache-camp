@@ -11,6 +11,7 @@ module.exports = (router) => {
    
     router.post('/register_group/',(req,res) => {
         Camp.findById(req.decoded.campId, (err, camp)=>{
+            console.log(req.body);
             var group = camp.swimGroups.create(req.body);
             camp.swimGroups.push(group);
             camp.save({ validateBeforeSave: false });
@@ -26,6 +27,13 @@ module.exports = (router) => {
         });
     });
 
+    router.post('/change_group_name/',(req,res) => {
+        Camp.findById(req.decoded.campId, (err, camp)=>{
+            camp.swimGroups.id(req.body.groupId).name = req.body.newName;
+            camp.save({ validateBeforeSave: false });
+            res.json({success:true});
+        });
+    });
     router.get('/get_camper_group/:camperId',(req,res) => {
         Camp.findById(req.decoded.campId, (err,camp)=>{
             var camperGroup;

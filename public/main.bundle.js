@@ -39249,6 +39249,7 @@ var LifeguardDropdownComponent = (function () {
     LifeguardDropdownComponent.prototype.populateTypes = function () {
         var _this = this;
         this.campService.getAllLifeguards().subscribe(function (data) {
+            console.log(data);
             _this.lifeguards = data.lifeguards['Lifeguard'];
             if (_this.addAll) {
                 _this.lifeguards.unshift({
@@ -41302,7 +41303,7 @@ module.exports = ".report{\n    width:75%;\n    position: relative;\n}\n.report 
 /***/ "./src/app/components/swim-group/swim-group.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<app-back-button></app-back-button>\n<div *ngIf=\"swimGroup && swimGroup.data\">\n  <h1>{{swimGroup.data.name}}</h1>\n  <div *ngIf=\"swimGroup.lifeguard\">\n    <h2>{{swimGroup.lifeguard.first}} {{swimGroup.lifeguard.last}}</h2><button class=\"btn btn-primary\" *ngIf=\"this.authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())\" (click)=\"removeLifeguard()\">X</button>\n  </div>\n  <div *ngIf=\"!swimGroup.lifeguard && (authService.userType() != 'leader'|| authService.admin())\">\n    <h2>Assign Lifeguard</h2>\n    <app-lifeguard-dropdown (selectedChanged)=\"preAssignLifeguard($event)\" [addAll]=\"false\"></app-lifeguard-dropdown>\n    <button class=\"btn btn-primary\" (click)=\"assignLifeguard()\">Assign</button>\n  </div>\n  <button class=\"btn btn-primary\" (click)=\"generateReports()\" *ngIf=\"authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())\">Generate Reports</button>\n  <div *ngIf=\"generating\">\n    <div *ngFor=\"let camper of swimGroup.campers\" [id]=\"camper._id\" class=\"report\" (click)=\"goToReport(camper._id)\">\n      <img [src]=\"'./assets/'+camper.cSwimOpts.currentLevel.rcLevel+'.jpg'\">\n      <span [id]=\"'name-'+camper.cSwimOpts.currentLevel.rcLevel\">{{camper.first}} {{camper.last}}</span>\n      <span [id]=\"'date-'+camper.cSwimOpts.currentLevel.rcLevel\">{{displayDate()}}</span>\n      <span [id]=\"'instructor-'+camper.cSwimOpts.currentLevel.rcLevel\">{{swimGroup.lifeguard?.first}} {{swimGroup.lifeguard?.last}}</span>\n      <span [id]=\"'group-'+camper.cSwimOpts.currentLevel.rcLevel\">{{camper.division.name}}</span>\n      <span *ngFor=\"let skill of completedSkills(camper.cSwimOpts.currentLevel)\" [id]=\"generateSkillClass(camper.cSwimOpts.currentLevel.rcLevel,skill)\">&#10004;</span>\n    </div>\n    <button class=\"btn btn-primary\" (click)=\"sendReports()\">Send Reports</button>\n  </div>\n  <h3>Campers:</h3>\n  <table class=\"table table-hover\" >\n    <thead>\n      <tr>\n        <th>First</th>\n        <th>Last</th>\n        <th>Red Cross Level</th>\n        <th>Swim Bracelet</th>\n        <th>Most Recent Report Sent</th>\n        <th *ngIf=\"this.authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())\"></th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr *ngFor=\"let camper of swimGroup.campers\">\n        <td (click)=\"goToStats(camper)\">{{camper.first}}</td>\n        <td (click)=\"goToStats(camper)\">{{camper.last}}</td>\n        <td (click)=\"goToStats(camper)\">{{camper.cSwimOpts.currentLevel?.rcLevel}}</td>\n        <td (click)=\"goToStats(camper)\">{{camper.cSwimOpts.bracelet}}</td>\n        <td (click)=\"goToStats(camper)\">{{displayDateHelper(camper.cSwimOpts.mostRecentReportSent)}}</td>\n        <td *ngIf=\"this.authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())\"><button class=\"btn btn-primary\" (click)=\"removeFromGroup(camper)\">x</button></td>\n      </tr>\n    </tbody>\n  </table>\n  <app-camper-selector *ngIf=\"this.authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())\" [exclude]=\"exclude\" (selection)=\"addToGroup($event)\"></app-camper-selector>\n</div>"
+module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<app-back-button></app-back-button>\n<div *ngIf=\"swimGroup && swimGroup.data\">\n  <h1>{{swimGroup.data.name}}</h1>\n  <div *ngIf=\"authService.admin()\">\n    <input class=\"form-control\" type=\"text\" name=\"name\" (change)=\"preChangeName($event.target.value)\" value=\"{{swimGroup.data.name}}\">\n    <button class=\"btn btn-primary\" (click)=\"changeName()\">Change Name</button>\n  </div>\n  <div *ngIf=\"swimGroup.lifeguard\">\n    <h2>{{swimGroup.lifeguard.first}} {{swimGroup.lifeguard.last}}</h2><button class=\"btn btn-primary\" *ngIf=\"this.authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())\" (click)=\"removeLifeguard()\">X</button>\n  </div>\n  <div *ngIf=\"!swimGroup.lifeguard && (authService.userType() != 'leader'|| authService.admin())\">\n    <h2>Assign Lifeguard</h2>\n    <app-lifeguard-dropdown (selectedChanged)=\"preAssignLifeguard($event)\" [addAll]=\"false\"></app-lifeguard-dropdown>\n    <button class=\"btn btn-primary\" (click)=\"assignLifeguard()\">Assign</button>\n  </div>\n  <button class=\"btn btn-primary\" (click)=\"generateReports()\" *ngIf=\"authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())\">Generate Reports</button>\n  <div *ngIf=\"generating\">\n    <div *ngFor=\"let camper of swimGroup.campers\" [id]=\"camper._id\" class=\"report\" (click)=\"goToReport(camper._id)\">\n      <img [src]=\"'./assets/'+camper.cSwimOpts.currentLevel.rcLevel+'.jpg'\">\n      <span [id]=\"'name-'+camper.cSwimOpts.currentLevel.rcLevel\">{{camper.first}} {{camper.last}}</span>\n      <span [id]=\"'date-'+camper.cSwimOpts.currentLevel.rcLevel\">{{displayDate()}}</span>\n      <span [id]=\"'instructor-'+camper.cSwimOpts.currentLevel.rcLevel\">{{swimGroup.lifeguard?.first}} {{swimGroup.lifeguard?.last}}</span>\n      <span [id]=\"'group-'+camper.cSwimOpts.currentLevel.rcLevel\">{{camper.division.name}}</span>\n      <span *ngFor=\"let skill of completedSkills(camper.cSwimOpts.currentLevel)\" [id]=\"generateSkillClass(camper.cSwimOpts.currentLevel.rcLevel,skill)\">&#10004;</span>\n    </div>\n    <button class=\"btn btn-primary\" (click)=\"sendReports()\">Send Reports</button>\n  </div>\n  <h3>Campers:</h3>\n  <table class=\"table table-hover\" >\n    <thead>\n      <tr>\n        <th>First</th>\n        <th>Last</th>\n        <th>Red Cross Level</th>\n        <th>Swim Bracelet</th>\n        <th>Most Recent Report Sent</th>\n        <th *ngIf=\"this.authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())\"></th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr *ngFor=\"let camper of swimGroup.campers\">\n        <td (click)=\"goToStats(camper)\">{{camper.first}}</td>\n        <td (click)=\"goToStats(camper)\">{{camper.last}}</td>\n        <td (click)=\"goToStats(camper)\">{{camper.cSwimOpts.currentLevel?.rcLevel}}</td>\n        <td (click)=\"goToStats(camper)\">{{camper.cSwimOpts.bracelet}}</td>\n        <td (click)=\"goToStats(camper)\">{{displayDateHelper(camper.cSwimOpts.mostRecentReportSent)}}</td>\n        <td *ngIf=\"this.authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())\"><button class=\"btn btn-primary\" (click)=\"removeFromGroup(camper)\">x</button></td>\n      </tr>\n    </tbody>\n  </table>\n  <app-camper-selector *ngIf=\"this.authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())\" [exclude]=\"exclude\" (selection)=\"addToGroup($event)\"></app-camper-selector>\n</div>"
 
 /***/ }),
 
@@ -41451,6 +41452,15 @@ var SwimGroupComponent = (function () {
         var _this = this;
         this.loading = true;
         this.swimService.sendReports(this.id).subscribe(function (data) {
+            _this.loadSwimGroup();
+        });
+    };
+    SwimGroupComponent.prototype.preChangeName = function (newName) {
+        this.newName = newName;
+    };
+    SwimGroupComponent.prototype.changeName = function () {
+        var _this = this;
+        this.swimService.changeGroupName(this.id, this.newName).subscribe(function (data) {
             _this.loadSwimGroup();
         });
     };
@@ -41625,6 +41635,7 @@ var SwimGroupsComponent = (function () {
             sessionId: String(this.options.session._id),
             lifeguardId: this.toAddLifeguard,
         };
+        console.log(swimGroup);
         this.swimService.registerSwimGroup(swimGroup).subscribe(function (data) {
             _this.getGroups();
         });
@@ -43774,6 +43785,7 @@ var SwimService = (function () {
         return this.http.post(this.domain + 'swim/remove_swim_group', { id: id }, this.options).map(function (res) { return res.json(); });
     };
     SwimService.prototype.registerSwimGroup = function (group) {
+        console.log(group);
         this.createAuthenticationHeaders();
         return this.http.post(this.domain + 'swim/register_group', group, this.options).map(function (res) { return res.json(); });
     };
@@ -43939,6 +43951,14 @@ var SwimService = (function () {
     SwimService.prototype.getCamperGroup = function (camperId) {
         this.createAuthenticationHeaders();
         return this.http.get(this.domain + 'swim/get_camper_group/' + camperId, this.options).map(function (res) { return res.json(); });
+    };
+    SwimService.prototype.changeGroupName = function (groupId, newName) {
+        this.createAuthenticationHeaders();
+        var data = {
+            groupId: groupId,
+            newName: newName
+        };
+        return this.http.post(this.domain + 'swim/change_group_name', data, this.options).map(function (res) { return res.json(); });
     };
     SwimService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),

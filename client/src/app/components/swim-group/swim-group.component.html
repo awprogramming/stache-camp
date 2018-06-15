@@ -2,6 +2,10 @@
 <app-back-button></app-back-button>
 <div *ngIf="swimGroup && swimGroup.data">
   <h1>{{swimGroup.data.name}}</h1>
+  <div *ngIf="authService.admin()">
+    <input class="form-control" type="text" name="name" (change)="preChangeName($event.target.value)" value="{{swimGroup.data.name}}">
+    <button class="btn btn-primary" (click)="changeName()">Change Name</button>
+  </div>
   <div *ngIf="swimGroup.lifeguard">
     <h2>{{swimGroup.lifeguard.first}} {{swimGroup.lifeguard.last}}</h2><button class="btn btn-primary" *ngIf="this.authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())" (click)="removeLifeguard()">X</button>
   </div>

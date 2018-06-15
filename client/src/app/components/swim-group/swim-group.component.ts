@@ -20,6 +20,7 @@ export class SwimGroupComponent implements OnInit {
   date;
   toAddLifeguard;
   loading;
+  newName;
 
   constructor(
     private route: ActivatedRoute,
@@ -148,6 +149,15 @@ export class SwimGroupComponent implements OnInit {
     });
   }
 
+  preChangeName(newName){
+    this.newName = newName;
+  }
+
+  changeName(){
+    this.swimService.changeGroupName(this.id,this.newName).subscribe(data => {
+      this.loadSwimGroup();
+    });
+  }
   ngOnInit() {
       this.route.paramMap.subscribe(params => {
         this.id = params.get('groupId');

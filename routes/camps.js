@@ -177,6 +177,7 @@ module.exports = (router) => {
     });
 
     router.get('/all_lifeguards',(req,res) =>{
+            
             Camp.findById(req.decoded.campId).exec()
             .then(function(camp){
                     var hsSpecialties = [];
@@ -191,6 +192,7 @@ module.exports = (router) => {
                         "camp":camp
                     }
                     return result;
+                    
             })
             .then(function(result){
                 var hsSpecialties = result.hsS;
