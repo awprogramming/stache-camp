@@ -36059,7 +36059,11 @@ var CampersComponent = (function () {
                     var data;
                     if (cs.hasModule("swim")) {
                         var _id = vals[0].split('\n')[1];
-                        var bracelet = vals[11].toLowerCase();
+                        var bracelet;
+                        if (vals[11])
+                            bracelet = vals[11].toLowerCase();
+                        else
+                            bracelet = "none";
                         if (bracelet != "orange" && bracelet != "green")
                             bracelet = "none";
                         data = {
@@ -36082,7 +36086,8 @@ var CampersComponent = (function () {
                                 rcLevel: vals[10]
                             },
                         };
-                        if (vals[1] != "")
+                        console.log(vals[1]);
+                        if (vals[1] && vals[1] != "")
                             campers.push(data);
                     }
                     else {
@@ -36126,6 +36131,7 @@ var CampersComponent = (function () {
         });
     };
     CampersComponent.prototype.divGenders = function (gender) {
+        console.log(gender);
         if (gender.toLowerCase() == "female") {
             return this.dropdownDivisions.divisions[0].divisions;
         }

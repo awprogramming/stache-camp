@@ -1146,6 +1146,7 @@ module.exports = (router) => {
         Camp.findById(req.decoded.campId,(err,camp)=>{
             if(camp.hasModule("swim")){
                 for(let camper of req.body){
+                    var newDivision;
                     var newCamper;
                     var oldCamper = false;
                     if(camp.campers.id(camper.camper._id)){
@@ -1165,11 +1166,16 @@ module.exports = (router) => {
                     }
                     if(!reenrolled){
                         newCamper.sessions.push(camp.options.session);
-                        var newDivision = camp.getDivisionByName(camper.divisionName.trim(),newCamper.gender.toLowerCase());
+                        if(camper.divisionName)
+                            newDivision = camp.getDivisionByName(camper.divisionName.trim(),newCamper.gender.toLowerCase());
                         if(newDivision)
                             newCamper.division = newDivision;
+                        
+                        console.log(camper.divisionName,"*",newDivision,"*",camper.division);
+                        
                     }
                     if(!oldCamper){
+                        
                         var level = camper.cSwimOpts.rcLevel;
                         var complete = false;
                         for(let l of camp.options.swimOpts.swimLevels){
@@ -1177,6 +1183,7 @@ module.exports = (router) => {
                             newCamper.cSwimOpts.currentLevel = l;
                             }
                         }
+                        
                         if(!oldCamper)
                             camp.campers.push(newCamper);
                     }

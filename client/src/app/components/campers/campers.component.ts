@@ -101,8 +101,13 @@ export class CampersComponent implements OnInit {
           var vals = line.split(',');
           var data;
           if(cs.hasModule("swim")){
+            
             var _id = vals[0].split('\n')[1];
-            var bracelet = vals[11].toLowerCase();
+            var bracelet;
+            if(vals[11])
+              bracelet = vals[11].toLowerCase();
+            else
+              bracelet = "none";
             if(bracelet != "orange" && bracelet != "green")
               bracelet = "none";
             
@@ -126,7 +131,8 @@ export class CampersComponent implements OnInit {
                 rcLevel: vals[10]
               },
             }
-            if(vals[1] != "")
+            console.log(vals[1]);
+            if(vals[1] && vals[1] != "")
               campers.push(data);
           }
           else{
@@ -176,6 +182,7 @@ gradeConversion(grade){
   }
 
   divGenders(gender){
+    console.log(gender);
     if(gender.toLowerCase()=="female"){
       return this.dropdownDivisions.divisions[0].divisions;
       
