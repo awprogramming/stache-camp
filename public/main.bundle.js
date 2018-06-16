@@ -35683,7 +35683,7 @@ var CalendarComponent = (function () {
             lastMonthYear = year - 1;
         }
         var firstDate = year + '-' + (month + 1) + '-01';
-        this.fDate = firstDate;
+        this.fDate = new Date(firstDate);
         var firstDay = new Date(firstDate).getDay();
         this.fd = firstDay;
         this.monthStart = firstDay;
