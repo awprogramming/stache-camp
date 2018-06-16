@@ -32,6 +32,7 @@
       <tr>
         <th>First</th>
         <th>Last</th>
+        <th>Group</th>
         <th>Red Cross Level</th>
         <th>Swim Bracelet</th>
         <th>Most Recent Report Sent</th>
@@ -42,6 +43,7 @@
       <tr *ngFor="let camper of swimGroup.campers">
         <td (click)="goToStats(camper)">{{camper.first}}</td>
         <td (click)="goToStats(camper)">{{camper.last}}</td>
+        <td (click)="goToStats(camper)">{{camper.division.name}}</td>
         <td (click)="goToStats(camper)">{{camper.cSwimOpts.currentLevel?.rcLevel}}</td>
         <td (click)="goToStats(camper)">{{camper.cSwimOpts.bracelet}}</td>
         <td (click)="goToStats(camper)">{{displayDateHelper(camper.cSwimOpts.mostRecentReportSent)}}</td>
