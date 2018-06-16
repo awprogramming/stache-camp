@@ -23,6 +23,7 @@ export class CalendarComponent implements OnInit {
   monthStart;
 
   //debug
+  fDate;
   fd;
 
   constructor() { }
@@ -41,13 +42,13 @@ export class CalendarComponent implements OnInit {
       lastMonthYear = year - 1;
     }
     var firstDate = year + '-' + (month+1) + '-01';
+    this. fDate = firstDate;
     var firstDay = new Date(firstDate).getDay();
     this.fd = firstDay;
     this.monthStart = firstDay;
     var days = [];
     for(var i = firstDay-1; i >= 0; i--)
       days.push({month:lastMonth,day:this.daysInMonth(lastMonth,lastMonthYear)-i,year:lastMonthYear,cur:false});
-
     for(var i = 0; i < this.daysInMonth(month,year); i++)
       days.push({month:month,day:i+1,year:year,cur:true});
     var daysLeft = 42 - days.length;
