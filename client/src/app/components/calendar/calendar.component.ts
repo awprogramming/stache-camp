@@ -22,6 +22,9 @@ export class CalendarComponent implements OnInit {
   scheduler = false;
   monthStart;
 
+  //debug
+  fd;
+
   constructor() { }
 
   daysInMonth (month, year) { // Use 1 for January, 2 for February, etc.
@@ -39,6 +42,7 @@ export class CalendarComponent implements OnInit {
     }
     var firstDate = year + '-' + (month+1) + '-01';
     var firstDay = new Date(firstDate).getDay();
+    this.fd = firstDay;
     this.monthStart = firstDay;
     var days = [];
     for(var i = firstDay-1; i >= 0; i--)
