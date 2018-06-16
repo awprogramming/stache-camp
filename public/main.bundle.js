@@ -35636,7 +35636,7 @@ module.exports = "table,tr,td,th{\n    border: thin solid black;\n    padding:5p
 /***/ "./src/app/components/calendar/calendar.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div>\n  <h2>Debug</h2>\n    <p>{{fDate}}</p>\n    <!-- <p *ngFor=\"let day of days\">{{day.month}}</p> -->\n  <h2>End Debug</h2>\n</div>\n\n<h2>{{this.visibleMonth.year}}</h2>\n<h3>{{getMonthName(this.visibleMonth.month)}}</h3>\n\n<button class=\"btn btn-primary\" (click)=\"previousMonth()\">Previous</button>\n<button class=\"btn btn-primary\" (click)=\"currentMonth()\">Current</button>\n<button class=\"btn btn-primary\" (click)=\"nextMonth()\">Next</button>\n<table>\n  <tr>\n    <th>Sunday</th>\n    <th>Monday</th>\n    <th>Tuesday</th>\n    <th>Wednesday</th>\n    <th>Thursday</th>\n    <th>Friday</th>\n    <th>Saturday</th>\n  </tr>\n  <tr class=\"week\" *ngFor=\"let i of [0,1,2,3,4,5]\">\n    <td class=\"day\" *ngFor=\"let j of [0,1,2,3,4,5,6]\" [ngClass]=\"days[7*i+j].cur ? 'cur' : 'not-cur'\" (click)=\"dateSelected(days[7*i+j],7*i+j)\">\n      {{days[7*i+j].day}}\n      <div *ngIf=\"days[7*i+j].events\" [ngClass]=\"eventClass(days[7*i+j])\">{{days[7*i+j].events.length}}</div>\n    </td>\n  </tr>\n</table>\n"
+module.exports = "<div>\n  <h2>Debug</h2>\n    <p>{{fd}}</p>\n    <!-- <p *ngFor=\"let day of days\">{{day.month}}</p> -->\n  <h2>End Debug</h2>\n</div>\n\n<h2>{{this.visibleMonth.year}}</h2>\n<h3>{{getMonthName(this.visibleMonth.month)}}</h3>\n\n<button class=\"btn btn-primary\" (click)=\"previousMonth()\">Previous</button>\n<button class=\"btn btn-primary\" (click)=\"currentMonth()\">Current</button>\n<button class=\"btn btn-primary\" (click)=\"nextMonth()\">Next</button>\n<table>\n  <tr>\n    <th>Sunday</th>\n    <th>Monday</th>\n    <th>Tuesday</th>\n    <th>Wednesday</th>\n    <th>Thursday</th>\n    <th>Friday</th>\n    <th>Saturday</th>\n  </tr>\n  <tr class=\"week\" *ngFor=\"let i of [0,1,2,3,4,5]\">\n    <td class=\"day\" *ngFor=\"let j of [0,1,2,3,4,5,6]\" [ngClass]=\"days[7*i+j].cur ? 'cur' : 'not-cur'\" (click)=\"dateSelected(days[7*i+j],7*i+j)\">\n      {{days[7*i+j].day}}\n      <div *ngIf=\"days[7*i+j].events\" [ngClass]=\"eventClass(days[7*i+j])\">{{days[7*i+j].events.length}}</div>\n    </td>\n  </tr>\n</table>\n"
 
 /***/ }),
 
@@ -35682,10 +35682,15 @@ var CalendarComponent = (function () {
             lastMonth = 11;
             lastMonthYear = year - 1;
         }
-        var firstDate = year + '-' + (month + 1) + '-01';
-        this.fDate = new Date(firstDate);
+        var stringMonth = month;
+        stringMonth++;
+        if (String(month).length == 1) {
+            stringMonth = "0" + stringMonth;
+        }
+        var firstDate = year + '-' + (stringMonth) + '-01';
+        console.log(firstDate);
+        this.fd = firstDate;
         var firstDay = new Date(firstDate).getDay();
-        this.fd = firstDay;
         this.monthStart = firstDay;
         var days = [];
         for (var i = firstDay - 1; i >= 0; i--)

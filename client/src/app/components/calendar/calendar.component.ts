@@ -41,11 +41,17 @@ export class CalendarComponent implements OnInit {
       lastMonth = 11;
       lastMonthYear = year - 1;
     }
-    var firstDate = year + '-' + (month+1) + '-01';
-    this.fDate = new Date(firstDate);
+    var stringMonth = month;
+    stringMonth++;
+    if(String(month).length==1){
+      stringMonth = "0" + stringMonth;
+    }
+
+    var firstDate = year + '-' + (stringMonth) + '-01';
+    console.log(firstDate);
+    this.fd = firstDate;
 
     var firstDay = new Date(firstDate).getDay();
-    this.fd = firstDay;
     this.monthStart = firstDay;
     var days = [];
     for(var i = firstDay-1; i >= 0; i--)
