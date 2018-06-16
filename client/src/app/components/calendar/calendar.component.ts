@@ -22,10 +22,6 @@ export class CalendarComponent implements OnInit {
   scheduler = false;
   monthStart;
 
-  //debug
-  fDate;
-  fd;
-
   constructor() { }
 
   daysInMonth (month, year) { // Use 1 for January, 2 for February, etc.
@@ -41,21 +37,13 @@ export class CalendarComponent implements OnInit {
       lastMonth = 11;
       lastMonthYear = year - 1;
     }
-    var stringMonth = month;
-    stringMonth++;
-    if(String(month).length==1){
-      stringMonth = "0" + stringMonth;
-    }
-
-    var firstDate = year + '-' + (stringMonth) + '-01';
-    console.log(firstDate);
-    this.fd = firstDate;
-
-    var firstDay = new Date(firstDate).getDay();
+    var firstDate = year + '-' + (month+1) + '-01';
+    var firstDay = new Date(year,month,1).getDay();
     this.monthStart = firstDay;
     var days = [];
     for(var i = firstDay-1; i >= 0; i--)
       days.push({month:lastMonth,day:this.daysInMonth(lastMonth,lastMonthYear)-i,year:lastMonthYear,cur:false});
+
     for(var i = 0; i < this.daysInMonth(month,year); i++)
       days.push({month:month,day:i+1,year:year,cur:true});
     var daysLeft = 42 - days.length;
@@ -72,6 +60,49 @@ export class CalendarComponent implements OnInit {
     }
     this.days = days;
   }
+
+  // generateDates(){
+  //   var month = this.visibleMonth.month;
+  //   var year = this.visibleMonth.year;
+  //   var lastMonthYear = year;
+  //   var lastMonth = month-1;
+  //   if(lastMonth == 0){
+  //     lastMonth = 11;
+  //     lastMonthYear = year - 1;
+  //   }
+  //   var stringMonth = month;
+  //   stringMonth++;
+  //   if(String(month).length==1){
+  //     stringMonth = "0" + stringMonth;
+  //   }
+
+  //   var firstDate = year + '-' + (stringMonth) + '-01';
+  //   console.log(firstDate);
+  //   this.fd = firstDate;
+
+    
+
+  //   var firstDay = new Date(firstDate).getDay();
+  //   this.monthStart = firstDay;
+  //   var days = [];
+  //   for(var i = firstDay-1; i >= 0; i--)
+  //     days.push({month:lastMonth,day:this.daysInMonth(lastMonth,lastMonthYear)-i,year:lastMonthYear,cur:false});
+  //   for(var i = 0; i < this.daysInMonth(month,year); i++)
+  //     days.push({month:month,day:i+1,year:year,cur:true});
+  //   var daysLeft = 42 - days.length;
+  //   var nextMonth = month+1;
+  //   var nextMonthYear = year;
+
+  //   if(month == 12){
+  //     nextMonth = 11;
+  //     nextMonthYear = year+1;
+  //   }
+
+  //   for(var i = 0; i < daysLeft; i++){
+  //     days.push({month:nextMonth,day:i+1,year:nextMonthYear,cur:false});
+  //   }
+  //   this.days = days;
+  // }
 
   getMonthName(month){
     var monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
