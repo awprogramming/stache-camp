@@ -36122,16 +36122,19 @@ var CampersComponent = (function () {
                                 rcLevel: vals[10]
                             },
                         };
-                        console.log(vals[1]);
                         if (vals[1] && vals[1] != "")
                             campers.push(data);
                     }
                     else {
+                        var _id = vals[0].split('\n')[1];
                         data = {
-                            _id: vals[0],
-                            first: vals[1],
-                            last: vals[2],
-                            gender: vals[3],
+                            divisionName: vals[4],
+                            camper: {
+                                _id: _id,
+                                first: vals[1],
+                                last: vals[2],
+                                gender: vals[3],
+                            }
                         };
                         campers.push(data);
                     }
@@ -36167,7 +36170,6 @@ var CampersComponent = (function () {
         });
     };
     CampersComponent.prototype.divGenders = function (gender) {
-        console.log(gender);
         if (gender.toLowerCase() == "female") {
             return this.dropdownDivisions.divisions[0].divisions;
         }
@@ -43012,7 +43014,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var AuthService = (function () {
     function AuthService(http) {
         this.http = http;
-        this.domain = ""; // Production;
+        //domain = ""; // Production;
+        this.domain = "http://localhost:8080/";
     }
     // Function to create headers, add token, to be used in HTTP requests
     AuthService.prototype.createAuthenticationHeaders = function () {

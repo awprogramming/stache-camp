@@ -21,9 +21,6 @@ new CronJob('0 0 23 * * *', function() {
                 for(let game of camp.games){
                     var three_before = new Date(game.date);
                     three_before.setDate(three_before.getDate()-3);
-                    console.log(game.date)
-                    console.log(three_before);
-                    console.log(new Date());
                     if(new Date().getDate() == three_before.getDate()){
                         //CHECK FOR RIGHT DATE
                         console.log("**GAME***")
@@ -84,14 +81,13 @@ function sendHealthCenter(email,game,camp){
         text+="\n";
     }
 
-    var html = "<style>table,tr,td,th{border:thin solid black;border-collapse:collapse;} td{padding:5px;}</style>";
-    html += "<h1>"+game.name+ "</h1>";
+    var html = "<h1>"+game.name+ "</h1>";
     html += "<h2>Roster:</h2>";
     var roster = camp.specialties.id(game.specialty._id).rosters.id(game.rosterId);
-    html += "<table>"
-    html += "<tr><th>Name</th><th>Epi</th><th>Inhaler</th><th>Other</th></tr>"
+    html += "<table style='border:thin solid black;border-collapse:collapse;'>"
+    html += "<tr style='border:thin solid black;border-collapse:collapse;'><th style='border:thin solid black;border-collapse:collapse;'>Name</th><th style='border:thin solid black;border-collapse:collapse;'>Epi</th><th style='border:thin solid black;border-collapse:collapse;'>Inhaler</th><th style='border:thin solid black;border-collapse:collapse;'>Other</th></tr>"
     for(let c of roster.campers){
-        html += "<tr>";
+        html += "<tr style='border:thin solid black;border-collapse:collapse;'>";
         var camper = camp.campers.id(c);
         html += "<td>";
         html += camper.first + " " + camper.last;
@@ -160,9 +156,9 @@ function sendKitchen(email,game,camp){
     html += "<h2>Roster:</h2>";
     var roster = camp.specialties.id(game.specialty._id).rosters.id(game.rosterId);
     html += "<table>"
-    html += "<tr><th>Name</th><th>Allergies</th><th>Other</th></tr>"
+    html += "<tr style='border:thin solid black;border-collapse:collapse;'><th style='border:thin solid black;border-collapse:collapse;'>Name</th><th style='border:thin solid black;border-collapse:collapse;'>Allergies</th><th style='border:thin solid black;border-collapse:collapse;'>Other</th></tr>"
     for(let c of roster.campers){
-        html += "<tr>"
+        html += "<tr style='border:thin solid black;border-collapse:collapse;'>"
         var camper = camp.campers.id(c);
         html += "<td>"
         html += camper.first + " " + camper.last;
@@ -215,7 +211,7 @@ function sendRoster(email,game,camp){
     var roster = camp.specialties.id(game.specialty._id).rosters.id(game.rosterId);
     html += "<table>"
     for(let c of roster.campers){
-        html += "<tr>"
+        html += "<tr style='border:thin solid black;border-collapse:collapse;'>"
         var camper = camp.campers.id(c);
         html += "<td>"
         html += camper.first + " " + camper.last;
@@ -229,7 +225,7 @@ function sendRoster(email,game,camp){
     }
     html += "<table>"
     for(let c of game.coachIds){
-        html += "<tr>"
+        html += "<tr style='border:thin solid black;border-collapse:collapse;'>"
         var coach = camp.counselors.id(c);
         html += "<td>"
         html += coach.first + " " + coach.last;
@@ -245,7 +241,7 @@ function sendRoster(email,game,camp){
     else{
         html += "<table>"               
         for(let c of game.refIds){
-            html += "<tr>"
+            html += "<tr style='border:thin solid black;border-collapse:collapse;'>"
             var ref = camp.counselors.id(c);
             html += "<td>"
             html += ref.first + " " + ref.last;
@@ -290,4 +286,17 @@ function displayDateTime(date){
 
 }
 // });
-
+testEmail();
+function testEmail(){
+    var html = "<p>A game has been scheduled:</p>";
+    html+= "<p>Game</p>";
+    html+= "<p>http://evals.camptlc.com/game/5b29b21c182f2e0014345c05</p>"
+    let mailOptions = {
+        from: '"Game Rosters" <rosters@stachecamp.com>', // sender address
+        to: "awprogramming@gmail.com", // list of receivers
+        subject: 'Upcoming Game Roster', // Subject line
+        html: html // html body
+    };
+    var message = "Health Center Email Sent";
+    sendEmail(mailOptions,message);
+}

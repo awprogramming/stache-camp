@@ -464,23 +464,24 @@ module.exports = (router) => {
 function gameScheduledEmail(game){
     //SET LINKS PROPERLY
     var text = "A game has been scheduled:\n";
-    // text+= "https://stachecamp.herokuapp.com/game/"+game._id;
+    text+= "http://evals.camptlc.com/game/"+game._id;
     text+= game.name + "\n";
-    text+= "localhost:4200/game/"+game._id;
-    var html = "A game has been scheduled:</br>";
-    html+= game.name + "</br>";
-    html+= "<a href='localhost:4200/game/"+game._id+"'>Click here to view the game</a>"
+    text+= "evals.camptlc.com/game/"+game._id;
 
+    var html = "<p>A game has been scheduled:</p>";
+    html+= "<p>"+game.name+"</p>";
+    html+= "<p>http://evals.camptlc.com/game/"+game._id+"</p>"
+
+    var emails = ['athletics@tylerhillcamp.com'];
     if(game.division){
-        console.log(game.division)
         for(let leader of game.division.leaders){
-            console.log(leader.email);
-            //ADD THIS EMAIL TO THE LIST
+            emails.push(leader.email);
+        }
+        for(let leader of game.division.approvers){
+            emails.push(leader.email);
         }
     }
-    //ADD HC EMAILS HERE
-    //SET EMAILS PROPERLY!
-    var emails = ['awprogramming@gmail.com'];
+
     
     for(let email of emails){
         let mailOptions = {
@@ -503,24 +504,26 @@ function rosterSubmittedEmail(game){
     // text+= "https://stachecamp.herokuapp.com/game/"+game._id;
     text+= game.name + "\n";
     text+= "localhost:4200/game/"+game._id;
-    var html = "A roster has been submitted:</br>";
-    html+= "<span>"+game.name+"</span>" + "</br>";
-    html+= "<a href='localhost:4200/game/"+game._id+"'>Click here to view the game</a>"
+    var html = "<p>A roster has been submitted:</p>";
+    html+= "<p>"+game.name+"</p>";
+    html+= "<p>http://evals.camptlc.com/game/"+game._id+"</p>"
+
     divisions = {}
     for(let camper of game.roster.camperObjs){
 
         divisions[camper.division.name] = camper.division;
     }
-    console.log(divisions);
+    var emails = ['athletics@tylerhillcamp.com'];
     for(let division of Object.keys(divisions)){
         for(let leader of divisions[division].leaders)
-            console.log(leader.email);
+            emails.push(leader.email);
+        for(let leader of divisions[division].approvers)
+            emails.push(leader.email);
     }
 
     //ADD HC EMAILS HERE
     //SET EMAILS PROPERLY!
-    var emails = ['awprogramming@gmail.com'];
-    
+
     for(let email of emails){
         let mailOptions = {
             from: '"Tyler Hill Sports" <tylerhillsports@stachecamp.com>', // sender address

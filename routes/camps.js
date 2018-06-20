@@ -1192,15 +1192,15 @@ module.exports = (router) => {
                 }
             }
             else{
-                for(let camper of req.body){
+                for(let data of req.body){
                     var newCamper;
                     var oldCamper = false;
-                    if(camp.campers.id(camper._id)){
-                        newCamper = camp.campers.id(camper._id);
+                    if(camp.campers.id(data.camper._id)){
+                        newCamper = camp.campers.id(data.camper._id);
                         oldCamper = true;
                     }
                     else{
-                        var newCamper = camp.campers.create(camper);
+                        var newCamper = camp.campers.create(data.camper);
                         if(camp.hasModule("meds")){
                             newCamper.meds = {
                                 "epi" : false,
@@ -1223,8 +1223,11 @@ module.exports = (router) => {
                         }
                     }
                     if(!reenrolled){
-                        var newCamper = camp.campers.create(camper);
-                        newCamper.sessions = [];
+                        console.log(data.divisionName);
+                        if(data.divisionName)
+                            newDivision = camp.getDivisionByName(data.divisionName.trim(),newCamper.gender.toLowerCase());
+                        if(newDivision)
+                            newCamper.division = newDivision;
                         newCamper.sessions.push(camp.options.session);
                         camp.campers.push(newCamper);
                     }

@@ -131,16 +131,19 @@ export class CampersComponent implements OnInit {
                 rcLevel: vals[10]
               },
             }
-            console.log(vals[1]);
             if(vals[1] && vals[1] != "")
               campers.push(data);
           }
           else{
+            var _id = vals[0].split('\n')[1];
             data = {
-              _id: vals[0],
-              first: vals[1],
-              last: vals[2],
-              gender: vals[3],
+              divisionName:vals[4],
+              camper:{
+                _id: _id,
+                first: vals[1],
+                last: vals[2],
+                gender: vals[3],
+              } 
             }
             campers.push(data);
           }
@@ -182,7 +185,6 @@ gradeConversion(grade){
   }
 
   divGenders(gender){
-    console.log(gender);
     if(gender.toLowerCase()=="female"){
       return this.dropdownDivisions.divisions[0].divisions;
       
