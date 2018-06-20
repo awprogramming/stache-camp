@@ -286,17 +286,3 @@ function displayDateTime(date){
 
 }
 // });
-testEmail();
-function testEmail(){
-    var html = "<p>A game has been scheduled:</p>";
-    html+= "<p>Game</p>";
-    html+= "<p>http://evals.camptlc.com/game/5b29b21c182f2e0014345c05</p>"
-    let mailOptions = {
-        from: '"Game Rosters" <rosters@stachecamp.com>', // sender address
-        to: "awprogramming@gmail.com", // list of receivers
-        subject: 'Upcoming Game Roster', // Subject line
-        html: html // html body
-    };
-    var message = "Health Center Email Sent";
-    sendEmail(mailOptions,message);
-}
