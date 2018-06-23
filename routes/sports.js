@@ -293,6 +293,22 @@ module.exports = (router) => {
                             }   
                         } 
                         else if(req.params.type == "leader"){
+                            console.log("TEST");
+                            if(game.games.divisionId){
+                                game.games.division = camp.divisions.id(game.games.divisionId);
+                                var pushed = false;
+                                console.log(game.games.division);
+                                for(let leader of game.games.division.leaders){
+                                    console.log(leader._id,req.decoded.userId);
+                                    if(leader._id == req.decoded.userId){
+                                        games.push(game.games);
+                                        pushed = true;
+                                        break;
+                                    }
+                                }
+                                if(pushed)
+                                    break;
+                            }
                             if(game.games.rosterId){
                                 var roster = camp.specialties.id(game.games.specialty._id).rosters.id(game.games.rosterId);
                                 for(let camper of roster.campers){
