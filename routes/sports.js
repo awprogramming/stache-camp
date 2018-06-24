@@ -306,10 +306,8 @@ module.exports = (router) => {
                                         break;
                                     }
                                 }
-                                if(pushed)
-                                    break;
                             }
-                            if(game.games.rosterId){
+                            else if(game.games.rosterId){
                                 var roster = camp.specialties.id(game.games.specialty._id).rosters.id(game.games.rosterId);
                                 for(let camper of roster.campers){
                                     var pushed = false;
