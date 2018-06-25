@@ -133,7 +133,8 @@ export class EvaluateComponent implements OnInit {
 
   userIsApprover(){
     this.loading = true;
-    this.evaluationsService.isApprover().subscribe(data => {
+    this.evaluationsService.isEvalApprover(this.counselorId).subscribe(data => {
+      console.log(data.approver);
       this.approver = data.approver;
       this.loading = false;
     });

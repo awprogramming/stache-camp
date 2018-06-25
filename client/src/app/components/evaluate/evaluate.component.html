@@ -23,7 +23,7 @@
 <hr>
 <div>
   <span>Approver Notes</span>
-  <textarea class="full form-control" [disabled] = "view || !approver" (input)="approver_change($event)">{{evaluation?.evaluation.approver_notes}}</textarea>
+  <textarea class="full form-control" [disabled] = "view && !approver" (input)="approver_change($event)">{{evaluation?.evaluation.approver_notes}}</textarea>
 </div>
 
 <div id="filler"></div>
@@ -34,14 +34,13 @@
   <div class="flex">
     <span class="flex-1">Score: {{percentage}}%</span>
     <span class="flex-1">Level: {{level}}</span>
-    <div class="flex-1" *ngIf="!view">
+    <div class="flex-1" *ngIf="!view || approver">
       <div *ngIf="!approver">
         <button *ngIf="!saved" class="btn btn-primary" (click) = "save()">Save</button>
         <span *ngIf="saved">Saved</span>
         <button *ngIf="type != 'head_specialist'" class="btn btn-primary" (click) = "submit()">Submit</button>
       </div>
       <div *ngIf="approver">
-        
         <button *ngIf="!saved" class="btn btn-primary" (click) = "save()">Save Notes</button>
         <span *ngIf="saved">Notes Saved</span>
         <button *ngIf="!evaluation?.evaluation.approved && evaluation?.evaluation?.submitted" class="btn btn-primary" (click) = "approve()">Approve</button>

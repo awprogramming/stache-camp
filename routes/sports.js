@@ -293,17 +293,26 @@ module.exports = (router) => {
                             }   
                         } 
                         else if(req.params.type == "leader"){
-                            console.log("TEST");
                             if(game.games.divisionId){
                                 game.games.division = camp.divisions.id(game.games.divisionId);
                                 var pushed = false;
-                                console.log(game.games.division);
+                                console.log(game.games.division.leaders);
                                 for(let leader of game.games.division.leaders){
+                                    console.log("TEST");
                                     console.log(leader._id,req.decoded.userId);
                                     if(leader._id == req.decoded.userId){
                                         games.push(game.games);
                                         pushed = true;
                                         break;
+                                    }
+                                }
+                                if(!pushed){
+                                    for(let approver of game.games.division.approvers){
+                                        if(approver._id == req.decoded.userId){
+                                            games.push(game.games);
+                                            pushed = true;
+                                            break;
+                                        }
                                     }
                                 }
                             }

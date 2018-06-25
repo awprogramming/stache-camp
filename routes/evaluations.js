@@ -299,7 +299,7 @@ module.exports = (router) => {
         });
     });
 
-    router.get('/is_approver',(req,res)=>{
+    router.get('/is_approver/',(req,res)=>{
         Camp.findById(req.decoded.campId,(err,camp)=>{
             var approver = false;
 
@@ -311,6 +311,23 @@ module.exports = (router) => {
             }
             
             res.json({success:true,approver:approver});
+        });
+    });
+
+    router.get('/is_eval_approver/:counselorId',(req,res)=>{
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            var appr = false;
+            var counselor = camp.counselors.id(req.params.counselorId);
+            var division = camp.divisions.id(counselor.division._id);
+            for(let approver of division.approvers){
+                if(approver._id == req.decoded.userId){
+                    
+                    appr = true;
+                    break;
+                }
+            }
+
+            res.json({success:true,approver:appr});
         });
     });
 

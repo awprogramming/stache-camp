@@ -83,6 +83,11 @@ export class EvaluationsService {
     return this.http.get(this.domain + 'evaluations/is_approver/',this.options).map(res => res.json());
   }
 
+  isEvalApprover(counselorId){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'evaluations/is_eval_approver/'+counselorId,this.options).map(res => res.json());
+  }
+
   changeGold(newGold){
     this.createAuthenticationHeaders();
     var data = {
