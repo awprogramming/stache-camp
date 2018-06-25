@@ -28,9 +28,9 @@ new CronJob('0 0 23 * * *', function() {
                             sendRoster(hs.email,game,camp);
                         }
                         if(game.needsLunch)
-                            sendKitchen("awprogramming@gmail.com",game,camp); //ADD OPTION TO ADD KITCHEN EMAIL
+                            sendKitchen(["cadetboys@tylerhillcamp.com","pete61731880@yahoo.com","food@tylerhillcamp.com"],game,camp); //ADD OPTION TO ADD KITCHEN EMAIL
                         if(game.location != "home")
-                            sendHealthCenter("awprogramming@gmail.com",game,camp); //ADD OPTION TO ADD HEALTH CENTER EMAIL
+                            sendHealthCenter(["cadetboys@tylerhillcamp.com","health@tylerhillcamp.com"],game,camp); //ADD OPTION TO ADD HEALTH CENTER EMAIL
                         
                         if(game.rosterId){
                             var roster = camp.specialties.id(game.specialty._id).rosters.id(game.rosterId);
@@ -40,8 +40,8 @@ new CronJob('0 0 23 * * *', function() {
                                 for(let leader of c.division.leaders){
                                     if(leaders.indexOf(String(leader._id))==-1){
                                         leaders.push(String(leader._id));
-                                        sendRoster("awprogramming@gmail.com",game,camp);
-                                        //sendRoster(leader.email,game,camp);
+                                        //sendRoster("cadetboys@tylerhillcamp.com",game,camp);
+                                        sendRoster(["cadetboys@tylerhillcamp.com",leader.email],game,camp);
                                     }
                                 }
                             }
@@ -82,6 +82,7 @@ function sendHealthCenter(email,game,camp){
     }
 
     var html = "<h1>"+game.name+ "</h1>";
+    html += "<h2>"+displayDateTime(game.date)+"</h2>";
     html += "<h2>Roster:</h2>";
     var roster = camp.specialties.id(game.specialty._id).rosters.id(game.rosterId);
     html += "<table style='border:thin solid black;border-collapse:collapse;'>"
@@ -153,6 +154,7 @@ function sendKitchen(email,game,camp){
 
     var html = "<style>table,tr,td,th{border:thin solid black;border-collapse:collapse;} td{padding:5px;}</style>";
     html += "<h1>"+game.name+ "</h1>";
+    html += "<h2>"+displayDateTime(game.date)+"</h2>";
     html += "<h2>Roster:</h2>";
     var roster = camp.specialties.id(game.specialty._id).rosters.id(game.rosterId);
     html += "<table>"
@@ -207,6 +209,7 @@ function sendRoster(email,game,camp){
 
     var html = "<style>table,tr,td,th{border:thin solid black;border-collapse:collapse;} td{padding:5px;}</style>";
     html += "<h1>"+game.name+ "</h1>";
+    html += "<h2>"+displayDateTime(game.date)+"</h2>";
     html += "<h2>Roster:</h2>";
     var roster = camp.specialties.id(game.specialty._id).rosters.id(game.rosterId);
     html += "<table>"

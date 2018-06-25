@@ -413,10 +413,7 @@ module.exports = (router) => {
     router.post('/change_game_division',(req,res)=>{
         Camp.findById(req.decoded.campId,(err,camp)=>{
             var game = camp.games.id(req.body.gameId);
-            console.log(game.divisionId);
-            console.log(req.body.divisionId);
             game.divisionId = req.body.divisionId;
-            console.log(game.divisionId);
             camp.save({ validateBeforeSave: false });
             res.send({success:true});
         });
