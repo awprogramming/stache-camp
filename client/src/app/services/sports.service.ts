@@ -165,6 +165,14 @@ export class SportsService {
     return this.http.post(this.domain + 'sports/remove_game',data,this.options).map(res => res.json());
   }
 
+  changeGameDivision(gameId,divisionId){
+    var data = {
+      gameId:gameId,
+      divisionId:divisionId
+    }
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'sports/change_game_division',data,this.options).map(res => res.json());
+  }
   
 
 

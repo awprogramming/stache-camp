@@ -253,7 +253,7 @@ module.exports = (router) => {
             camp.save({ validateBeforeSave: false });
             if(game.divisionId)
                 game.division = camp.divisions.id(game.divisionId)
-            gameScheduledEmail(game);
+            //gameScheduledEmail(game);
             res.send({success:true,game:game});
         });
     });
@@ -378,6 +378,7 @@ module.exports = (router) => {
             var campers = [];
             var coaches = [];
             var refs = [];
+            var division = camp.divisions.id(game.divisionId);
             if(game.rosterId){
                 game.roster = camp.specialties.id(game.specialty._id).rosters.id(game.rosterId);
                 
@@ -396,7 +397,19 @@ module.exports = (router) => {
                     refs.push(camp.counselors.id(counselor));
                 }
             }
-            res.send({success:true,game:game,coaches:coaches,refs:refs,campers:campers});
+            res.send({success:true,game:game,coaches:coaches,refs:refs,campers:campers,division:division});
+        });
+    });
+
+    router.post('/change_game_division',(req,res)=>{
+        Camp.findById(req.decoded.campId,(err,camp)=>{
+            var game = camp.games.id(req.body.gameId);
+            console.log(game.divisionId);
+            console.log(req.body.divisionId);
+            game.divisionId = req.body.divisionId;
+            console.log(game.divisionId);
+            camp.save({ validateBeforeSave: false });
+            res.send({success:true});
         });
     });
 
@@ -475,42 +488,42 @@ module.exports = (router) => {
     return router;
 }
 
-function gameScheduledEmail(game){
-    //SET LINKS PROPERLY
-    var text = "A game has been scheduled:\n";
-    text+= "http://evals.camptlc.com/game/"+game._id;
-    text+= game.name + "\n";
-    text+= "evals.camptlc.com/game/"+game._id;
+// function gameScheduledEmail(game){
+//     //SET LINKS PROPERLY
+//     var text = "A game has been scheduled:\n";
+//     text+= "http://evals.camptlc.com/game/"+game._id;
+//     text+= game.name + "\n";
+//     text+= "evals.camptlc.com/game/"+game._id;
 
-    var html = "<p>A game has been scheduled:</p>";
-    html+= "<p>"+game.name+"</p>";
-    html+= "<p>http://evals.camptlc.com/game/"+game._id+"</p>"
+//     var html = "<p>A game has been scheduled:</p>";
+//     html+= "<p>"+game.name+"</p>";
+//     html+= "<p>http://evals.camptlc.com/game/"+game._id+"</p>"
 
-    var emails = ['athletics@tylerhillcamp.com'];
-    if(game.division){
-        for(let leader of game.division.leaders){
-            emails.push(leader.email);
-        }
-        for(let leader of game.division.approvers){
-            emails.push(leader.email);
-        }
-    }
+//     var emails = ['athletics@tylerhillcamp.com'];
+//     if(game.division){
+//         for(let leader of game.division.leaders){
+//             emails.push(leader.email);
+//         }
+//         for(let leader of game.division.approvers){
+//             emails.push(leader.email);
+//         }
+//     }
 
     
-    for(let email of emails){
-        let mailOptions = {
-            from: '"Tyler Hill Sports" <tylerhillsports@stachecamp.com>', // sender address
-            to: email, // list of receivers
-            subject: 'Game Scheduled', // Subject line
-            text: text, // plain text body
-            html: html // html body
-        };
-        var message = "Email Sent To "+email;
-        sendEmail(mailOptions,message);
-    }
+//     for(let email of emails){
+//         let mailOptions = {
+//             from: '"Tyler Hill Sports" <tylerhillsports@stachecamp.com>', // sender address
+//             to: email, // list of receivers
+//             subject: 'Game Scheduled', // Subject line
+//             text: text, // plain text body
+//             html: html // html body
+//         };
+//         var message = "Email Sent To "+email;
+//         sendEmail(mailOptions,message);
+//     }
 
 
-}
+// }
 
 function rosterSubmittedEmail(game){
     //SET LINKS PROPERLY

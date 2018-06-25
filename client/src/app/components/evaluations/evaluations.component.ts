@@ -45,6 +45,7 @@ export class EvaluationsComponent implements OnInit {
       this.divisions = [];
       this.counselors = [];
       if(this.authService.admin()){
+        console.log("HELLO WORLD");
         this.sessions = data.output;
         for(let session of this.sessions){
           for(let counselor of session.counselors){
@@ -341,8 +342,7 @@ export class EvaluationsComponent implements OnInit {
         var tempSession = Object.assign({},session);;
         var tempCounselors = [];
         for(let counselor of session.counselors){
-
-          if((counselor.counselor.gender.toLowerCase() == this.genderShowing || allGenders) && (counselor.counselor.division.name == this.divisionShowing.name || allDivisions)){
+          if((counselor.counselor.gender.toLowerCase() == this.genderShowing || allGenders) && ((counselor.counselor.division && counselor.counselor.division.name == this.divisionShowing.name) || allDivisions)){
             tempCounselors.push(counselor);
           }
         }

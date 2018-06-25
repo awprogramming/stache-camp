@@ -5,6 +5,15 @@
   <h3>{{displayDateTime(game.date)}}</h3>
   <h3>@ {{game.location}}</h3>
   <h3>Against {{game.opponent}}</h3>
+  
+  <select class="form-control" (change) = "schedGenderChange($event.target.value)">
+      <option value="male">Boys</option>
+      <option value="female">Girls</option>
+  </select>
+  <app-divisions-dropdown (selectedChanged) = "schedDivisionChange($event)" [gender] = "male" [divisions]="schedDivisions" *ngIf="dropdownDivisions"></app-divisions-dropdown>
+  <button class="btn btn-primary" (click)="changeDivision()">Change Division</button>
+  <h4>{{division.name}} ({{division.gender}})</h4>
+  
   <div *ngIf="game.rosterId">
     <h3>Roster <button *ngIf="authService.userType() =='head_specialist'" class="btn btn-primary" (click)="removeRoster()">Remove Roster</button></h3>
     <ul>
@@ -26,6 +35,7 @@
   </div>
   <div *ngIf="authService.userType() =='leader'">
     <h4>Select Coach</h4>
+    
     <app-counselor-selector [exclude] = "exclude" (selection)="addCoachToGame($event)"></app-counselor-selector>
   </div>
   <div *ngIf="refs.length == 0">

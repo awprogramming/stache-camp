@@ -136,7 +136,8 @@ module.exports = (router) => {
         Camp.findById(req.decoded.campId).exec().then((camp)=>{
             const current_session = camp.options.session;
             var type;
-            if(camp.admin == req.decoded.userId){
+            var user = camp.users.id(req.decoded.userId);
+            if(camp.admin == req.decoded.userId || user.type.type == "admin"){
                 Camp.aggregate([
                     { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
                     { $unwind: '$counselors'},

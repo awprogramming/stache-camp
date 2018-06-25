@@ -18,6 +18,10 @@ export class GameComponent implements OnInit {
   refs;
   exclude = [];
   loading;
+  division;
+  dropdownDivisions;
+  schedDivisions;
+  preSchedDivision;
 
   constructor(
     private route: ActivatedRoute,
@@ -30,6 +34,7 @@ export class GameComponent implements OnInit {
   loadGame(){
     this.loading = true;
     this.sportsService.getGame(this.id).subscribe(data => {
+      this.division = data.division;
       this.game = data.game;
       this.campers = data.campers;
       this.coaches = data.coaches;
@@ -110,10 +115,40 @@ export class GameComponent implements OnInit {
     });
   }
 
+  populateDivisions(){
+    this.loading = true;
+    this.campsService.getAllDivisions().subscribe(data=>{
+      this.dropdownDivisions = data;
+      this.schedDivisions = this.divGenders("male");
+      this.loading = false;
+    });
+  }
+
+  divGenders(gender){
+    if(gender.toLowerCase()=="female"){
+      return this.dropdownDivisions.divisions[0].divisions;
+    }
+    else if(gender.toLowerCase()=="male")
+      return this.dropdownDivisions.divisions[1].divisions;
+    else
+      return [];
+  }
+
+  schedDivisionChange(e){
+    this.preSchedDivision = e._id;
+  }
+
+  changeDivision(){
+    this.sportsService.changeGameDivision(this.id,this.preSchedDivision).subscribe(data => {
+      this.loadGame();
+    });
+  }
+
   ngOnInit() {
       this.route.paramMap.subscribe(params => {
         this.id = params.get('id');
         this.loadGame();
+        this.populateDivisions();
       });
   }
 

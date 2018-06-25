@@ -37908,6 +37908,7 @@ var EvaluationsComponent = (function () {
             _this.divisions = [];
             _this.counselors = [];
             if (_this.authService.admin()) {
+                console.log("HELLO WORLD");
                 _this.sessions = data.output;
                 for (var _i = 0, _a = _this.sessions; _i < _a.length; _i++) {
                     var session = _a[_i];
@@ -38212,7 +38213,7 @@ var EvaluationsComponent = (function () {
             var tempCounselors = [];
             for (var _b = 0, _c = session.counselors; _b < _c.length; _b++) {
                 var counselor = _c[_b];
-                if ((counselor.counselor.gender.toLowerCase() == this.genderShowing || allGenders) && (counselor.counselor.division.name == this.divisionShowing.name || allDivisions)) {
+                if ((counselor.counselor.gender.toLowerCase() == this.genderShowing || allGenders) && ((counselor.counselor.division && counselor.counselor.division.name == this.divisionShowing.name) || allDivisions)) {
                     tempCounselors.push(counselor);
                 }
             }
@@ -38289,7 +38290,7 @@ module.exports = ".no-roster{\n    color:red;\n}"
 /***/ "./src/app/components/game-calendar/game-calendar.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n\n<div *ngIf = \"authService.admin() || authService.userType()=='head_specialist'\">\n  <h3>Filter by division:</h3>\n  <select class=\"form-control\" (change) = \"filterGender($event.target.value)\">\n    <option value=\"all\">All</option>\n    <option value=\"male\">Boys</option>\n    <option value=\"female\">Girls</option>\n  </select>\n  <app-divisions-dropdown (selectedChanged) = \"filterDivision($event)\" [gender] = \"male\" [divisions]=\"dropdownDivisionsShowing\" *ngIf=\"dropdownDivisions && genderShowing!='all'\"></app-divisions-dropdown>\n</div>\n<app-calendar (selection)=\"dateSelected($event)\" (changeVisible)=\"getGames($event)\" [events] = \"games\"></app-calendar>\n<div *ngIf=\"selectedDate\">\n  <h2>{{selectedDate.day}} {{getMonthName(selectedDate.date.month)}} {{selectedDate.date.day}}, {{selectedDate.date.year}}</h2>\n  <button class=\"btn btn-primary\" *ngIf=\"authService.admin()\" (click)=\"scheduler=true\">Schedule Game</button>\n  <div *ngIf=\"scheduler\">\n    <app-timepicker (selection)=\"timeSelected($event)\"></app-timepicker>\n    <app-specialties-dropdown (selectedChanged)=\"specialtySelected($event)\" [specialties]=\"specialties\"></app-specialties-dropdown>\n    \n    <form [formGroup]=\"form\" (submit)=\"onScheduleSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"name\">Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"name\" formControlName=\"name\" />\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"location\">Location</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"location\" formControlName=\"location\" />\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"needsLunch\">Lunch?</label>\n        <div>\n          <input type=\"checkbox\" name=\"needsLunch\" formControlName=\"needsLunch\" />\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"opponent\">Opponent</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"opponent\" formControlName=\"opponent\" />\n        </div>\n      </div>\n\n      <select class=\"form-control\" (change) = \"schedGenderChange($event.target.value)\">\n          <option value=\"male\">Boys</option>\n          <option value=\"female\">Girls</option>\n      </select>\n      <app-divisions-dropdown (selectedChanged) = \"schedDivisionChange($event)\" [gender] = \"male\" [divisions]=\"schedDivisions\" *ngIf=\"dropdownDivisions\"></app-divisions-dropdown>\n\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Schedule\" />\n    </form>\n  </div>\n  <div *ngIf=\"selectedDate?.date.events\">\n    <div *ngFor=\"let game of selectedDate.date.events\">\n      <h2>{{displayTime(game.date)}} ({{game.specialty.name}})<span *ngIf=\"!game.rosterId\" class=\"no-roster\">No Roster Submitted!</span></h2>\n      <h3 *ngIf=\"game.division\">{{game.division.name}}</h3>\n      <h3>{{game.name}}</h3>\n      <p>vs. {{game.opponent}}</p>\n      <p>@ {{game.location}}</p>\n      <a class=\"btn btn-primary\" [routerLink]=\"['/game', game._id]\">View Game</a>\n      <button class=\"btn btn-primary\" (click)=\"removeGame(game)\" *ngIf=\"authService.admin()\">Remove Game</button>\n    </div>\n  </div>\n</div>"
+module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n\n<div *ngIf = \"authService.admin() || authService.userType()=='head_specialist'\">\n  <h3>Filter by division:</h3>\n  <select class=\"form-control\" (change) = \"filterGender($event.target.value)\">\n    <option value=\"all\">All</option>\n    <option value=\"male\">Boys</option>\n    <option value=\"female\">Girls</option>\n  </select>\n  <app-divisions-dropdown (selectedChanged) = \"filterDivision($event)\" [gender] = \"male\" [divisions]=\"dropdownDivisionsShowing\" *ngIf=\"dropdownDivisions && genderShowing!='all'\"></app-divisions-dropdown>\n</div>\n<app-calendar (selection)=\"dateSelected($event)\" (changeVisible)=\"getGames($event)\" [events] = \"games\"></app-calendar>\n<div *ngIf=\"selectedDate\">\n  <h2>{{selectedDate.day}} {{getMonthName(selectedDate.date.month)}} {{selectedDate.date.day}}, {{selectedDate.date.year}}</h2>\n  <button class=\"btn btn-primary\" *ngIf=\"authService.admin()\" (click)=\"scheduler=true\">Schedule Game</button>\n  <div *ngIf=\"scheduler\">\n    <app-timepicker (selection)=\"timeSelected($event)\"></app-timepicker>\n    <app-specialties-dropdown (selectedChanged)=\"specialtySelected($event)\" [specialties]=\"specialties\"></app-specialties-dropdown>\n    \n    <form [formGroup]=\"form\" (submit)=\"onScheduleSubmit()\">\n      <div class=\"form-group\">\n        <label for=\"name\">Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"name\" formControlName=\"name\" />\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"location\">Location</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"location\" formControlName=\"location\" />\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"needsLunch\">Lunch?</label>\n        <div>\n          <input type=\"checkbox\" name=\"needsLunch\" formControlName=\"needsLunch\" />\n        </div>\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"opponent\">Opponent</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"opponent\" formControlName=\"opponent\" />\n        </div>\n      </div>\n\n      <select class=\"form-control\" (change) = \"schedGenderChange($event.target.value)\">\n          <option value=\"male\">Boys</option>\n          <option value=\"female\">Girls</option>\n      </select>\n      <app-divisions-dropdown (selectedChanged) = \"schedDivisionChange($event)\" [gender] = \"male\" [divisions]=\"schedDivisions\" *ngIf=\"dropdownDivisions\"></app-divisions-dropdown>\n\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Schedule\" />\n    </form>\n  </div>\n  <div *ngIf=\"selectedDate?.date.events\">\n    <div *ngFor=\"let game of selectedDate.date.events\">\n      <h2>{{displayTime(game.date)}} ({{game.specialty.name}})<span *ngIf=\"!game.rosterId\" class=\"no-roster\">No Roster Submitted!</span></h2>\n      <h3 *ngIf=\"game.division\">{{game.division.name}} ({{game.division.gender}})</h3>\n      <h3>{{game.name}}</h3>\n      <p>vs. {{game.opponent}}</p>\n      <p>@ {{game.location}}</p>\n      <a class=\"btn btn-primary\" [routerLink]=\"['/game', game._id]\">View Game</a>\n      <button class=\"btn btn-primary\" (click)=\"removeGame(game)\" *ngIf=\"authService.admin()\">Remove Game</button>\n    </div>\n  </div>\n</div>"
 
 /***/ }),
 
@@ -38504,7 +38505,7 @@ module.exports = ""
 /***/ "./src/app/components/game/game.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<app-back-button></app-back-button>\n<div *ngIf=\"game\">\n  <h2>{{game.name}}</h2>\n  <h3>{{displayDateTime(game.date)}}</h3>\n  <h3>@ {{game.location}}</h3>\n  <h3>Against {{game.opponent}}</h3>\n  <div *ngIf=\"game.rosterId\">\n    <h3>Roster <button *ngIf=\"authService.userType() =='head_specialist'\" class=\"btn btn-primary\" (click)=\"removeRoster()\">Remove Roster</button></h3>\n    <ul>\n      <li *ngFor=\"let camper of campers\">{{camper.first}} {{camper.last}}</li>\n    </ul>\n  </div>\n  <div *ngIf=\"!game.rosterId\">\n    <app-roster-dropdown (selectedChanged) =\"rosterSelected($event)\" [specialtyId]=\"game.specialty._id\"></app-roster-dropdown>\n    <button class=\"btn btn-primary\" (click)=\"addRoster()\">Add Roster</button>\n  </div>\n  <div *ngIf=\"coaches.length == 0\">\n    <h4>No Coaches Selected</h4>\n  </div>\n  <div *ngIf=\"coaches.length > 0\">\n      <h4>Coaches</h4>\n      <ul>\n        <li *ngFor=\"let coach of coaches\">{{coach.first}} {{coach.last}} <button class=\"btn btn-primary\" (click)=\"removeCoachFromGame(coach)\">x</button></li>\n      </ul>\n  </div>\n  <div *ngIf=\"authService.userType() =='leader'\">\n    <h4>Select Coach</h4>\n    <app-counselor-selector [exclude] = \"exclude\" (selection)=\"addCoachToGame($event)\"></app-counselor-selector>\n  </div>\n  <div *ngIf=\"refs.length == 0\">\n    <h4>No Refs Selected</h4>\n  </div>\n  <div *ngIf=\"refs.length > 0\">\n      <h4>Refs</h4>\n      <ul>\n        <li *ngFor=\"let ref of refs\">{{ref.first}} {{ref.last}} <button class=\"btn btn-primary\" (click)=\"removeRefFromGame(ref)\">x</button></li>\n      </ul>\n  </div>\n  <div *ngIf=\"authService.userType() =='leader'\">\n    <h4>Select Ref</h4>\n    <app-counselor-selector [exclude] = \"exclude\" (selection)=\"addRefToGame($event)\"></app-counselor-selector>\n  </div>\n</div>\n"
+module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<app-back-button></app-back-button>\n<div *ngIf=\"game\">\n  <h2>{{game.name}}</h2>\n  <h3>{{displayDateTime(game.date)}}</h3>\n  <h3>@ {{game.location}}</h3>\n  <h3>Against {{game.opponent}}</h3>\n  \n  <select class=\"form-control\" (change) = \"schedGenderChange($event.target.value)\">\n      <option value=\"male\">Boys</option>\n      <option value=\"female\">Girls</option>\n  </select>\n  <app-divisions-dropdown (selectedChanged) = \"schedDivisionChange($event)\" [gender] = \"male\" [divisions]=\"schedDivisions\" *ngIf=\"dropdownDivisions\"></app-divisions-dropdown>\n  <button class=\"btn btn-primary\" (click)=\"changeDivision()\">Change Division</button>\n  <h4>{{division.name}} ({{division.gender}})</h4>\n  \n  <div *ngIf=\"game.rosterId\">\n    <h3>Roster <button *ngIf=\"authService.userType() =='head_specialist'\" class=\"btn btn-primary\" (click)=\"removeRoster()\">Remove Roster</button></h3>\n    <ul>\n      <li *ngFor=\"let camper of campers\">{{camper.first}} {{camper.last}}</li>\n    </ul>\n  </div>\n  <div *ngIf=\"!game.rosterId\">\n    <app-roster-dropdown (selectedChanged) =\"rosterSelected($event)\" [specialtyId]=\"game.specialty._id\"></app-roster-dropdown>\n    <button class=\"btn btn-primary\" (click)=\"addRoster()\">Add Roster</button>\n  </div>\n  <div *ngIf=\"coaches.length == 0\">\n    <h4>No Coaches Selected</h4>\n  </div>\n  <div *ngIf=\"coaches.length > 0\">\n      <h4>Coaches</h4>\n      <ul>\n        <li *ngFor=\"let coach of coaches\">{{coach.first}} {{coach.last}} <button class=\"btn btn-primary\" (click)=\"removeCoachFromGame(coach)\">x</button></li>\n      </ul>\n  </div>\n  <div *ngIf=\"authService.userType() =='leader'\">\n    <h4>Select Coach</h4>\n    \n    <app-counselor-selector [exclude] = \"exclude\" (selection)=\"addCoachToGame($event)\"></app-counselor-selector>\n  </div>\n  <div *ngIf=\"refs.length == 0\">\n    <h4>No Refs Selected</h4>\n  </div>\n  <div *ngIf=\"refs.length > 0\">\n      <h4>Refs</h4>\n      <ul>\n        <li *ngFor=\"let ref of refs\">{{ref.first}} {{ref.last}} <button class=\"btn btn-primary\" (click)=\"removeRefFromGame(ref)\">x</button></li>\n      </ul>\n  </div>\n  <div *ngIf=\"authService.userType() =='leader'\">\n    <h4>Select Ref</h4>\n    <app-counselor-selector [exclude] = \"exclude\" (selection)=\"addRefToGame($event)\"></app-counselor-selector>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -38545,6 +38546,7 @@ var GameComponent = (function () {
         var _this = this;
         this.loading = true;
         this.sportsService.getGame(this.id).subscribe(function (data) {
+            _this.division = data.division;
             _this.game = data.game;
             _this.campers = data.campers;
             _this.coaches = data.coaches;
@@ -38621,11 +38623,39 @@ var GameComponent = (function () {
             _this.loadGame();
         });
     };
+    GameComponent.prototype.populateDivisions = function () {
+        var _this = this;
+        this.loading = true;
+        this.campsService.getAllDivisions().subscribe(function (data) {
+            _this.dropdownDivisions = data;
+            _this.schedDivisions = _this.divGenders("male");
+            _this.loading = false;
+        });
+    };
+    GameComponent.prototype.divGenders = function (gender) {
+        if (gender.toLowerCase() == "female") {
+            return this.dropdownDivisions.divisions[0].divisions;
+        }
+        else if (gender.toLowerCase() == "male")
+            return this.dropdownDivisions.divisions[1].divisions;
+        else
+            return [];
+    };
+    GameComponent.prototype.schedDivisionChange = function (e) {
+        this.preSchedDivision = e._id;
+    };
+    GameComponent.prototype.changeDivision = function () {
+        var _this = this;
+        this.sportsService.changeGameDivision(this.id, this.preSchedDivision).subscribe(function (data) {
+            _this.loadGame();
+        });
+    };
     GameComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.route.paramMap.subscribe(function (params) {
             _this.id = params.get('id');
             _this.loadGame();
+            _this.populateDivisions();
         });
     };
     GameComponent = __decorate([
@@ -43014,7 +43044,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var AuthService = (function () {
     function AuthService(http) {
         this.http = http;
-        this.domain = ""; // Production;
+        //domain = ""; // Production;
+        this.domain = "http://localhost:8080/";
     }
     // Function to create headers, add token, to be used in HTTP requests
     AuthService.prototype.createAuthenticationHeaders = function () {
@@ -43760,6 +43791,14 @@ var SportsService = (function () {
         };
         this.createAuthenticationHeaders();
         return this.http.post(this.domain + 'sports/remove_game', data, this.options).map(function (res) { return res.json(); });
+    };
+    SportsService.prototype.changeGameDivision = function (gameId, divisionId) {
+        var data = {
+            gameId: gameId,
+            divisionId: divisionId
+        };
+        this.createAuthenticationHeaders();
+        return this.http.post(this.domain + 'sports/change_game_division', data, this.options).map(function (res) { return res.json(); });
     };
     SportsService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
