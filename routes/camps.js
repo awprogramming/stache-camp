@@ -1192,15 +1192,19 @@ module.exports = (router) => {
                 }
             }
             else{
+                var count = 0;
                 for(let data of req.body){
                     var newCamper;
                     var oldCamper = false;
                     if(camp.campers.id(data.camper._id)){
                         newCamper = camp.campers.id(data.camper._id);
                         oldCamper = true;
+                        count++;
                     }
                     else{
+                        
                         var newCamper = camp.campers.create(data.camper);
+                        console.log("******")
                         if(camp.hasModule("meds")){
                             newCamper.meds = {
                                 "epi" : false,
@@ -1217,7 +1221,7 @@ module.exports = (router) => {
                     }
                     var reenrolled = false;
                     for(let session of newCamper.sessions){
-                        if(sessions._id.equals(camp.options.session._id)){
+                        if(session._id.equals(camp.options.session._id)){
                             reenrolled = true;
                             break;
                         }
@@ -1232,6 +1236,7 @@ module.exports = (router) => {
                         camp.campers.push(newCamper);
                     }
                 }
+                console.log(count);
             }
             camp.save({ validateBeforeSave: false });
             res.json({success:true});

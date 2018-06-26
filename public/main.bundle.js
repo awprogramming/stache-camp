@@ -35990,7 +35990,7 @@ module.exports = ""
 /***/ "./src/app/components/campers/campers.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<div *ngIf=\"newCamp\">\n    <h2 class=\"page-header\">Register Camper</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    \n    <!-- Login Form -->\n    <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n      \n        <div class=\"form-group\">\n          <label for=\"pID\">personID</label>\n          <div>\n            <input class=\"form-control\" type=\"text\" name=\"pID\" formControlName=\"pID\" />\n          </div>\n        </div>\n\n      <div class=\"form-group\">\n        <label for=\"first\">First Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"first\" formControlName=\"first\" />\n        </div>\n      </div>\n    \n      <div class=\"form-group\">\n        <label for=\"last\">Last Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"last\" formControlName=\"last\" />\n        </div>\n      </div>\n      \n      <div class=\"form-group\">\n        <label for=\"gender\">Gender</label>\n        <div>\n          <div>\n            <input class=\"form-check-input\" formControlName=\"gender\" type=\"radio\" name=\"gender\" value=\"male\">\n            <label class=\"form-check-label\">Male</label>\n          </div>\n          <div>\n              <input class=\"form-check-input\" formControlName=\"gender\" type=\"radio\" name=\"gender\" value=\"female\">\n              <label class=\"form-check-label\">Female</label>\n          </div>\n        </div>\n      </div>\n    \n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n    </form>\n</div>\n\n<div *ngIf=\"bulkAdd\">\n    <h2 class=\"page-header\">Bulk Upload Campers</h2>\n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    \n    <form [formGroup]=\"bulkAddForm\" (submit)=\"onBulkUploadSubmit()\">\n    \n      <div class=\"form-group\">\n        <label for=\"camper_file\">Camper CSV File</label>\n        <div>\n          <input class=\"form-control\" type=\"file\" (change)=\"fileUploaded($event)\" name=\"camper_file\" formControlName=\"camper_file\" />\n        </div>\n      </div>\n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Upload\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelBulkAdd()\" value=\"Cancel Add\" />\n    </form>\n</div>\n\n    \n    <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newCamp && authService.admin()\">Add</button>\n    \n    <button class=\"btn btn-primary\" (click) = \"showBulkAdd()\" *ngIf = \"!bulkAdd && authService.admin()\">Upload camper CSV File</button>\n    \n    <div *ngIf=\"authService.admin() && sessions\">\n        <div class=\"panel with-nav-tabs\">\n            <div class=\"panel-heading\">\n                    <ul class=\"nav nav-tabs\">\n                        <li class=\"nav-item\" [ngClass] = \"{'active':i==0}\" *ngFor=\"let session of sessions; let i = index\">\n                          <a  class=\"nav-link\" id=\"{{session._id.session_name}}-tab\" data-toggle=\"tab\" href=\"#{{session._id.session_name}}\" role=\"tab\" attr.aria-controls=\"{{session._id.session_name}}\" aria-selected=\"true\">{{session._id.session_name}}</a>\n                        </li>\n                    </ul>\n            </div>\n            <div class=\"panel-body\">\n                <div class=\"tab-content\">\n                    <div *ngFor=\"let session of sessions; let i = index\" [ngClass] = \"{'in active':i==0}\" class=\"tab-pane fade\" id=\"{{session._id.session_name}}\">\n                        <h2>{{session._id.session_name}}</h2>\n                        <table class=\"table\" >\n                            <tr>\n                              <th>First</th>\n                              <th>Last</th>\n                              <th>Gender</th>\n                              <th>{{options.howWeSay.division}}</th>\n                              <th *ngIf=\"i!=0\"></th>\n                              <th *ngIf=\"i!=0\"><button class=\"btn btn-primary\" (click) = \"massReenroll()\">Reenroll Selected</button></th>\n                              <th *ngIf=\"i==0\"></th>\n                            </tr>\n                            <tr *ngFor=\"let camper of session.campers\">\n                              <td>{{camper.first}}</td>\n                              <td>{{camper.last}}</td>\n                              <td>{{camper.gender}}</td>\n                              <td *ngIf=\"camper.division \">{{camper.division.name}}</td>\n                              <td *ngIf=\"!camper.division\">\n                                <app-divisions-dropdown *ngIf=\"i==0\" (selectedChanged) = \"preAdd($event,camper)\" [gender]=\"camper.gender\" [divisions]=\"divGenders(camper.gender)\"></app-divisions-dropdown>\n                                <button *ngIf=\"i==0\" class=\"btn btn-primary\" (click) = \"addDivision(camper)\">Add</button>\n                              </td>\n                        \n                              <td *ngIf=\"i!=0 && camper.enrolled\">Enrolled</td>\n                              <td *ngIf=\"i!=0 && !camper.enrolled\">\n                                  <button class=\"btn btn-primary\" (click) = \"reenroll(camper,false)\">Re-enroll</button>\n                              </td>\n                              <td *ngIf=\"i!=0 && camper.enrolled\"></td>\n                              <td *ngIf=\"i!=0 && !camper.enrolled\">\n                                  <input type=\"checkbox\" (change)=\"preMassReenroll($event,camper)\">\n                              </td>\n                              <td *ngIf=\"i==0\"><button class=\"btn btn-primary\" (click) = \"remove(camper)\">X</button></td>\n                            </tr>\n                          </table>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div *ngIf=\"authService.isUser() && divisions\">\n      <div *ngFor=\"let division of divisions\">\n      <h2>{{division}}</h2>\n      <table class=\"table\" >\n          <tr>\n            <th>First</th>\n            <th>Last</th>\n            <th>Gender</th>\n          </tr>\n          <tr *ngFor=\"let camper of campers[division]\">\n            <td>{{camper.first}}</td>\n            <td>{{camper.last}}</td>\n            <td>{{camper.gender}}</td>\n          </tr>\n        </table>\n      </div>\n    </div>\n    "
+module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<div *ngIf=\"newCamp\">\n    <h2 class=\"page-header\">Register Camper</h2>\n    \n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    \n    <!-- Login Form -->\n    <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n      \n        <div class=\"form-group\">\n          <label for=\"pID\">personID</label>\n          <div>\n            <input class=\"form-control\" type=\"text\" name=\"pID\" formControlName=\"pID\" />\n          </div>\n        </div>\n\n      <div class=\"form-group\">\n        <label for=\"first\">First Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"first\" formControlName=\"first\" />\n        </div>\n      </div>\n    \n      <div class=\"form-group\">\n        <label for=\"last\">Last Name</label>\n        <div>\n          <input class=\"form-control\" type=\"text\" name=\"last\" formControlName=\"last\" />\n        </div>\n      </div>\n      \n      <div class=\"form-group\">\n        <label for=\"gender\">Gender</label>\n        <div>\n          <div>\n            <input class=\"form-check-input\" formControlName=\"gender\" type=\"radio\" name=\"gender\" value=\"male\">\n            <label class=\"form-check-label\">Male</label>\n          </div>\n          <div>\n              <input class=\"form-check-input\" formControlName=\"gender\" type=\"radio\" name=\"gender\" value=\"female\">\n              <label class=\"form-check-label\">Female</label>\n          </div>\n        </div>\n      </div>\n    \n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n    </form>\n</div>\n\n<div *ngIf=\"bulkAdd\">\n    <h2 class=\"page-header\">Bulk Upload Campers</h2>\n    <!-- Custom Success/Error Message -->\n    <div class=\"row show-hide-message\">\n      <div [ngClass]=\"messageClass\">\n        {{ message }}\n      </div>\n    </div>\n    \n    <form [formGroup]=\"bulkAddForm\" (submit)=\"onBulkUploadSubmit()\">\n    \n      <div class=\"form-group\">\n        <label for=\"camper_file\">Camper CSV File</label>\n        <div>\n          <input class=\"form-control\" type=\"file\" (change)=\"fileUploaded($event)\" name=\"camper_file\" formControlName=\"camper_file\" />\n        </div>\n      </div>\n      <!-- Submit Button -->\n      <input class=\"btn btn-primary\" type=\"submit\" value=\"Upload\" />\n      <input class=\"btn btn-primary\" (click) = \"cancelBulkAdd()\" value=\"Cancel Add\" />\n    </form>\n</div>\n\n    \n    <button class=\"btn btn-primary\" (click) = \"showAdd()\" *ngIf = \"!newCamp && authService.admin()\">Add</button>\n    \n    <button class=\"btn btn-primary\" (click) = \"showBulkAdd()\" *ngIf = \"!bulkAdd && authService.admin()\">Upload camper CSV File</button>\n    \n    <div *ngIf=\"authService.admin() && sessions\">\n        <div class=\"panel with-nav-tabs\">\n            <div class=\"panel-heading\">\n                    <ul class=\"nav nav-tabs\">\n                        <li class=\"nav-item\" [ngClass] = \"{'active':i==0}\" *ngFor=\"let session of sessions; let i = index\">\n                          <a  class=\"nav-link\" id=\"{{session._id.session_name}}-tab\" data-toggle=\"tab\" href=\"#{{session._id.session_name}}\" role=\"tab\" attr.aria-controls=\"{{session._id.session_name}}\" aria-selected=\"true\">{{session._id.session_name}}</a>\n                        </li>\n                    </ul>\n            </div>\n            <div class=\"panel-body\">\n                <select class=\"form-control\" (change) = \"filterGender($event.target.value)\">\n                    <option value=\"all\">All</option>\n                    <option value=\"male\">Boys</option>\n                    <option value=\"female\">Girls</option>\n                  </select>\n                  <app-divisions-dropdown (selectedChanged) = \"filterDivision($event)\" [gender] = \"male\" [divisions]=\"divGenders('male')\" *ngIf=\"dropdownDivisions\"></app-divisions-dropdown>\n                <div class=\"tab-content\">\n                    <div *ngFor=\"let session of sessions; let i = index\" [ngClass] = \"{'in active':i==0}\" class=\"tab-pane fade\" id=\"{{session._id.session_name}}\">\n                        <h2>{{session._id.session_name}}</h2>\n                        <table class=\"table\" >\n                            <tr>\n                              <th></th>\n                              <th>First</th>\n                              <th>Last</th>\n                              <th>Gender</th>\n                              <th>{{options.howWeSay.division}}</th>\n                              <th *ngIf=\"i!=0\"></th>\n                              <th *ngIf=\"i!=0\"><button class=\"btn btn-primary\" (click) = \"massReenroll()\">Reenroll Selected</button></th>\n                              <th *ngIf=\"i==0\"></th>\n                            </tr>\n                            <tr *ngFor=\"let camper of session.campers let j = index\">\n                              <td>{{j+1}}</td>\n                              <td>{{camper.first}}</td>\n                              <td>{{camper.last}}</td>\n                              <td>{{camper.gender}}</td>\n                              <td *ngIf=\"camper.division \">{{camper.division.name}}</td>\n                              <td *ngIf=\"!camper.division\">\n                                <app-divisions-dropdown *ngIf=\"i==0\" (selectedChanged) = \"preAdd($event,camper)\" [gender]=\"camper.gender\" [divisions]=\"divGenders(camper.gender)\"></app-divisions-dropdown>\n                                <button *ngIf=\"i==0\" class=\"btn btn-primary\" (click) = \"addDivision(camper)\">Add</button>\n                              </td>\n                        \n                              <td *ngIf=\"i!=0 && camper.enrolled\">Enrolled</td>\n                              <td *ngIf=\"i!=0 && !camper.enrolled\">\n                                  <button class=\"btn btn-primary\" (click) = \"reenroll(camper,false)\">Re-enroll</button>\n                              </td>\n                              <td *ngIf=\"i!=0 && camper.enrolled\"></td>\n                              <td *ngIf=\"i!=0 && !camper.enrolled\">\n                                  <input type=\"checkbox\" (change)=\"preMassReenroll($event,camper)\">\n                              </td>\n                              <td *ngIf=\"i==0\"><button class=\"btn btn-primary\" (click) = \"remove(camper)\">X</button></td>\n                            </tr>\n                          </table>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div *ngIf=\"authService.isUser() && divisions\">\n      <div *ngFor=\"let division of divisions\">\n      <h2>{{division}}</h2>\n      <table class=\"table\" >\n          <tr>\n            <th>First</th>\n            <th>Last</th>\n            <th>Gender</th>\n          </tr>\n          <tr *ngFor=\"let camper of campers[division]\">\n            <td>{{camper.first}}</td>\n            <td>{{camper.last}}</td>\n            <td>{{camper.gender}}</td>\n          </tr>\n        </table>\n      </div>\n    </div>\n    "
 
 /***/ }),
 
@@ -36031,6 +36031,10 @@ var CampersComponent = (function () {
         this.newCamp = false;
         this.bulkAdd = false;
         this.toMassReenroll = [];
+        this.divisionShowing = {
+            name: "Show All"
+        };
+        this.genderShowing = "all";
         this.createForm();
     }
     CampersComponent.prototype.createForm = function () {
@@ -36136,6 +36140,7 @@ var CampersComponent = (function () {
                                 gender: vals[3],
                             }
                         };
+                        console.log(data);
                         campers.push(data);
                     }
                 }
@@ -36152,30 +36157,33 @@ var CampersComponent = (function () {
         this.loading = true;
         var divisions = Math.ceil(this.uploaded_campers.length / 20);
         for (var i = 0; i < divisions; i++) {
-            if (i + 1 == divisions)
+            if (i + 1 == divisions) {
+                console.log(this.uploaded_campers.slice(i * 20));
                 this.bulkHelper(this.uploaded_campers.slice(i * 20));
-            else
-                this.bulkHelper(this.uploaded_campers.slice(i * 20, i * 20 + 19));
+            }
+            else {
+                console.log(this.uploaded_campers.slice(i * 20, i * 20 + 20));
+                this.bulkHelper(this.uploaded_campers.slice(i * 20, (i * 20) + 20));
+            }
         }
     };
-    CampersComponent.prototype.populateDivisions = function () {
-        var _this = this;
-        this.campsService.getAllDivisions().subscribe(function (data) {
-            _this.dropdownDivisions = data;
-            // if(this._gender=="female")
-            //   this.divisions = data.divisions[0].divisions;
-            // else if(this._gender=="male")
-            //   this.divisions = data.divisions[1].divisions;
-            // this.selectedChanged.emit(this.divisions[0]);
-        });
-    };
-    CampersComponent.prototype.divGenders = function (gender) {
-        if (gender.toLowerCase() == "female") {
-            return this.dropdownDivisions.divisions[0].divisions;
-        }
-        else if (gender.toLowerCase() == "male")
-            return this.dropdownDivisions.divisions[1].divisions;
-    };
+    // populateDivisions(){
+    //   this.campsService.getAllDivisions().subscribe(data=>{
+    //     this.dropdownDivisions = data;
+    //     // if(this._gender=="female")
+    //     //   this.divisions = data.divisions[0].divisions;
+    //     // else if(this._gender=="male")
+    //     //   this.divisions = data.divisions[1].divisions;
+    //     // this.selectedChanged.emit(this.divisions[0]);
+    //   });
+    // }
+    // divGenders(gender){
+    //   if(gender.toLowerCase()=="female"){
+    //     return this.dropdownDivisions.divisions[0].divisions;
+    //   }
+    //   else if(gender.toLowerCase()=="male")
+    //     return this.dropdownDivisions.divisions[1].divisions;
+    // }
     CampersComponent.prototype.bulkHelper = function (subset) {
         var _this = this;
         this.campsService.bulkRegisterCampers(subset).subscribe(function (data) {
@@ -36232,6 +36240,7 @@ var CampersComponent = (function () {
                         }
                     }
                 }
+                _this.allSessions = Object.assign([], _this.sessions);
             }
             _this.loading = false;
         });
@@ -36324,6 +36333,66 @@ var CampersComponent = (function () {
         this.campsService.reenroll(camper).subscribe(function (data) {
             _this.getAllCampers();
         });
+    };
+    CampersComponent.prototype.populateDivisions = function () {
+        var _this = this;
+        this.loading = true;
+        this.campsService.getAllDivisions().subscribe(function (data) {
+            _this.dropdownDivisions = data;
+            if (_this.authService.admin()) {
+                _this.dropdownDivisions.divisions[0].divisions.unshift({
+                    name: "Show All"
+                });
+                _this.dropdownDivisions.divisions[1].divisions.unshift({
+                    name: "Show All"
+                });
+            }
+            _this.loading = false;
+            // if(this._gender=="female")
+            //   this.divisions = data.divisions[0].divisions;
+            // else if(this._gender=="male")
+            //   this.divisions = data.divisions[1].divisions;
+            // this.selectedChanged.emit(this.divisions[0]);
+        });
+    };
+    CampersComponent.prototype.filterDivision = function (e) {
+        this.divisionShowing = e;
+        this.filter();
+    };
+    CampersComponent.prototype.filterGender = function (e) {
+        this.genderShowing = e;
+        this.filter();
+    };
+    CampersComponent.prototype.filter = function () {
+        this.sessions = this.allSessions;
+        var allGenders = this.genderShowing == "all";
+        var allDivisions = this.divisionShowing.name == "Show All";
+        var tempSessions = [];
+        console.log(this.sessions);
+        for (var _i = 0, _a = this.sessions; _i < _a.length; _i++) {
+            var session = _a[_i];
+            var tempSession = Object.assign({}, session);
+            ;
+            var tempCampers = [];
+            for (var _b = 0, _c = session.campers; _b < _c.length; _b++) {
+                var campers = _c[_b];
+                console.log((campers.gender.toLowerCase() == this.genderShowing || allGenders) && (campers.division.name == this.divisionShowing.name || allDivisions));
+                if ((campers.gender.toLowerCase() == this.genderShowing || allGenders) && (campers.division.name == this.divisionShowing.name || allDivisions)) {
+                    tempCampers.push(campers);
+                }
+            }
+            tempSession.campers = tempCampers;
+            tempSessions.push(tempSession);
+        }
+        this.sessions = tempSessions;
+        console.log(this.sessions);
+    };
+    CampersComponent.prototype.divGenders = function (gender) {
+        if (gender.toLowerCase() == "female") {
+            return this.dropdownDivisions.divisions[0].divisions;
+        }
+        else if (gender.toLowerCase() == "male")
+            return this.dropdownDivisions.divisions[1].divisions;
     };
     CampersComponent.prototype.ngOnInit = function () {
         if (this.authGuard.redirectUrl) {
@@ -37182,7 +37251,7 @@ module.exports = ".btn-space{\n    margin-left: 10px;\n}"
 /***/ "./src/app/components/dietary/dietary.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<div *ngIf=\"authService.admin()\">\n    <div class=\"panel with-nav-tabs\">\n        <div class=\"panel-heading\">\n                <ul class=\"nav nav-tabs\">\n                    <li class=\"nav-item\" [ngClass] = \"{'active':i==0}\" *ngFor=\"let session of sessions; let i = index\">\n                      <a  class=\"nav-link\" id=\"{{session._id.session_name}}-tab\" data-toggle=\"tab\" href=\"#{{session._id.session_name}}\" role=\"tab\" attr.aria-controls=\"{{session._id.session_name}}\" aria-selected=\"true\">{{session._id.session_name}}</a>\n                    </li>\n                </ul>\n        </div>\n        <div class=\"panel-body\">\n            <div class=\"tab-content\">\n                <div *ngFor=\"let session of sessions; let i = index\" [ngClass] = \"{'in active':i==0}\" class=\"tab-pane fade\" id=\"{{session._id.session_name}}\">\n                    <h2>{{session._id.session_name}}</h2>\n                    <table class=\"table\" >\n                        <tr>\n                          <th>First</th>\n                          <th>Last</th>\n                          <th>Gender</th>\n                          <th>Allergies</th>\n                          <th>Other</th>\n                        </tr>\n                        <tr *ngFor=\"let camper of session.campers\">\n                          <td>{{camper.first}}</td>\n                          <td>{{camper.last}}</td>\n                          <td>{{camper.gender}}</td>\n                          <td>\n                            <div *ngFor = \"let allergy of camper.dietary?.allergies\"><span>{{allergy.name}}</span><button class=\"btn btn-primary btn-space\" (click) = \"removeAllergy(allergy,camper)\">x</button></div>\n                            <button class=\"btn btn-primary\" *ngIf = \"!camper.showAddAllergy\" (click) = \"camper.showAddAllergy = true\">+</button>\n                            <input class=\"form-control\" type=\"text\" *ngIf = \"camper.showAddAllergy\" (input)=\"preAddAllergy($event,camper)\">\n                            <button class=\"btn btn-primary\" *ngIf = \"camper.showAddAllergy\" (click) = \"addAllergy(camper)\">Add Allergy</button>\n                          </td>\n                          <td>\n                            <div *ngFor = \"let other of camper.dietary?.other\"><span>{{other.name}}</span><button class=\"btn btn-primary btn-space\" (click) = \"removeOtherDietary(other,camper)\">x</button></div>\n                            <button class=\"btn btn-primary\" *ngIf = \"!camper.showAddOther\" (click) = \"camper.showAddOther = true\">+</button>\n                            <input class=\"form-control\" type=\"text\" *ngIf = \"camper.showAddOther\" (input)=\"preAddOther($event,camper)\">\n                            <button class=\"btn btn-primary\" *ngIf = \"camper.showAddOther\" (click) = \"addOtherDietary(camper)\">Add Other</button>\n                          </td>\n                        </tr>\n                      </table>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"authService.isUser()\">\n  <div *ngFor=\"let division of divisions\">\n  <h2>{{division}}</h2>\n  <table class=\"table\" >\n      <tr>\n        <th>First</th>\n        <th>Last</th>\n        <th>Gender</th>\n        <th>Allergies</th>\n        <th>Other</th>\n      </tr>\n      <tr *ngFor=\"let camper of campers[division]\">\n        <td>{{camper.first}}</td>\n        <td>{{camper.last}}</td>\n        <td>{{camper.gender}}</td>\n        <td>\n          <div *ngFor = \"let allergy of camper.dietary?.allergies\"><span>{{allergy.name}}</span></div>\n        </td>\n        <td>\n          <div *ngFor = \"let other of camper.dietary?.other\"><span>{{other.name}}</span></div>\n        </td>\n      </tr>\n    </table>\n  </div>\n</div>\n    "
+module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<div *ngIf=\"authService.admin()\">\n    <div class=\"panel with-nav-tabs\">\n        <div class=\"panel-heading\">\n                <ul class=\"nav nav-tabs\">\n                    <li class=\"nav-item\" [ngClass] = \"{'active':i==0}\" *ngFor=\"let session of sessions; let i = index\">\n                      <a  class=\"nav-link\" id=\"{{session._id.session_name}}-tab\" data-toggle=\"tab\" href=\"#{{session._id.session_name}}\" role=\"tab\" attr.aria-controls=\"{{session._id.session_name}}\" aria-selected=\"true\">{{session._id.session_name}}</a>\n                    </li>\n                </ul>\n        </div>\n        <div class=\"panel-body\">\n            <select class=\"form-control\" (change) = \"filterGender($event.target.value)\">\n                <option value=\"all\">All</option>\n                <option value=\"male\">Boys</option>\n                <option value=\"female\">Girls</option>\n              </select>\n              <app-divisions-dropdown (selectedChanged) = \"filterDivision($event)\" [gender] = \"male\" [divisions]=\"divGenders('male')\" *ngIf=\"dropdownDivisions\"></app-divisions-dropdown>\n            <div class=\"tab-content\">\n                <div *ngFor=\"let session of sessions; let i = index\" [ngClass] = \"{'in active':i==0}\" class=\"tab-pane fade\" id=\"{{session._id.session_name}}\">\n                    <h2>{{session._id.session_name}}</h2>\n                    <table class=\"table\" >\n                        <tr>\n                          <th>First</th>\n                          <th>Last</th>\n                          <th>Gender</th>\n                          <th>Allergies</th>\n                          <th>Other</th>\n                        </tr>\n                        <tr *ngFor=\"let camper of session.campers\">\n                          <td>{{camper.first}}</td>\n                          <td>{{camper.last}}</td>\n                          <td>{{camper.gender}}</td>\n                          <td>\n                            <div *ngFor = \"let allergy of camper.dietary?.allergies\"><span>{{allergy.name}}</span><button class=\"btn btn-primary btn-space\" (click) = \"removeAllergy(allergy,camper)\">x</button></div>\n                            <button class=\"btn btn-primary\" *ngIf = \"!camper.showAddAllergy\" (click) = \"camper.showAddAllergy = true\">+</button>\n                            <input class=\"form-control\" type=\"text\" *ngIf = \"camper.showAddAllergy\" (input)=\"preAddAllergy($event,camper)\">\n                            <button class=\"btn btn-primary\" *ngIf = \"camper.showAddAllergy\" (click) = \"addAllergy(camper)\">Add Allergy</button>\n                          </td>\n                          <td>\n                            <div *ngFor = \"let other of camper.dietary?.other\"><span>{{other.name}}</span><button class=\"btn btn-primary btn-space\" (click) = \"removeOtherDietary(other,camper)\">x</button></div>\n                            <button class=\"btn btn-primary\" *ngIf = \"!camper.showAddOther\" (click) = \"camper.showAddOther = true\">+</button>\n                            <input class=\"form-control\" type=\"text\" *ngIf = \"camper.showAddOther\" (input)=\"preAddOther($event,camper)\">\n                            <button class=\"btn btn-primary\" *ngIf = \"camper.showAddOther\" (click) = \"addOtherDietary(camper)\">Add Other</button>\n                          </td>\n                        </tr>\n                      </table>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"authService.isUser()\">\n  <div *ngFor=\"let division of divisions\">\n  <h2>{{division}}</h2>\n  <table class=\"table\" >\n      <tr>\n        <th>First</th>\n        <th>Last</th>\n        <th>Gender</th>\n        <th>Allergies</th>\n        <th>Other</th>\n      </tr>\n      <tr *ngFor=\"let camper of campers[division]\">\n        <td>{{camper.first}}</td>\n        <td>{{camper.last}}</td>\n        <td>{{camper.gender}}</td>\n        <td>\n          <div *ngFor = \"let allergy of camper.dietary?.allergies\"><span>{{allergy.name}}</span></div>\n        </td>\n        <td>\n          <div *ngFor = \"let other of camper.dietary?.other\"><span>{{other.name}}</span></div>\n        </td>\n      </tr>\n    </table>\n  </div>\n</div>\n    "
 
 /***/ }),
 
@@ -37222,6 +37291,10 @@ var DietaryComponent = (function () {
         this.processing = false;
         this.newCamp = false;
         this.bulkAdd = false;
+        this.divisionShowing = {
+            name: "Show All"
+        };
+        this.genderShowing = "all";
     }
     DietaryComponent.prototype.getAllCampers = function () {
         var _this = this;
@@ -37255,6 +37328,7 @@ var DietaryComponent = (function () {
                         }
                     }
                 }
+                _this.allSessions = Object.assign([], _this.sessions);
             }
         });
     };
@@ -37306,6 +37380,64 @@ var DietaryComponent = (function () {
             _this.options = data.options;
         });
     };
+    DietaryComponent.prototype.populateDivisions = function () {
+        var _this = this;
+        this.campsService.getAllDivisions().subscribe(function (data) {
+            _this.dropdownDivisions = data;
+            if (_this.authService.admin()) {
+                _this.dropdownDivisions.divisions[0].divisions.unshift({
+                    name: "Show All"
+                });
+                _this.dropdownDivisions.divisions[1].divisions.unshift({
+                    name: "Show All"
+                });
+            }
+            // if(this._gender=="female")
+            //   this.divisions = data.divisions[0].divisions;
+            // else if(this._gender=="male")
+            //   this.divisions = data.divisions[1].divisions;
+            // this.selectedChanged.emit(this.divisions[0]);
+        });
+    };
+    DietaryComponent.prototype.filterDivision = function (e) {
+        this.divisionShowing = e;
+        this.filter();
+    };
+    DietaryComponent.prototype.filterGender = function (e) {
+        this.genderShowing = e;
+        this.filter();
+    };
+    DietaryComponent.prototype.filter = function () {
+        this.sessions = this.allSessions;
+        var allGenders = this.genderShowing == "all";
+        var allDivisions = this.divisionShowing.name == "Show All";
+        var tempSessions = [];
+        console.log(this.sessions);
+        for (var _i = 0, _a = this.sessions; _i < _a.length; _i++) {
+            var session = _a[_i];
+            var tempSession = Object.assign({}, session);
+            ;
+            var tempCampers = [];
+            for (var _b = 0, _c = session.campers; _b < _c.length; _b++) {
+                var campers = _c[_b];
+                console.log((campers.gender.toLowerCase() == this.genderShowing || allGenders) && (campers.division.name == this.divisionShowing.name || allDivisions));
+                if ((campers.gender.toLowerCase() == this.genderShowing || allGenders) && (campers.division.name == this.divisionShowing.name || allDivisions)) {
+                    tempCampers.push(campers);
+                }
+            }
+            tempSession.campers = tempCampers;
+            tempSessions.push(tempSession);
+        }
+        this.sessions = tempSessions;
+        console.log(this.sessions);
+    };
+    DietaryComponent.prototype.divGenders = function (gender) {
+        if (gender.toLowerCase() == "female") {
+            return this.dropdownDivisions.divisions[0].divisions;
+        }
+        else if (gender.toLowerCase() == "male")
+            return this.dropdownDivisions.divisions[1].divisions;
+    };
     DietaryComponent.prototype.ngOnInit = function () {
         if (this.authGuard.redirectUrl) {
             this.messageClass = 'alert alert-danger';
@@ -37313,6 +37445,7 @@ var DietaryComponent = (function () {
             this.previousUrl = this.authGuard.redirectUrl;
             this.authGuard.redirectUrl = undefined;
         }
+        this.populateDivisions();
         this.getAllCampers();
         this.getOptions();
     };
@@ -39635,7 +39768,7 @@ module.exports = ".btn-space{\n    margin-left: 10px;\n}"
 /***/ "./src/app/components/meds/meds.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<div *ngIf=\"authService.admin()\">\n    <div class=\"panel with-nav-tabs\">\n        <div class=\"panel-heading\">\n                <ul class=\"nav nav-tabs\">\n                    <li class=\"nav-item\" [ngClass] = \"{'active':i==0}\" *ngFor=\"let session of sessions; let i = index\">\n                      <a  class=\"nav-link\" id=\"{{session._id.session_name}}-tab\" data-toggle=\"tab\" href=\"#{{session._id.session_name}}\" role=\"tab\" attr.aria-controls=\"{{session._id.session_name}}\" aria-selected=\"true\">{{session._id.session_name}}</a>\n                    </li>\n                </ul>\n        </div>\n        <div class=\"panel-body\">\n            <div class=\"tab-content\">\n                <div *ngFor=\"let session of sessions; let i = index\" [ngClass] = \"{'in active':i==0}\" class=\"tab-pane fade\" id=\"{{session._id.session_name}}\">\n                    <h2>{{session._id.session_name}}</h2>\n                    <table class=\"table\" >\n                        <tr>\n                          <th>First</th>\n                          <th>Last</th>\n                          <th>Gender</th>\n                          <th>Epi</th>\n                          <th>Inhaler</th>\n                          <th>Other</th>\n                        </tr>\n                        <tr *ngFor=\"let camper of session.campers\">\n                          <td>{{camper.first}}</td>\n                          <td>{{camper.last}}</td>\n                          <td>{{camper.gender}}</td>\n                          <td><input type=\"checkbox\" [checked]=\"camper.meds?.epi\" (change)=\"epiChange($event,camper)\"></td>\n                          <td><input type=\"checkbox\" [checked]=\"camper.meds?.inhaler\" (change)=\"inhChange($event,camper)\"></td>\n                          <td>\n                            <div *ngFor = \"let med of camper.meds?.other\"><span>{{med.name}}</span><button class=\"btn btn-primary btn-space\" (click) = \"removeMed(med,camper)\">x</button></div>\n                            <button class=\"btn btn-primary\" *ngIf = \"!camper.showAdd\" (click) = \"camper.showAdd = true\">+</button>\n                            <input class=\"form-control\" type=\"text\" *ngIf = \"camper.showAdd\" (input)=\"preAdd($event,camper)\">\n                            <button class=\"btn btn-primary\" *ngIf = \"camper.showAdd\" (click) = \"addMed(camper)\">Add Med</button>\n                          </td>\n                        </tr>\n                      </table>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"authService.isUser()\">\n  <div *ngFor=\"let division of divisions\">\n  <h2>{{division}}</h2>\n  <table class=\"table\" >\n      <tr>\n        <th>First</th>\n        <th>Last</th>\n        <th>Gender</th>\n        <th>Epi</th>\n        <th>Inhaler</th>\n        <th>Other</th>\n      </tr>\n      <tr *ngFor=\"let camper of campers[division]\">\n        <td>{{camper.first}}</td>\n        <td>{{camper.last}}</td>\n        <td>{{camper.gender}}</td>\n        <td><input type=\"checkbox\" [checked]=\"camper.meds?.epi\" disabled></td>\n        <td><input type=\"checkbox\" [checked]=\"camper.meds?.inhaler\" disabled></td>\n        <td>\n          <div *ngFor = \"let med of camper.meds?.other\"><span>{{med.name}}</span></div>\n        </td>\n      </tr>\n    </table>\n  </div>\n</div>\n    "
+module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<div *ngIf=\"authService.admin()\">\n    <div class=\"panel with-nav-tabs\">\n        <div class=\"panel-heading\">\n                <ul class=\"nav nav-tabs\">\n                    <li class=\"nav-item\" [ngClass] = \"{'active':i==0}\" *ngFor=\"let session of sessions; let i = index\">\n                      <a  class=\"nav-link\" id=\"{{session._id.session_name}}-tab\" data-toggle=\"tab\" href=\"#{{session._id.session_name}}\" role=\"tab\" attr.aria-controls=\"{{session._id.session_name}}\" aria-selected=\"true\">{{session._id.session_name}}</a>\n                    </li>\n                </ul>\n        </div>\n        <div class=\"panel-body\">\n            <select class=\"form-control\" (change) = \"filterGender($event.target.value)\">\n                <option value=\"all\">All</option>\n                <option value=\"male\">Boys</option>\n                <option value=\"female\">Girls</option>\n              </select>\n              <app-divisions-dropdown (selectedChanged) = \"filterDivision($event)\" [gender] = \"male\" [divisions]=\"divGenders('male')\" *ngIf=\"dropdownDivisions\"></app-divisions-dropdown>\n            <div class=\"tab-content\">\n                <div *ngFor=\"let session of sessions; let i = index\" [ngClass] = \"{'in active':i==0}\" class=\"tab-pane fade\" id=\"{{session._id.session_name}}\">\n                    <h2>{{session._id.session_name}}</h2>\n                    <table class=\"table\" >\n                        <tr>\n                          <th>First</th>\n                          <th>Last</th>\n                          <th>Gender</th>\n                          <th>Epi</th>\n                          <th>Inhaler</th>\n                          <th>Other</th>\n                        </tr>\n                        <tr *ngFor=\"let camper of session.campers\">\n                          <td>{{camper.first}}</td>\n                          <td>{{camper.last}}</td>\n                          <td>{{camper.gender}}</td>\n                          <td><input type=\"checkbox\" [checked]=\"camper.meds?.epi\" (change)=\"epiChange($event,camper)\"></td>\n                          <td><input type=\"checkbox\" [checked]=\"camper.meds?.inhaler\" (change)=\"inhChange($event,camper)\"></td>\n                          <td>\n                            <div *ngFor = \"let med of camper.meds?.other\"><span>{{med.name}}</span><button class=\"btn btn-primary btn-space\" (click) = \"removeMed(med,camper)\">x</button></div>\n                            <button class=\"btn btn-primary\" *ngIf = \"!camper.showAdd\" (click) = \"camper.showAdd = true\">+</button>\n                            <input class=\"form-control\" type=\"text\" *ngIf = \"camper.showAdd\" (input)=\"preAdd($event,camper)\">\n                            <button class=\"btn btn-primary\" *ngIf = \"camper.showAdd\" (click) = \"addMed(camper)\">Add Med</button>\n                          </td>\n                        </tr>\n                      </table>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"authService.isUser()\">\n  <div *ngFor=\"let division of divisions\">\n  <h2>{{division}}</h2>\n  <table class=\"table\" >\n      <tr>\n        <th>First</th>\n        <th>Last</th>\n        <th>Gender</th>\n        <th>Epi</th>\n        <th>Inhaler</th>\n        <th>Other</th>\n      </tr>\n      <tr *ngFor=\"let camper of campers[division]\">\n        <td>{{camper.first}}</td>\n        <td>{{camper.last}}</td>\n        <td>{{camper.gender}}</td>\n        <td><input type=\"checkbox\" [checked]=\"camper.meds?.epi\" disabled></td>\n        <td><input type=\"checkbox\" [checked]=\"camper.meds?.inhaler\" disabled></td>\n        <td>\n          <div *ngFor = \"let med of camper.meds?.other\"><span>{{med.name}}</span></div>\n        </td>\n      </tr>\n    </table>\n  </div>\n</div>\n    "
 
 /***/ }),
 
@@ -39675,6 +39808,10 @@ var MedsComponent = (function () {
         this.processing = false;
         this.newCamp = false;
         this.bulkAdd = false;
+        this.divisionShowing = {
+            name: "Show All"
+        };
+        this.genderShowing = "all";
     }
     MedsComponent.prototype.getAllCampers = function () {
         var _this = this;
@@ -39709,6 +39846,7 @@ var MedsComponent = (function () {
                         }
                     }
                 }
+                _this.allSessions = Object.assign([], _this.sessions);
             }
             _this.loading = false;
         });
@@ -39758,6 +39896,66 @@ var MedsComponent = (function () {
             _this.loading = false;
         });
     };
+    MedsComponent.prototype.populateDivisions = function () {
+        var _this = this;
+        this.loading = true;
+        this.campsService.getAllDivisions().subscribe(function (data) {
+            _this.dropdownDivisions = data;
+            if (_this.authService.admin()) {
+                _this.dropdownDivisions.divisions[0].divisions.unshift({
+                    name: "Show All"
+                });
+                _this.dropdownDivisions.divisions[1].divisions.unshift({
+                    name: "Show All"
+                });
+            }
+            _this.loading = false;
+            // if(this._gender=="female")
+            //   this.divisions = data.divisions[0].divisions;
+            // else if(this._gender=="male")
+            //   this.divisions = data.divisions[1].divisions;
+            // this.selectedChanged.emit(this.divisions[0]);
+        });
+    };
+    MedsComponent.prototype.filterDivision = function (e) {
+        this.divisionShowing = e;
+        this.filter();
+    };
+    MedsComponent.prototype.filterGender = function (e) {
+        this.genderShowing = e;
+        this.filter();
+    };
+    MedsComponent.prototype.filter = function () {
+        this.sessions = this.allSessions;
+        var allGenders = this.genderShowing == "all";
+        var allDivisions = this.divisionShowing.name == "Show All";
+        var tempSessions = [];
+        console.log(this.sessions);
+        for (var _i = 0, _a = this.sessions; _i < _a.length; _i++) {
+            var session = _a[_i];
+            var tempSession = Object.assign({}, session);
+            ;
+            var tempCampers = [];
+            for (var _b = 0, _c = session.campers; _b < _c.length; _b++) {
+                var campers = _c[_b];
+                console.log((campers.gender.toLowerCase() == this.genderShowing || allGenders) && (campers.division.name == this.divisionShowing.name || allDivisions));
+                if ((campers.gender.toLowerCase() == this.genderShowing || allGenders) && (campers.division.name == this.divisionShowing.name || allDivisions)) {
+                    tempCampers.push(campers);
+                }
+            }
+            tempSession.campers = tempCampers;
+            tempSessions.push(tempSession);
+        }
+        this.sessions = tempSessions;
+        console.log(this.sessions);
+    };
+    MedsComponent.prototype.divGenders = function (gender) {
+        if (gender.toLowerCase() == "female") {
+            return this.dropdownDivisions.divisions[0].divisions;
+        }
+        else if (gender.toLowerCase() == "male")
+            return this.dropdownDivisions.divisions[1].divisions;
+    };
     MedsComponent.prototype.ngOnInit = function () {
         if (this.authGuard.redirectUrl) {
             this.messageClass = 'alert alert-danger';
@@ -39765,6 +39963,7 @@ var MedsComponent = (function () {
             this.previousUrl = this.authGuard.redirectUrl;
             this.authGuard.redirectUrl = undefined;
         }
+        this.populateDivisions();
         this.getAllCampers();
         this.getOptions();
     };

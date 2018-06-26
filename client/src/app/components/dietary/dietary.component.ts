@@ -25,9 +25,15 @@ export class DietaryComponent  implements OnInit {
   uploaded_campers;
   divisions;
   sessions;
+  allSessions;
   enrolled;
   toAddType;
   options;
+  dropdownDivisions;
+  divisionShowing = {
+    name:"Show All"
+  };
+  genderShowing = "all";
 
   constructor(
     private campsService: CampsService,
@@ -66,6 +72,7 @@ export class DietaryComponent  implements OnInit {
           }
         }
       }
+      this.allSessions = Object.assign([],this.sessions);
       }
     });
   }
@@ -120,6 +127,66 @@ export class DietaryComponent  implements OnInit {
     });
   }
 
+  populateDivisions(){
+    this.campsService.getAllDivisions().subscribe(data=>{
+      this.dropdownDivisions = data;
+      if(this.authService.admin()){
+        this.dropdownDivisions.divisions[0].divisions.unshift({
+          name:"Show All"
+        });
+        this.dropdownDivisions.divisions[1].divisions.unshift({
+          name:"Show All"
+        });
+      }
+      // if(this._gender=="female")
+      //   this.divisions = data.divisions[0].divisions;
+      // else if(this._gender=="male")
+      //   this.divisions = data.divisions[1].divisions;
+      
+      // this.selectedChanged.emit(this.divisions[0]);
+    });
+  }
+
+  filterDivision(e){
+    this.divisionShowing = e;
+    this.filter();
+
+  }
+  filterGender(e){
+    this.genderShowing = e;
+    this.filter()
+  }
+
+  filter(){
+      this.sessions = this.allSessions;
+      var allGenders = this.genderShowing == "all";
+      var allDivisions = this.divisionShowing.name == "Show All"
+      var tempSessions = [];
+      console.log(this.sessions);
+      for(let session of this.sessions){
+        var tempSession = Object.assign({},session);;
+        var tempCampers = [];
+        for(let campers of session.campers){
+          console.log((campers.gender.toLowerCase() == this.genderShowing || allGenders) && (campers.division.name == this.divisionShowing.name || allDivisions));
+          if((campers.gender.toLowerCase() == this.genderShowing || allGenders) && (campers.division.name == this.divisionShowing.name || allDivisions)){
+            tempCampers.push(campers);
+          }
+        }
+        tempSession.campers = tempCampers
+        tempSessions.push(tempSession);
+      }
+      this.sessions = tempSessions;
+      console.log(this.sessions);
+  }
+
+  divGenders(gender){
+    if(gender.toLowerCase()=="female"){
+      return this.dropdownDivisions.divisions[0].divisions;
+    }
+    else if(gender.toLowerCase()=="male")
+      return this.dropdownDivisions.divisions[1].divisions;
+  }
+
   ngOnInit() {
     if(this.authGuard.redirectUrl){
       this.messageClass = 'alert alert-danger';
@@ -127,6 +194,7 @@ export class DietaryComponent  implements OnInit {
       this.previousUrl = this.authGuard.redirectUrl;
       this.authGuard.redirectUrl = undefined;
     }
+    this.populateDivisions();
     this.getAllCampers();
     this.getOptions();
   }

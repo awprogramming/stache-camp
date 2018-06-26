@@ -23,12 +23,17 @@ export class CampersComponent implements OnInit {
   uploaded_campers;
   divisions;
   sessions;
+  allSessions;
   enrolled;
   toAddType;
   options;
   dropdownDivisions;
   toMassReenroll = [];
   loading;
+  divisionShowing = {
+    name:"Show All"
+  };
+  genderShowing = "all";
 
   constructor(
     private formBuilder: FormBuilder,
@@ -145,12 +150,14 @@ export class CampersComponent implements OnInit {
                 gender: vals[3],
               } 
             }
+            console.log(data);
             campers.push(data);
           }
         }
       }
     }
     myReader.readAsText(file);
+
     this.uploaded_campers = campers;
 }
 
@@ -163,35 +170,40 @@ gradeConversion(grade){
     this.loading = true;
     var divisions = Math.ceil(this.uploaded_campers.length/20);
     for(var i = 0; i < divisions; i++){
-      if(i+1==divisions)
+      if(i+1==divisions){
+        console.log(this.uploaded_campers.slice(i*20))
         this.bulkHelper(this.uploaded_campers.slice(i*20));
-      else
-        this.bulkHelper(this.uploaded_campers.slice(i*20,i*20+19));
+      }
+      else{
+        console.log(this.uploaded_campers.slice(i*20,i*20+20));
+        this.bulkHelper(this.uploaded_campers.slice(i*20,(i*20)+20));
+      }
+        
     }
     
     
   }
 
-  populateDivisions(){
-    this.campsService.getAllDivisions().subscribe(data=>{
-      this.dropdownDivisions = data;
-      // if(this._gender=="female")
-      //   this.divisions = data.divisions[0].divisions;
-      // else if(this._gender=="male")
-      //   this.divisions = data.divisions[1].divisions;
+  // populateDivisions(){
+  //   this.campsService.getAllDivisions().subscribe(data=>{
+  //     this.dropdownDivisions = data;
+  //     // if(this._gender=="female")
+  //     //   this.divisions = data.divisions[0].divisions;
+  //     // else if(this._gender=="male")
+  //     //   this.divisions = data.divisions[1].divisions;
       
-      // this.selectedChanged.emit(this.divisions[0]);
-    });
-  }
+  //     // this.selectedChanged.emit(this.divisions[0]);
+  //   });
+  // }
 
-  divGenders(gender){
-    if(gender.toLowerCase()=="female"){
-      return this.dropdownDivisions.divisions[0].divisions;
+  // divGenders(gender){
+  //   if(gender.toLowerCase()=="female"){
+  //     return this.dropdownDivisions.divisions[0].divisions;
       
-    }
-    else if(gender.toLowerCase()=="male")
-      return this.dropdownDivisions.divisions[1].divisions;
-  }
+  //   }
+  //   else if(gender.toLowerCase()=="male")
+  //     return this.dropdownDivisions.divisions[1].divisions;
+  // }
 
   bulkHelper(subset){
     this.campsService.bulkRegisterCampers(subset).subscribe(data => {
@@ -245,6 +257,7 @@ gradeConversion(grade){
           }
         }
       }
+      this.allSessions = Object.assign([],this.sessions);
       }
       this.loading = false;
     });
@@ -345,6 +358,67 @@ gradeConversion(grade){
     this.campsService.reenroll(camper).subscribe(data => {
       this.getAllCampers();
     });
+  }
+  populateDivisions(){
+    this.loading = true;
+    this.campsService.getAllDivisions().subscribe(data=>{
+      this.dropdownDivisions = data;
+      if(this.authService.admin()){
+        this.dropdownDivisions.divisions[0].divisions.unshift({
+          name:"Show All"
+        });
+        this.dropdownDivisions.divisions[1].divisions.unshift({
+          name:"Show All"
+        });
+      }
+      this.loading = false;
+      // if(this._gender=="female")
+      //   this.divisions = data.divisions[0].divisions;
+      // else if(this._gender=="male")
+      //   this.divisions = data.divisions[1].divisions;
+      
+      // this.selectedChanged.emit(this.divisions[0]);
+    });
+  }
+
+  filterDivision(e){
+    this.divisionShowing = e;
+    this.filter();
+
+  }
+  filterGender(e){
+    this.genderShowing = e;
+    this.filter()
+  }
+
+  filter(){
+      this.sessions = this.allSessions;
+      var allGenders = this.genderShowing == "all";
+      var allDivisions = this.divisionShowing.name == "Show All"
+      var tempSessions = [];
+      console.log(this.sessions);
+      for(let session of this.sessions){
+        var tempSession = Object.assign({},session);;
+        var tempCampers = [];
+        for(let campers of session.campers){
+          console.log((campers.gender.toLowerCase() == this.genderShowing || allGenders) && (campers.division.name == this.divisionShowing.name || allDivisions));
+          if((campers.gender.toLowerCase() == this.genderShowing || allGenders) && (campers.division.name == this.divisionShowing.name || allDivisions)){
+            tempCampers.push(campers);
+          }
+        }
+        tempSession.campers = tempCampers
+        tempSessions.push(tempSession);
+      }
+      this.sessions = tempSessions;
+      console.log(this.sessions);
+  }
+
+  divGenders(gender){
+    if(gender.toLowerCase()=="female"){
+      return this.dropdownDivisions.divisions[0].divisions;
+    }
+    else if(gender.toLowerCase()=="male")
+      return this.dropdownDivisions.divisions[1].divisions;
   }
 
   ngOnInit() {

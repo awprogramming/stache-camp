@@ -9,6 +9,12 @@
                 </ul>
         </div>
         <div class="panel-body">
+            <select class="form-control" (change) = "filterGender($event.target.value)">
+                <option value="all">All</option>
+                <option value="male">Boys</option>
+                <option value="female">Girls</option>
+              </select>
+              <app-divisions-dropdown (selectedChanged) = "filterDivision($event)" [gender] = "male" [divisions]="divGenders('male')" *ngIf="dropdownDivisions"></app-divisions-dropdown>
             <div class="tab-content">
                 <div *ngFor="let session of sessions; let i = index" [ngClass] = "{'in active':i==0}" class="tab-pane fade" id="{{session._id.session_name}}">
                     <h2>{{session._id.session_name}}</h2>
