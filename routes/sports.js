@@ -160,25 +160,32 @@ module.exports = (router) => {
             var rosters = {};
             for(let specialty of camp.specialties){
                 for(let roster of specialty.rosters){
+                    var pushed = false;
                     for(let camper of roster.campers){
                         camper = camp.campers.id(camper);
                         var division = camp.divisions.id(camper.division._id);
                         for(let leader of division.leaders){
                             if(leader._id == leader_id){
                                 if(rosters[camper.division.name]){
-                                    if(rosters[camper.division.name]["specialties"][specialty.name])
+                                    if(rosters[camper.division.name]["specialties"][specialty.name]){
                                         rosters[camper.division.name]["specialties"][specialty.name].push({ roster:roster,s_id:specialty._id});
-                                    else
-                                        rosters[camper.division.name]["specialties"][specialty.name] = { roster:roster,s_id:specialty._id};
+                                    }
+                                    else{
+                                        rosters[camper.division.name]["specialties"][specialty.name] = [{ roster:roster,s_id:specialty._id}];
+                                    }
                                 }
                                 else{
                                     rosters[camper.division.name] = {d_id:camper.division._id,specialties:{}};
                                     rosters[camper.division.name]["specialties"][specialty.name] = [{ roster:roster,s_id:specialty._id}];
                                 }
-
+                                pushed = true;
+                                break;
                             }
-                                
+                            if(pushed)
+                                break; 
                         }
+                        if(pushed)
+                            break;
                     }
                 }
             }
