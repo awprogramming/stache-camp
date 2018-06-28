@@ -22,33 +22,37 @@ var transporter = nodemailer.createTransport({
                 for(let game of camp.games){
                     var three_before = new Date(game.date);
                     three_before.setDate(three_before.getDate()-1);
-                    if(new Date().getDate() == three_before.getDate() && new Date().getFullYear() == three_before.getFullYear()&& new Date().getMonth() == three_before.getMonth()){
-                        //CHECK FOR RIGHT DATE
-                        console.log("**GAME***")
-                        for(let hs of game.specialty.head_specialists){
-                            sendRoster(hs.email,game,camp);
-                            //sendRoster("cadetboys@tylerhillcamp.com",game,camp);
-                        }
-                        if(game.needsLunch){
-                            sendKitchen(["cadetboys@tylerhillcamp.com","pete61731880@yahoo.com","food@tylerhillcamp.com"],game,camp); //ADD OPTION TO ADD KITCHEN EMAIL
-                            //sendKitchen(["cadetboys@tylerhillcamp.com"],game,camp); //ADD OPTION TO ADD KITCHEN EMAIL
-                        }
-                        if(game.location != "home"){
-                            console.log("AWAY GAME");
-                            sendHealthCenter(["cadetboys@tylerhillcamp.com","health@tylerhillcamp.com"],game,camp); //ADD OPTION TO ADD HEALTH CENTER EMAIL
-                            //sendHealthCenter(["cadetboys@tylerhillcamp.com"],game,camp); //ADD OPTION TO ADD HEALTH CENTER EMAIL
-                        }
-                        
-                        if(game.rosterId){
-                            var roster = camp.specialties.id(game.specialty._id).rosters.id(game.rosterId);
-                            var leaders = [];
-                            for(let camper of roster.campers){
-                                var c = camp.campers.id(camper);
-                                for(let leader of c.division.leaders){
-                                    if(leaders.indexOf(String(leader._id))==-1){
-                                        leaders.push(String(leader._id));
-                                        //sendRoster("cadetboys@tylerhillcamp.com",game,camp);
-                                        sendRoster(["cadetboys@tylerhillcamp.com",leader.email],game,camp);
+                    if(!game.emailSent){
+                        if(new Date().getDate() == three_before.getDate() && new Date().getFullYear() == three_before.getFullYear()&& new Date().getMonth() == three_before.getMonth()){
+                            //CHECK FOR RIGHT DATE
+                            game.emailSent = true;
+                            camps.save({ validateBeforeSave: false });
+                            console.log("**GAME***")
+                            for(let hs of game.specialty.head_specialists){
+                                sendRoster(hs.email,game,camp);
+                                //sendRoster("cadetboys@tylerhillcamp.com",game,camp);
+                            }
+                            if(game.needsLunch){
+                                sendKitchen(["cadetboys@tylerhillcamp.com","pete61731880@yahoo.com","food@tylerhillcamp.com"],game,camp); //ADD OPTION TO ADD KITCHEN EMAIL
+                                //sendKitchen(["cadetboys@tylerhillcamp.com"],game,camp); //ADD OPTION TO ADD KITCHEN EMAIL
+                            }
+                            if(game.location != "home"){
+                                console.log("AWAY GAME");
+                                sendHealthCenter(["cadetboys@tylerhillcamp.com","health@tylerhillcamp.com"],game,camp); //ADD OPTION TO ADD HEALTH CENTER EMAIL
+                                //sendHealthCenter(["cadetboys@tylerhillcamp.com"],game,camp); //ADD OPTION TO ADD HEALTH CENTER EMAIL
+                            }
+                            
+                            if(game.rosterId){
+                                var roster = camp.specialties.id(game.specialty._id).rosters.id(game.rosterId);
+                                var leaders = [];
+                                for(let camper of roster.campers){
+                                    var c = camp.campers.id(camper);
+                                    for(let leader of c.division.leaders){
+                                        if(leaders.indexOf(String(leader._id))==-1){
+                                            leaders.push(String(leader._id));
+                                            //sendRoster("cadetboys@tylerhillcamp.com",game,camp);
+                                            sendRoster(["cadetboys@tylerhillcamp.com",leader.email],game,camp);
+                                        }
                                     }
                                 }
                             }

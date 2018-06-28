@@ -16,6 +16,7 @@ const gameSchema = new Schema({
     rosterId: String,
     coachIds:[String],
     refIds:[String],
+    emailSent: {type: Boolean, default: false}
 });
 
 module.exports = mongoose.model('Game',gameSchema);

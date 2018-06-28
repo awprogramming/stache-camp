@@ -87,6 +87,8 @@ module.exports = (router) => {
         Camp.findById(req.decoded.campId).exec().then((camp)=>{
             var result = {};
             var user = camp.users.id(req.decoded.userId);
+            console.log(req.decoded.userId);
+            console.log(user);
             var count = 0;
             if(camp.swimGroups.length == 0){
                 res.json({success:false});
@@ -101,7 +103,10 @@ module.exports = (router) => {
                             lifeguard:lifeguard
                         }
                     if(user.type && user.type.type == "lifeguard"){
+                        //if(lifeguard)
+                        //console.log(lifeguard._id,user.counselorRef);
                             if(lifeguard && lifeguard._id == user.counselorRef){
+                                //console.log("hello world");
                                 var divisions = [];
                                 for(let id of group.camperIds){
                                     var camper = camp.campers.id(id);
