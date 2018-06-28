@@ -26,7 +26,7 @@ var transporter = nodemailer.createTransport({
                         if(new Date().getDate() == three_before.getDate() && new Date().getFullYear() == three_before.getFullYear()&& new Date().getMonth() == three_before.getMonth()){
                             //CHECK FOR RIGHT DATE
                             game.emailSent = true;
-                            camps.save({ validateBeforeSave: false });
+                            camp.save({ validateBeforeSave: false });
                             console.log("**GAME***")
                             for(let hs of game.specialty.head_specialists){
                                 sendRoster(hs.email,game,camp);
