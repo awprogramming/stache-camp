@@ -15,7 +15,7 @@ var transporter = nodemailer.createTransport({
     pool:true
    });
 
- new CronJob('0 0 16 * * *', function() {
+ new CronJob('0 0 14 * * *', function() {
    Camp.find({}, (err, camps)=>{
             console.log("***CRON START***");
             for(let camp of camps){
