@@ -275,7 +275,7 @@ module.exports = (router) => {
         
         if(req.params.eval==='true'){
             Camp.findById(req.decoded.campId,(err,camp)=>{
-                
+                console.log("*");
                 for(let counselorData of req.body){
                     var newCounselor;
                     var oldCounselor = false;
@@ -1202,7 +1202,6 @@ module.exports = (router) => {
                         count++;
                     }
                     else{
-                        
                         var newCamper = camp.campers.create(data.camper);
                         console.log("******")
                         if(camp.hasModule("meds")){

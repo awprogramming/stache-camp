@@ -36,6 +36,7 @@ export class CounselorSelectorComponent implements OnInit {
 
   genderChange(e){
     this.gender = e;
+    this.divGenders(e);
     this.populateDivision(this.division);
   }
 
@@ -75,10 +76,13 @@ export class CounselorSelectorComponent implements OnInit {
     }
     else{
       this.campService.get_division_counselors(divisonId,this.options.session._id).subscribe(data => {
+        
         if(data.success == false){
+          console.log("fail")
           this.counselors = [];
         }
         else{
+          console.log("success")
           this.counselors = [];
           for(let counselor of data.division.counselors){
             var add = true

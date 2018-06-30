@@ -33,7 +33,7 @@
         <li *ngFor="let coach of coaches">{{coach.first}} {{coach.last}} <button class="btn btn-primary" (click)="removeCoachFromGame(coach)">x</button></li>
       </ul>
   </div>
-  <div *ngIf="authService.userType() =='leader'">
+  <div>
     <h4>Select Coach</h4>
     
     <app-counselor-selector [exclude] = "exclude" (selection)="addCoachToGame($event)"></app-counselor-selector>
@@ -47,7 +47,7 @@
         <li *ngFor="let ref of refs">{{ref.first}} {{ref.last}} <button class="btn btn-primary" (click)="removeRefFromGame(ref)">x</button></li>
       </ul>
   </div>
-  <div *ngIf="authService.userType() =='leader'">
+  <div>
     <h4>Select Ref</h4>
     <app-counselor-selector [exclude] = "exclude" (selection)="addRefToGame($event)"></app-counselor-selector>
   </div>

@@ -32,8 +32,10 @@ var transporter = nodemailer.createTransport({
                                 sendRoster(hs.email,game,camp);
                                 //sendRoster("cadetboys@tylerhillcamp.com",game,camp);
                             }
+                            console.log(game.needsLunch);
                             if(game.needsLunch){
                                 sendKitchen(["cadetboys@tylerhillcamp.com","pete61731880@yahoo.com","food@tylerhillcamp.com"],game,camp); //ADD OPTION TO ADD KITCHEN EMAIL
+                                console.log("FOOD");
                                 //sendKitchen(["cadetboys@tylerhillcamp.com"],game,camp); //ADD OPTION TO ADD KITCHEN EMAIL
                             }
                             if(game.location != "home"){
@@ -63,7 +65,7 @@ var transporter = nodemailer.createTransport({
             console.log("***CRON END***");
         });
 
- }, null, true, 'America/New_York');
+  }, null, true, 'America/New_York');
 
 
 
