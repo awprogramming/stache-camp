@@ -16,7 +16,7 @@
     </div>
     <hr>
 </div>
-<div *ngIf="type=='leader'">
+<div>
   <span>Additional Notes</span>
   <textarea class="full form-control" [disabled] = "view || approver" (focusout)="additional_change($event)">{{evaluation?.evaluation.additional_notes}}</textarea>
 </div>

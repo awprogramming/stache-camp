@@ -136,6 +136,37 @@ function sendHealthCenter(email,game,camp){
     else{
         html+="<p>No roster Submitted</p>";
     }
+    
+    if(game.coachIds.length == 0){
+        html += "<span>No Refs Pre-Selected</span>"
+    }
+    html += "<table style='border:thin solid black;border-collapse:collapse;'>"
+    for(let c of game.coachIds){
+        html += "<tr style='border:thin solid black;border-collapse:collapse;'>"
+        var coach = camp.counselors.id(c);
+        html += "<td style='border:thin solid black;border-collapse:collapse;'>"
+        html += coach.first + " " + coach.last;
+        html += "</td>"
+        html += "</tr>";
+    }
+    html += "</table>"
+    html += "<h2>Refs:</h2>";
+    
+    if(game.refIds.length == 0){
+        html += "<span>No Refs Pre-Selected</span>"
+    }
+    else{
+        html += "<table style='border:thin solid black;border-collapse:collapse;'>"               
+        for(let c of game.refIds){
+            html += "<tr style='border:thin solid black;border-collapse:collapse;'>"
+            var ref = camp.counselors.id(c);
+            html += "<td style='border:thin solid black;border-collapse:collapse;'>"
+            html += ref.first + " " + ref.last;
+            html += "</td>"
+            html += "</tr>";
+        }
+        html += "</table>"
+    }
     let mailOptions = {
         from: '"Game Rosters" <rosters@stachecamp.com>', // sender address
         to: email, // list of receivers
@@ -191,10 +222,10 @@ function sendKitchen(email,game,camp){
         for(let c of roster.campers){
             html += "<tr style='border:thin solid black;border-collapse:collapse;'>"
             var camper = camp.campers.id(c);
-            html += "<td>"
+            html += "<td style='border:thin solid black;border-collapse:collapse;'>"
             html += camper.first + " " + camper.last;
             html += "</td>"
-            html += "<td>"
+            html += "<td style='border:thin solid black;border-collapse:collapse;'>"
             if(camper.dietary.allergies.length!=0){
                 for(var i = 0; i <camper.dietary.allergies.length; i++){
                     html +=camper.dietary.allergies[i].name;
@@ -203,7 +234,7 @@ function sendKitchen(email,game,camp){
                 }
             }
             html += "</td>"
-            html += "<td>"
+            html += "<td style='border:thin solid black;border-collapse:collapse;'>"
             if(camper.dietary.other.length!=0){
                 for(var i = 0; i <camper.dietary.other.length; i++){
                     html +=camper.dietary.other[i].name;
@@ -257,7 +288,7 @@ function sendRoster(email,game,camp){
         for(let c of roster.campers){
                 html += "<tr style='border:thin solid black;border-collapse:collapse;'>"
                 var camper = camp.campers.id(c);
-                html += "<td>"
+                html += "<td style='border:thin solid black;border-collapse:collapse;'>"
                 html += camper.first + " " + camper.last;
                 html += "</td>"
                 html += "</tr>";
@@ -276,7 +307,7 @@ function sendRoster(email,game,camp){
     for(let c of game.coachIds){
         html += "<tr style='border:thin solid black;border-collapse:collapse;'>"
         var coach = camp.counselors.id(c);
-        html += "<td>"
+        html += "<td style='border:thin solid black;border-collapse:collapse;'>"
         html += coach.first + " " + coach.last;
         html += "</td>"
         html += "</tr>";
@@ -292,7 +323,7 @@ function sendRoster(email,game,camp){
         for(let c of game.refIds){
             html += "<tr style='border:thin solid black;border-collapse:collapse;'>"
             var ref = camp.counselors.id(c);
-            html += "<td>"
+            html += "<td style='border:thin solid black;border-collapse:collapse;'>"
             html += ref.first + " " + ref.last;
             html += "</td>"
             html += "</tr>";
