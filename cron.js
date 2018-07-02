@@ -15,7 +15,7 @@ var transporter = nodemailer.createTransport({
     pool:true
    });
 
- new CronJob('0 0 14 * * *', function() {
+ new CronJob('0 0 12 * * *', function() {
    Camp.find({}, (err, camps)=>{
             console.log("***CRON START***");
             for(let camp of camps){
@@ -100,7 +100,7 @@ function sendHealthCenter(email,game,camp){
     }
 
     var html = "<h1>"+game.name+ "</h1>";
-    html += "<h2>"+displayDateTime(game.date)+"</h2>";
+    html += "<h2>"+displayDateTime(game.date.setUTCHours(14))+"</h2>";
     html += "<h2>Roster:</h2>";
     var roster = camp.specialties.id(game.specialty._id).rosters.id(game.rosterId);
     if(roster){
@@ -213,7 +213,7 @@ function sendKitchen(email,game,camp){
 
     var html = "<style>table,tr,td,th{border:thin solid black;border-collapse:collapse;} td{padding:5px;}</style>";
     html += "<h1>"+game.name+ "</h1>";
-    html += "<h2>"+displayDateTime(game.date)+"</h2>";
+    html += "<h2>"+displayDateTime(game.date.setUTCHours(14))+"</h2>";
     html += "<h2>Roster:</h2>";
     var roster = camp.specialties.id(game.specialty._id).rosters.id(game.rosterId);
     if(roster){
@@ -278,7 +278,7 @@ function sendRoster(email,game,camp){
 
     var html = "<style>table,tr,td,th{border:thin solid black;border-collapse:collapse;} td{padding:5px;}</style>";
     html += "<h1>"+game.name+ "</h1>";
-    html += "<h2>"+displayDateTime(game.date)+"</h2>";
+    html += "<h2>"+displayDateTime(game.date.setUTCHours(14))+"</h2>";
     html += "<h2>Location: "+game.location+"</h2>";
     html += "<h2>Roster:</h2>";
 
