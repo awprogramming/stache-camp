@@ -52,7 +52,7 @@ var transporter = nodemailer.createTransport({
                                     for(let leader of c.division.leaders){
                                         if(leaders.indexOf(String(leader._id))==-1){
                                             leaders.push(String(leader._id));
-                                            console.log(displayDateTime(game.date));
+                                            console.log(displayDateTime(game.date.setUTCHours(14)));
                                             //sendRoster("cadetboys@tylerhillcamp.com",game,camp);
                                             //sendRoster(["cadetboys@tylerhillcamp.com",leader.email],game,camp);
                                         }
@@ -361,7 +361,7 @@ function sendEmail(mailOptions,message){
 
 function displayDateTime(date){
     var d = new Date(date)
-    var time = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit',hour12:true});
+    var time = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit',hour12:true,timezone:"America/New_York"});
     var day = getDayName(d.getDay());
     var month = getMonthName(d.getMonth());
     return time + " on " + day+ ", " + month + " " + d.getDate();
