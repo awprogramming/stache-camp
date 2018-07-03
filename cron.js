@@ -360,8 +360,9 @@ function sendEmail(mailOptions,message){
 }
 
 function displayDateTime(date){
-    var d = new Date(date)
-    var time = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit',hour12:true,timezone:"America/New_York"});
+    var d = new Date(date);
+    d.setHours(d.getHours() - 4);
+    var time = d.toLocaleTimeString("en-US", {hour: '2-digit', minute:'2-digit',hour12:true,timezone:"America/New_York"});
     var day = getDayName(d.getDay());
     var month = getMonthName(d.getMonth());
     return time + " on " + day+ ", " + month + " " + d.getDate();
