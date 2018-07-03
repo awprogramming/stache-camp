@@ -15,32 +15,32 @@ var transporter = nodemailer.createTransport({
     pool:true
    });
 
- new CronJob('0 0 12 * * *', function() {
+ //new CronJob('0 0 12 * * *', function() {
    Camp.find({}, (err, camps)=>{
             console.log("***CRON START***");
             for(let camp of camps){
                 for(let game of camp.games){
                     var three_before = new Date(game.date);
                     three_before.setDate(three_before.getDate()-1);
-                    if(!game.emailSent){
+                    //if(!game.emailSent){
                         if(new Date().getDate() == three_before.getDate() && new Date().getFullYear() == three_before.getFullYear()&& new Date().getMonth() == three_before.getMonth()){
                             //CHECK FOR RIGHT DATE
                             game.emailSent = true;
                             camp.save({ validateBeforeSave: false });
                             console.log("**GAME***")
                             for(let hs of game.specialty.head_specialists){
-                                sendRoster(hs.email,game,camp);
+                                //sendRoster(hs.email,game,camp);
                                 //sendRoster("cadetboys@tylerhillcamp.com",game,camp);
                             }
                             console.log(game.needsLunch);
                             if(game.needsLunch){
-                                sendKitchen(["cadetboys@tylerhillcamp.com","pete61731880@yahoo.com","food@tylerhillcamp.com"],game,camp); //ADD OPTION TO ADD KITCHEN EMAIL
+                                //sendKitchen(["cadetboys@tylerhillcamp.com","pete61731880@yahoo.com","food@tylerhillcamp.com"],game,camp); //ADD OPTION TO ADD KITCHEN EMAIL
                                 console.log("FOOD");
                                 //sendKitchen(["cadetboys@tylerhillcamp.com"],game,camp); //ADD OPTION TO ADD KITCHEN EMAIL
                             }
                             if(game.location != "home"){
                                 console.log("AWAY GAME");
-                                sendHealthCenter(["cadetboys@tylerhillcamp.com","health@tylerhillcamp.com"],game,camp); //ADD OPTION TO ADD HEALTH CENTER EMAIL
+                                //sendHealthCenter(["cadetboys@tylerhillcamp.com","health@tylerhillcamp.com"],game,camp); //ADD OPTION TO ADD HEALTH CENTER EMAIL
                                 //sendHealthCenter(["cadetboys@tylerhillcamp.com"],game,camp); //ADD OPTION TO ADD HEALTH CENTER EMAIL
                             }
                             
@@ -52,20 +52,21 @@ var transporter = nodemailer.createTransport({
                                     for(let leader of c.division.leaders){
                                         if(leaders.indexOf(String(leader._id))==-1){
                                             leaders.push(String(leader._id));
+                                            console.log(displayDateTime(game.date));
                                             //sendRoster("cadetboys@tylerhillcamp.com",game,camp);
-                                            sendRoster(["cadetboys@tylerhillcamp.com",leader.email],game,camp);
+                                            //sendRoster(["cadetboys@tylerhillcamp.com",leader.email],game,camp);
                                         }
                                     }
                                 }
                             }
                         }
-                    }
+                    //}
                 }
             }
             console.log("***CRON END***");
         });
 
-  }, null, true, 'America/New_York');
+  //}, null, true, 'America/New_York');
 
 
 
@@ -278,7 +279,8 @@ function sendRoster(email,game,camp){
 
     var html = "<style>table,tr,td,th{border:thin solid black;border-collapse:collapse;} td{padding:5px;}</style>";
     html += "<h1>"+game.name+ "</h1>";
-    html += "<h2>"+displayDateTime(game.date.setUTCHours(14))+"</h2>";
+    //html += "<h2>"+displayDateTime(game.date.setUTCHours(14))+"</h2>";
+    html += "<h2>"+displayDateTime(game.date)+"</h2>";
     html += "<h2>Location: "+game.location+"</h2>";
     html += "<h2>Roster:</h2>";
 
