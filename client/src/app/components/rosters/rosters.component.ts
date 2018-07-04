@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { SportsService } from '../../services/sports.service';
+import { AuthService } from '../../services/auth.service';
+
 import { Router } from '@angular/router';
 import { AuthGuard } from '../../guards/auth.guard';
 
@@ -28,6 +30,7 @@ export class RostersComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private sportsService: SportsService,
+    private authService: AuthService,
     private router: Router,
     private authGuard: AuthGuard
   ) { 
@@ -117,9 +120,10 @@ export class RostersComponent implements OnInit {
 
   getAllRosters(){
     this.loading = true;
-
-    if(this.getType() == "head_specialist"){
+    console.log(this.getType());
+    if(this.getType() == "head_specialist" || this.authService.admin()){
       this.sportsService.getAllRosters().subscribe(data => {
+        console.log(data.specialties);
         this.specialties = data.specialties
         this.loading = false;;
       });

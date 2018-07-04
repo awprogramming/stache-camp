@@ -39,13 +39,20 @@ module.exports = (router) => {
     router.get('/all_rosters',(req,res) =>{
         Camp.findById(req.decoded.campId, (err, camp)=>{
             var specialties = [];
-            for(let specialty of camp.specialties){
-                for(let hs of specialty.head_specialists){
-                    if(req.decoded.userId==hs._id)
-                        specialties.push(specialty)
-                        break;
+            if(camp.users.id(req.decoded.userId).type.type == "admin"){
+                console.log("Hello world");
+                specialties = camp.specialties;
+            }
+            else{
+                for(let specialty of camp.specialties){
+                    for(let hs of specialty.head_specialists){
+                        if(req.decoded.userId==hs._id)
+                            specialties.push(specialty)
+                            break;
+                    }
                 }
             }
+            console.log(specialties);
             res.send({success:true, specialties:specialties});
         });
     });

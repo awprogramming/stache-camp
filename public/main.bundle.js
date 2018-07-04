@@ -41123,7 +41123,7 @@ var RosterComponent = (function () {
         return JSON.parse(localStorage.getItem('user')).type.type;
     };
     RosterComponent.prototype.isViewing = function () {
-        this.viewing = (this.getType() != "head_specialist") && (this.internal != "true");
+        this.viewing = (this.getType() != "head_specialist" && !this.authService.admin()) && (this.internal != "true");
     };
     RosterComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -41164,7 +41164,7 @@ module.exports = ""
 /***/ "./src/app/components/rosters/rosters.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<div *ngIf=\"newRoster\">\n  <h2 class=\"page-header\">Register Roster</h2>\n  \n  <!-- Custom Success/Error Message -->\n  <div class=\"row show-hide-message\">\n    <div [ngClass]=\"messageClass\">\n      {{ message }}\n    </div>\n  </div>\n  \n  <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n  \n    <div class=\"form-group\">\n      <label for=\"name\">Roster Name</label>\n      <div>\n        <input class=\"form-control\" type=\"text\" name=\"name\" formControlName=\"name\" />\n      </div>\n    </div>\n  \n    <!-- Submit Button -->\n    <input [disabled]=\"processing\" class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n    <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n  </form>\n</div>\n\n<div *ngIf=\"getType()=='head_specialist'\"> \n    \n    <div *ngFor=\"let specialty of specialties\">\n      <h2>{{specialty.name}} <button class=\"btn btn-primary\" (click) = \"showAdd(specialty,false)\" *ngIf = \"!newRoster\">Add</button></h2>\n      <table class=\"table\">\n        <tr>\n          <th>Roster Name</th>\n          <th></th>\n          <th></th>\n        </tr>\n        <tr *ngFor=\"let roster of specialty.rosters\">\n          <td>{{roster.name}}</td>\n          <td><a class=\"btn btn-primary\" [routerLink]=\"['/roster', specialty._id, roster._id,false]\">Go</a></td>\n          <td><button class=\"btn btn-primary\"(click) = \"remove(specialty,roster,false)\">X</button></td>\n        </tr>\n      </table>\n    </div>\n  </div>\n  <div *ngIf=\"getType()=='leader'\">\n    <div *ngFor=\"let division of d_keys\">\n      <h2>{{division}}</h2>\n      <div *ngFor=\"let specialty of keys[division]\">\n        <h3>{{specialty}}</h3>\n        <table class=\"table\">\n          <tr *ngFor=\"let roster of divisions[division]['specialties'][specialty]\">\n            <td>{{roster.roster.name}}</td>\n            <td><a class=\"btn btn-primary\" [routerLink]=\"['/roster', roster.s_id, roster.roster._id,false]\">Go</a></td>\n          </tr>\n        </table>\n      </div>\n      <div *ngIf=\"divisions[division]['internal']\">\n          <h3>Internal<button class=\"btn btn-primary\" (click) = \"showAdd(divisions[division].d_id,true)\" *ngIf = \"!newRoster\">Add</button></h3>\n          <table class=\"table\">\n            <tr *ngFor=\"let roster of divisions[division]['internal']\">\n              <td>{{roster.name}}</td>\n              <td><a class=\"btn btn-primary\" [routerLink]=\"['/roster', divisions[division].d_id, roster._id,true]\">Go</a></td>\n              <td><button class=\"btn btn-primary\"(click) = \"remove(divisions[division].d_id,roster,true)\">X</button></td>\n            </tr>\n          </table>\n        </div>\n    </div>\n  </div>"
+module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<div *ngIf=\"newRoster\">\n  <h2 class=\"page-header\">Register Roster</h2>\n  \n  <!-- Custom Success/Error Message -->\n  <div class=\"row show-hide-message\">\n    <div [ngClass]=\"messageClass\">\n      {{ message }}\n    </div>\n  </div>\n  \n  <form [formGroup]=\"form\" (submit)=\"onRegistrationSubmit()\">\n  \n    <div class=\"form-group\">\n      <label for=\"name\">Roster Name</label>\n      <div>\n        <input class=\"form-control\" type=\"text\" name=\"name\" formControlName=\"name\" />\n      </div>\n    </div>\n  \n    <!-- Submit Button -->\n    <input [disabled]=\"processing\" class=\"btn btn-primary\" type=\"submit\" value=\"Register\" />\n    <input class=\"btn btn-primary\" (click) = \"cancelAdd()\" value=\"Cancel Add\" />\n  </form>\n</div>\n\n<div *ngIf=\"getType()=='head_specialist'|| authService.admin()\"> \n    \n    <div *ngFor=\"let specialty of specialties\">\n      <h2>{{specialty.name}} <button class=\"btn btn-primary\" (click) = \"showAdd(specialty,false)\" *ngIf = \"!newRoster\">Add</button></h2>\n      <table class=\"table\">\n        <tr>\n          <th>Roster Name</th>\n          <th></th>\n          <th></th>\n        </tr>\n        <tr *ngFor=\"let roster of specialty.rosters\">\n          <td>{{roster.name}}</td>\n          <td><a class=\"btn btn-primary\" [routerLink]=\"['/roster', specialty._id, roster._id,false]\">Go</a></td>\n          <td><button class=\"btn btn-primary\"(click) = \"remove(specialty,roster,false)\">X</button></td>\n        </tr>\n      </table>\n    </div>\n  </div>\n  <div *ngIf=\"getType()=='leader'\">\n    <div *ngFor=\"let division of d_keys\">\n      <h2>{{division}}</h2>\n      <div *ngFor=\"let specialty of keys[division]\">\n        <h3>{{specialty}}</h3>\n        <table class=\"table\">\n          <tr *ngFor=\"let roster of divisions[division]['specialties'][specialty]\">\n            <td>{{roster.roster.name}}</td>\n            <td><a class=\"btn btn-primary\" [routerLink]=\"['/roster', roster.s_id, roster.roster._id,false]\">Go</a></td>\n          </tr>\n        </table>\n      </div>\n      <div *ngIf=\"divisions[division]['internal']\">\n          <h3>Internal<button class=\"btn btn-primary\" (click) = \"showAdd(divisions[division].d_id,true)\" *ngIf = \"!newRoster\">Add</button></h3>\n          <table class=\"table\">\n            <tr *ngFor=\"let roster of divisions[division]['internal']\">\n              <td>{{roster.name}}</td>\n              <td><a class=\"btn btn-primary\" [routerLink]=\"['/roster', divisions[division].d_id, roster._id,true]\">Go</a></td>\n              <td><button class=\"btn btn-primary\"(click) = \"remove(divisions[division].d_id,roster,true)\">X</button></td>\n            </tr>\n          </table>\n        </div>\n    </div>\n  </div>"
 
 /***/ }),
 
@@ -41176,8 +41176,9 @@ module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<div *ngIf=\"ne
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_forms__ = __webpack_require__("./node_modules/@angular/forms/esm5/forms.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_sports_service__ = __webpack_require__("./src/app/services/sports.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__guards_auth_guard__ = __webpack_require__("./src/app/guards/auth.guard.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_auth_service__ = __webpack_require__("./src/app/services/auth.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__guards_auth_guard__ = __webpack_require__("./src/app/guards/auth.guard.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -41192,10 +41193,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var RostersComponent = (function () {
-    function RostersComponent(formBuilder, sportsService, router, authGuard) {
+    function RostersComponent(formBuilder, sportsService, authService, router, authGuard) {
         this.formBuilder = formBuilder;
         this.sportsService = sportsService;
+        this.authService = authService;
         this.router = router;
         this.authGuard = authGuard;
         this.processing = false;
@@ -41282,8 +41285,10 @@ var RostersComponent = (function () {
     RostersComponent.prototype.getAllRosters = function () {
         var _this = this;
         this.loading = true;
-        if (this.getType() == "head_specialist") {
+        console.log(this.getType());
+        if (this.getType() == "head_specialist" || this.authService.admin()) {
             this.sportsService.getAllRosters().subscribe(function (data) {
+                console.log(data.specialties);
                 _this.specialties = data.specialties;
                 _this.loading = false;
                 ;
@@ -41321,8 +41326,9 @@ var RostersComponent = (function () {
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_forms__["a" /* FormBuilder */],
             __WEBPACK_IMPORTED_MODULE_2__services_sports_service__["a" /* SportsService */],
-            __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* Router */],
-            __WEBPACK_IMPORTED_MODULE_4__guards_auth_guard__["a" /* AuthGuard */]])
+            __WEBPACK_IMPORTED_MODULE_3__services_auth_service__["a" /* AuthService */],
+            __WEBPACK_IMPORTED_MODULE_4__angular_router__["b" /* Router */],
+            __WEBPACK_IMPORTED_MODULE_5__guards_auth_guard__["a" /* AuthGuard */]])
     ], RostersComponent);
     return RostersComponent;
 }());

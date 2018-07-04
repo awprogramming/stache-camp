@@ -24,7 +24,7 @@
   </form>
 </div>
 
-<div *ngIf="getType()=='head_specialist'"> 
+<div *ngIf="getType()=='head_specialist'|| authService.admin()"> 
     
     <div *ngFor="let specialty of specialties">
       <h2>{{specialty.name}} <button class="btn btn-primary" (click) = "showAdd(specialty,false)" *ngIf = "!newRoster">Add</button></h2>
