@@ -8,6 +8,8 @@
         <tr>
           <th>First</th>
           <th>Last</th>
+          <th>P1 Email</th>
+          <th>P2 Email</th>
           <th>Red Cross Level</th>
           <th>Swim Bracelet</th>
           <th>Most Recent Report Sent</th>
@@ -17,6 +19,8 @@
         <tr *ngFor="let camper of division.campers" (click)="goToStats(camper)">
           <td>{{camper.first}}</td>
           <td>{{camper.last}}</td>
+          <td>{{camper.p1Email}}</td>
+          <td>{{camper.p2Email}}</td>
           <td>{{camper.cSwimOpts.currentLevel?.rcLevel}}</td>
           <td>{{camper.cSwimOpts.bracelet}}</td>
           <td>{{displayDateHelper(camper.cSwimOpts.mostRecentReportSent)}}</td>

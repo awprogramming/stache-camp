@@ -40,15 +40,15 @@ module.exports = (router) => {
         Camp.findById(req.decoded.campId, (err, camp)=>{
             var specialties = [];
             if(camp.users.id(req.decoded.userId).type.type == "admin"){
-                console.log("Hello world");
                 specialties = camp.specialties;
             }
             else{
                 for(let specialty of camp.specialties){
                     for(let hs of specialty.head_specialists){
-                        if(req.decoded.userId==hs._id)
+                        if(req.decoded.userId==hs._id){
                             specialties.push(specialty)
                             break;
+                        }
                     }
                 }
             }
@@ -297,6 +297,7 @@ module.exports = (router) => {
                             games.push(game.games);  
                         }
                         else if(req.params.type == "head_specialist"){
+                            console.log("hello world");
                             for(let hs of game.games.specialty.head_specialists){
                                 if(hs._id == req.decoded.userId){
                                     if(game.games.divisionId)
