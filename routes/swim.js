@@ -608,8 +608,10 @@ module.exports = (router) => {
 
                 for(let cid of group.camperIds){
                     var camper = camp.campers.id(cid);
-                    camper.cSwimOpts.mostRecentReportSent = new Date();
-                    setMessage(camp,group,camper,transporter);
+                    if(camper.cSwimOpts.sendReport){
+                        camper.cSwimOpts.mostRecentReportSent = new Date();
+                        setMessage(camp,group,camper,transporter);
+                    }
                 }
 
                 camp.save({ validateBeforeSave: false });
@@ -617,6 +619,17 @@ module.exports = (router) => {
             });
         // });
     });
+
+    router.post('/change_send_report/',(req,res) => {
+        Camp.findById(req.decoded.campId, (err, camp)=>{
+            var camper = camp.campers.id(req.body.camper._id);
+            camper.cSwimOpts.sendReport = req.body.sendReport;
+            camp.save({ validateBeforeSave: false });
+            res.json({success:true});
+        });
+
+    });
+
     return router;
 }
 

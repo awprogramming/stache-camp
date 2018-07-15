@@ -149,6 +149,16 @@ export class SwimGroupComponent implements OnInit {
     });
   }
 
+  sendReportChange(e,camper){
+    var data = {
+      camper:camper,
+      sendReport:e.target.checked
+    }
+    this.swimService.changeSendReport(data).subscribe(data =>{
+      this.loadSwimGroup();
+    });
+  }
+
   preChangeName(newName){
     this.newName = newName;
   }

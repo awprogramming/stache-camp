@@ -8,7 +8,8 @@ const cSwimOptsSchema = new Schema({
     currentLevel: SwimLevelSchema,
     completedLevels: [SwimLevelSchema],
     bracelet: {type:String, enum:['none','green','orange']},
-    mostRecentReportSent: Date
+    mostRecentReportSent: Date,
+    sendReport: Boolean
 });
 
 module.exports = mongoose.model('CSwimOpts',cSwimOptsSchema);

@@ -17,12 +17,14 @@
   <button class="btn btn-primary" (click)="generateReports()" *ngIf="authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())">Generate Reports</button>
   <div *ngIf="generating">
     <div *ngFor="let camper of swimGroup.campers" [id]="camper._id" class="report" (click)="goToReport(camper._id)">
-      <img [src]="'./assets/'+camper.cSwimOpts.currentLevel.rcLevel+'.jpg'">
-      <span [id]="'name-'+camper.cSwimOpts.currentLevel.rcLevel">{{camper.first}} {{camper.last}}</span>
-      <span [id]="'date-'+camper.cSwimOpts.currentLevel.rcLevel">{{displayDate()}}</span>
-      <span [id]="'instructor-'+camper.cSwimOpts.currentLevel.rcLevel">{{swimGroup.lifeguard?.first}} {{swimGroup.lifeguard?.last}}</span>
-      <span [id]="'group-'+camper.cSwimOpts.currentLevel.rcLevel">{{camper.division.name}}</span>
-      <span *ngFor="let skill of completedSkills(camper.cSwimOpts.currentLevel)" [id]="generateSkillClass(camper.cSwimOpts.currentLevel.rcLevel,skill)">&#10004;</span>
+      <div *ngIf="camper.cSwimOpts.sendReport">
+        <img [src]="'./assets/'+camper.cSwimOpts.currentLevel.rcLevel+'.jpg'">
+        <span [id]="'name-'+camper.cSwimOpts.currentLevel.rcLevel">{{camper.first}} {{camper.last}}</span>
+        <span [id]="'date-'+camper.cSwimOpts.currentLevel.rcLevel">{{displayDate()}}</span>
+        <span [id]="'instructor-'+camper.cSwimOpts.currentLevel.rcLevel">{{swimGroup.lifeguard?.first}} {{swimGroup.lifeguard?.last}}</span>
+        <span [id]="'group-'+camper.cSwimOpts.currentLevel.rcLevel">{{camper.division.name}}</span>
+        <span *ngFor="let skill of completedSkills(camper.cSwimOpts.currentLevel)" [id]="generateSkillClass(camper.cSwimOpts.currentLevel.rcLevel,skill)">&#10004;</span>
+      </div>
     </div>
     <button class="btn btn-primary" (click)="sendReports()">Send Reports</button>
   </div>
@@ -35,6 +37,7 @@
         <th>Group</th>
         <th>Red Cross Level</th>
         <th>Swim Bracelet</th>
+        <th>Send Report?</th>
         <th>Most Recent Report Sent</th>
         <th *ngIf="this.authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())"></th>
       </tr>
@@ -46,6 +49,7 @@
         <td (click)="goToStats(camper)">{{camper.division.name}}</td>
         <td (click)="goToStats(camper)">{{camper.cSwimOpts.currentLevel?.rcLevel}}</td>
         <td (click)="goToStats(camper)">{{camper.cSwimOpts.bracelet}}</td>
+        <td><input type="checkbox" [checked]="camper.cSwimOpts.sendReport" (change)="sendReportChange($event,camper)"></td>
         <td (click)="goToStats(camper)">{{displayDateHelper(camper.cSwimOpts.mostRecentReportSent)}}</td>
         <td *ngIf="this.authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())"><button class="btn btn-primary" (click)="removeFromGroup(camper)">x</button></td>
       </tr>

@@ -61,6 +61,11 @@ export class SwimService {
     return this.http.get(this.domain + 'authentication/get_swim_group/'+campId+'/'+id,this.options).map(res => res.json());
   }
 
+  changeSendReport(data){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'swim/change_send_report',data,this.options).map(res => res.json());
+  }
+
   addToSwimGroup(groupId,camperId){
     var data = {
       camperId:camperId,
