@@ -638,17 +638,18 @@ function setMessage(camp,group,camper,transporter){
     //SET LINKS PROPERLY
 
     var text = "Please use the following link to view the swim report:\n";
-    text+= "https://stachecamp.herokuapp.com/swim-report/"+camp._id+"/"+group._id+"/"+camper._id+"/-1";
+    text+= "evals.camptlc.com/swim-report/"+camp._id+"/"+camper._id+"/"+group._id+"/-1";
 
     var html = "Please use the following link to view the swim report:</br>";
-    html+= "<a href = https://stachecamp.herokuapp.com/swim-report/"+camp._id+"/"+camper._id+"/"+group._id+"/"+camper._id+"/-1"+">Click here to see the report</a>"
+    html+= "<a href = evals.camptlc.com/swim-report/"+camp._id+"/"+camper._id+"/"+group._id+"/-1"+">Click here to see the report</a>"
 
     //SET EMAILS PROPERLY!
-    var emails = [];
-    if(camper.p1Email)
-        emails.push(camper.p1Email)
-    if(camper.p2Email)
-        emails.push(camper.p2Email)
+
+    var emails = ['awprogramming@gmail.com'];
+    // if(camper.p1Email)
+    //     emails.push(camper.p1Email)
+    // if(camper.p2Email)
+    //     emails.push(camper.p2Email)
     
     for(let email of emails){
         let mailOptions = {

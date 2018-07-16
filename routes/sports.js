@@ -297,8 +297,8 @@ module.exports = (router) => {
                             games.push(game.games);  
                         }
                         else if(req.params.type == "head_specialist"){
-                            console.log("hello world");
-                            for(let hs of game.games.specialty.head_specialists){
+                            var specialty = camp.specialties.id(game.games.specialty._id);
+                            for(let hs of specialty.head_specialists){
                                 if(hs._id == req.decoded.userId){
                                     if(game.games.divisionId)
                                         game.games.division = camp.divisions.id(game.games.divisionId);
@@ -311,7 +311,6 @@ module.exports = (router) => {
                             if(game.games.divisionId){
                                 game.games.division = camp.divisions.id(game.games.divisionId);
                                 var pushed = false;
-                                console.log(game.games.division.leaders);
                                 for(let leader of game.games.division.leaders){
                                     console.log("TEST");
                                     console.log(leader._id,req.decoded.userId);
