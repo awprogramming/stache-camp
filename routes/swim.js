@@ -634,11 +634,10 @@ module.exports = (router) => {
 function setMessage(camp,group,camper,transporter){
 
     //SET LINKS PROPERLY
-
-    var text = "Please use the following link to view the swim report:\n";
+    var text = "Please use the link below to view your child’s Swim Progress Report for this summer!\n";
     text+= "evals.camptlc.com/swim-report/"+camp._id+"/"+camper._id+"/"+group._id+"/-1";
 
-    var html = "Please use the following link to view the swim report:</br>";
+    var html = "<p>Please use the link below to view your child’s Swim Progress Report for this summer!:</p>";
     html+= "<a href = evals.camptlc.com/swim-report/"+camp._id+"/"+camper._id+"/"+group._id+"/-1"+">Click here to see the report</a>"
 
     //SET EMAILS PROPERLY!
