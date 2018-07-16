@@ -1064,7 +1064,6 @@ module.exports = (router) => {
     });
 
     router.get('/get_division_campers/:divisionId/:sessionId',(req,res) => {
-        console.log("Test 1 (Enter route)");
         Camp.aggregate([
             { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
             { $unwind: '$campers'},
@@ -1087,14 +1086,10 @@ module.exports = (router) => {
             },
         ],(err,result)=>{
             var success = false;
-            console.log("Test 2 (Post Aggregation)");
             for(let session of result){
                 if(session._id.equals(req.params.sessionId)){
-                    console.log("Test 3 (Session is current)");
                     for(let division of session.divisions){
-                        console.log(division.d_id,req.params);
                         if(division.d_id && division.d_id.equals(req.params.divisionId)){
-                            console.log("Test 4 (Success)");
                             success = true;
                             res.json({success:success,division:division});
                         }

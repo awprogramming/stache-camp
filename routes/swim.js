@@ -87,8 +87,6 @@ module.exports = (router) => {
         Camp.findById(req.decoded.campId).exec().then((camp)=>{
             var result = {};
             var user = camp.users.id(req.decoded.userId);
-            console.log(req.decoded.userId);
-            console.log(user);
             var count = 0;
             if(camp.swimGroups.length == 0){
                 res.json({success:false});
@@ -126,7 +124,6 @@ module.exports = (router) => {
                             var camper = camp.campers.id(id);
                             var div = camp.divisions.id(camper.division._id);
                             for(let leader of div.leaders){
-                                console.log(leader._id,user._id);
                                 if(String(leader._id) == String(user._id)){
                                     if(!divisions[camper.division.name]){
                                         if(result[camper.division.name])
@@ -605,10 +602,11 @@ module.exports = (router) => {
                });
             Camp.findById(req.decoded.campId, (err, camp)=>{
                 var group = camp.swimGroups.id(req.body.groupId);
-
+                console.log("test 1: camp found")
                 for(let cid of group.camperIds){
                     var camper = camp.campers.id(cid);
                     if(camper.cSwimOpts.sendReport){
+                        console.log("test 2: sendReport flagged");
                         camper.cSwimOpts.mostRecentReportSent = new Date();
                         setMessage(camp,group,camper,transporter);
                     }
@@ -644,12 +642,12 @@ function setMessage(camp,group,camper,transporter){
     html+= "<a href = evals.camptlc.com/swim-report/"+camp._id+"/"+camper._id+"/"+group._id+"/-1"+">Click here to see the report</a>"
 
     //SET EMAILS PROPERLY!
-
+    console.log("test 3: set message")
     var emails = ['awprogramming@gmail.com'];
-    // if(camper.p1Email)
-    //     emails.push(camper.p1Email)
-    // if(camper.p2Email)
-    //     emails.push(camper.p2Email)
+    if(camper.p1Email)
+        emails.push(camper.p1Email)
+    if(camper.p2Email)
+        emails.push(camper.p2Email)
     
     for(let email of emails){
         let mailOptions = {
@@ -665,6 +663,7 @@ function setMessage(camp,group,camper,transporter){
 }
 
 function sendEmail(mailOptions,message,transporter){
+    console.log("test 4: send email")
     // send mail with defined transport object
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
