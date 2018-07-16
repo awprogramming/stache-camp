@@ -637,11 +637,12 @@ function setMessage(camp,group,camper,transporter){
     var text = "Please use the link below to view your child’s Swim Progress Report for this summer!\n";
     text+= "evals.camptlc.com/swim-report/"+camp._id+"/"+camper._id+"/"+group._id+"/-1";
 
-    var html = "<p>Please use the link below to view your child’s Swim Progress Report for this summer!:</p>";
-    html+= "<a href = evals.camptlc.com/swim-report/"+camp._id+"/"+camper._id+"/"+group._id+"/-1"+">Click here to see the report</a>"
+    var html = "<p>Please use the link below to view your child’s Swim Progress Report for this summer!</p>";
+    html+= "<a href = evals.camptlc.com/swim-report/"+camp._id+"/"+camper._id+"/"+group._id+"/-1"+">Click here to see the report</a></br>"
+    html+="<p>If the above link doesn't work, please copy and paste the following into your browser:</p>";
+    html+='<p>'+"evals.camptlc.com/swim-report/"+camp._id+"/"+camper._id+"/"+group._id+"/-1"+'</p>'
 
     //SET EMAILS PROPERLY!
-    console.log("test 3: set message")
     var emails = ['awprogramming@gmail.com'];
     if(camper.p1Email)
         emails.push(camper.p1Email)
@@ -650,9 +651,9 @@ function setMessage(camp,group,camper,transporter){
     
     for(let email of emails){
         let mailOptions = {
-            from: '"NSDC Swim Reports" <swim_reports@stachecamp.com>', // sender address
+            from: '"North Shore Day Camp" <northshoredaycampswim@gmail.com>', // sender address
             to: email, // list of receivers
-            subject: 'NSDC Swim Report', // Subject line
+            subject: 'NSDC Swim Reports', // Subject line
             text: text, // plain text body
             html: html // html body
         };
