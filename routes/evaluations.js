@@ -205,6 +205,7 @@ module.exports = (router) => {
                 });
             }
             else{
+                console.log("**");
                 Camp.aggregate([
                     { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
                     { $unwind: '$counselors'},
