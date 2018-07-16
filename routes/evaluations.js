@@ -205,7 +205,6 @@ module.exports = (router) => {
                 });
             }
             else{
-                console.log("TEST**");
                 Camp.aggregate([
                     { $match: {_id:mongoose.Types.ObjectId(req.decoded.campId)}},
                     { $unwind: '$counselors'},
@@ -320,7 +319,6 @@ module.exports = (router) => {
         Camp.findById(req.decoded.campId,(err,camp)=>{
             var appr = false;
             var counselor = camp.counselors.id(req.params.counselorId);
-            console.log(counsel)
             var division = camp.divisions.id(counselor.division._id);
             for(let approver of division.approvers){
                 if(approver._id == req.decoded.userId){
