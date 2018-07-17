@@ -640,7 +640,9 @@ function setMessage(camp,group,camper,transporter){
     var html = "<p>Please use the link below to view your child’s Swim Progress Report for this summer!</p>";
     html+= "<a href = evals.camptlc.com/swim-report/"+camp._id+"/"+camper._id+"/"+group._id+"/-1"+">Click here to see the report</a></br>"
     html+="<p>If the above link doesn't work, please copy and paste the following into your browser:</p>";
-    html+='<p>'+"evals.camptlc.com/swim-report/"+camp._id+"/"+camper._id+"/"+group._id+"/-1"+'</p>'
+    html+='<p>'+"evals.camptlc.com/swim-report/"+camp._id+"/"+camper._id+"/"+group._id+"/-1"+'</p></br>'
+    html+='<p>*If viewing on your phone, once you click on the link above, click the “download report” button on the bottom left of your screen.*</p>'
+    html+='<p>*Please note your swim report is best viewed on a laptop or desktop*</p>'
 
     //SET EMAILS PROPERLY!
     var emails = ['awprogramming@gmail.com'];
