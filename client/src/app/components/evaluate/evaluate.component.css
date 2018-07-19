@@ -74,3 +74,8 @@
 {
     .noprint {display:none;}
 }
+
+.view-answer{
+    border: thin solid black;
+    padding: 10px;
+}

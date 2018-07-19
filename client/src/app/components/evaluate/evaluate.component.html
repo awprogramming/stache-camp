@@ -8,7 +8,12 @@
       <div class="con-td">
           <p>{{answer.question.content}}</p>
           <input class="slider" [disabled] = "view || approver" type="range" min="{{options?.evaluationOpts.low}}" max="{{options?.evaluationOpts.high}}" (change)="slider_change($event,answer)" step="1" value="{{answer.numerical}}">
-          <textarea class="full form-control" [disabled] = "view || approver" (focusout)="textarea_change($event,answer)">{{answer.text}}</textarea>
+          <div *ngIf="!view && !approver"> 
+            <textarea class="full form-control" [disabled] = "view || approver" (focusout)="textarea_change($event,answer)">{{answer.text}}</textarea>
+          </div>
+          <div *ngIf="view || approver"> 
+            <div class="view-answer">{{answer.text}}</div>
+          </div>
       </div>
       <div class="num-td">
           <span class="numerical">{{answer.numerical}}</span>
@@ -18,12 +23,23 @@
 </div>
 <div>
   <span>Additional Notes</span>
-  <textarea class="full form-control" [disabled] = "view || approver" (focusout)="additional_change($event)">{{evaluation?.evaluation.additional_notes}}</textarea>
+  <div *ngIf="!view && !approver">
+    <textarea class="full form-control" [disabled] = "view || approver" (focusout)="additional_change($event)">{{evaluation?.evaluation.additional_notes}}</textarea>
+  </div>
+  <div *ngIf="view || approver"> 
+    <div class="view-answer">{{evaluation?.evaluation.additional_notes}}</div>
+  </div>
 </div>
 <hr>
 <div>
   <span>Approver Notes</span>
-  <textarea class="full form-control" [disabled] = "view && !approver" (input)="approver_change($event)">{{evaluation?.evaluation.approver_notes}}</textarea>
+  <div *ngIf="!view || approver">
+      <textarea class="full form-control" [disabled] = "view && !approver" (input)="approver_change($event)">{{evaluation?.evaluation.approver_notes}}</textarea>
+  </div>
+  <div *ngIf="view && !approver"> 
+      <div class="view-answer">{{evaluation?.evaluation.approver_notes}}</div>
+    </div>
+  
 </div>
 
 <div id="filler"></div>
