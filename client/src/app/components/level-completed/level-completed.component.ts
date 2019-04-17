@@ -24,6 +24,7 @@ export class LevelCompletedComponent implements OnInit {
   newType = false;
   newhType = false;
   loading;
+  completed;
 
   constructor(
     public campsService: CampsService,
@@ -36,10 +37,15 @@ export class LevelCompletedComponent implements OnInit {
 
   getOptions(){
     this.loading = true;
-    this.campsService.getOptions().subscribe(data => {
-      this.options = data.options
+    this.swimService.getCompleted().subscribe(data =>{
+      this.completed = data.completed;
       this.loading = false;
     });
+    // this.campsService.getOptions().subscribe(data => {
+    //   this.options = data.options
+    //   console.log(this.options);
+    //   this.loading = false;
+    // });
   }
 
   ngOnInit() {

@@ -34,15 +34,15 @@ export class GameComponent implements OnInit {
   loadGame(){
     this.loading = true;
     this.sportsService.getGame(this.id).subscribe(data => {
-      this.division = data.division;
+      console.log(data);
       this.game = data.game;
-      this.campers = data.campers;
-      this.coaches = data.coaches;
-      this.refs = data.refs;
+      this.campers = []//data.campers;
+      this.coaches = []//data.coaches;
+      this.refs = []//data.refs;
       this.exclude = [];
-      for(let counselor of this.coaches)
+      for(let counselor of this.game.coaches)
         this.exclude.push(counselor);
-      for(let counselor of this.refs)
+      for(let counselor of this.game.refs)
         this.exclude.push(counselor);
 
       this.loading = false;
@@ -118,22 +118,27 @@ export class GameComponent implements OnInit {
   populateDivisions(){
     this.loading = true;
     this.campsService.getAllDivisions().subscribe(data=>{
-      this.dropdownDivisions = data;
+      this.dropdownDivisions = []
+      for(let gender of data.divisions)
+        this.dropdownDivisions[gender._id.gender] = gender.divisions;
       this.schedDivisions = this.divGenders("male");
       this.loading = false;
     });
   }
 
   divGenders(gender){
+    console.log(this.dropdownDivisions.divisions)
     if(gender.toLowerCase()=="female"){
-      return this.dropdownDivisions.divisions[0].divisions;
+      return this.dropdownDivisions["female"];
     }
     else if(gender.toLowerCase()=="male")
-      return this.dropdownDivisions.divisions[1].divisions;
+      return this.dropdownDivisions["male"];
     else
       return [];
   }
-
+  schedGenderChange(e){
+    this.schedDivisions = this.divGenders(e);
+  }
   schedDivisionChange(e){
     this.preSchedDivision = e._id;
   }

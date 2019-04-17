@@ -47,9 +47,9 @@ export class MedsComponent implements OnInit {
   getAllCampers(){
     this.loading = true;
     this.campsService.getAllCampers().subscribe(data => {
+      console.log(data);
       if(this.authService.isUser()){
-        this.divisions = Object.keys(data.campers);
-        this.campers = data.campers;
+        this.divisions = data.campers;
       }
       if(this.authService.admin()){
         this.sessions = data.output.sessions;
@@ -131,12 +131,14 @@ export class MedsComponent implements OnInit {
   populateDivisions(){
     this.loading = true;
     this.campsService.getAllDivisions().subscribe(data=>{
-      this.dropdownDivisions = data;
+      this.dropdownDivisions = []
+      for(let gender of data.divisions)
+        this.dropdownDivisions[gender._id.gender] = gender.divisions;
       if(this.authService.admin()){
-        this.dropdownDivisions.divisions[0].divisions.unshift({
+        this.dropdownDivisions["male"].unshift({
           name:"Show All"
         });
-        this.dropdownDivisions.divisions[1].divisions.unshift({
+        this.dropdownDivisions["female"].unshift({
           name:"Show All"
         });
       }
@@ -170,8 +172,7 @@ export class MedsComponent implements OnInit {
         var tempSession = Object.assign({},session);;
         var tempCampers = [];
         for(let campers of session.campers){
-          console.log((campers.gender.toLowerCase() == this.genderShowing || allGenders) && (campers.division.name == this.divisionShowing.name || allDivisions));
-          if((campers.gender.toLowerCase() == this.genderShowing || allGenders) && (campers.division.name == this.divisionShowing.name || allDivisions)){
+          if(campers.division&&(campers.gender.toLowerCase() == this.genderShowing || allGenders) && (campers.division.name == this.divisionShowing.name || allDivisions)){
             tempCampers.push(campers);
           }
         }
@@ -184,10 +185,10 @@ export class MedsComponent implements OnInit {
 
   divGenders(gender){
     if(gender.toLowerCase()=="female"){
-      return this.dropdownDivisions.divisions[0].divisions;
+      return this.dropdownDivisions["female"];
     }
     else if(gender.toLowerCase()=="male")
-      return this.dropdownDivisions.divisions[1].divisions;
+      return this.dropdownDivisions["male"];
   }
 
   ngOnInit() {

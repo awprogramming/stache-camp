@@ -15,6 +15,7 @@ export class CampersComponent implements OnInit {
   message;
   processing = false;
   form: FormGroup;
+  parentForm:FormGroup;
   bulkAddForm: FormGroup;
   previousUrl;
   newCamp = false;
@@ -52,6 +53,19 @@ export class CampersComponent implements OnInit {
       last:['', Validators.required],
       gender: ['', Validators.required]
     });
+
+    this.parentForm = this.formBuilder.group({
+      pID:['', Validators.required],
+      first: ['', Validators.required],
+      last:['', Validators.required],
+      p1Name: '',
+      p1Email: '',
+      p2Name: '',
+      p2Email: '',
+      gender: ['', Validators.required]
+    });
+
+
     this.bulkAddForm = this.formBuilder.group({
       camper_file:['']
     });
@@ -60,12 +74,27 @@ export class CampersComponent implements OnInit {
   onRegistrationSubmit() {
     this.loading = true;
     this.processing = true;
-    
-    var camper = {
-      _id: this.form.get('pID').value,
-      first: this.form.get('first').value,
-      last: this.form.get('last').value,
-      gender: this.form.get('gender').value,
+    var camper;
+    if(!this.campsService.hasModule("swim")){
+      camper = {
+        _id: this.form.get('pID').value,
+        first: this.form.get('first').value,
+        last: this.form.get('last').value,
+        gender: this.form.get('gender').value,
+      }
+    }
+    else{
+      camper = {
+        _id: this.parentForm.get('pID').value,
+        first: this.parentForm.get('first').value,
+        last: this.parentForm.get('last').value,
+        p1Name: this.parentForm.get('p1Name').value,
+        p1Email: this.parentForm.get('p1Email').value,
+        p2Name: this.parentForm.get('p2Name').value,
+        p2Email: this.parentForm.get('p2Email').value,
+        gender: this.parentForm.get('gender').value,
+      }
+      console.log(camper)
     }
     this.campsService.registerCamper(camper).subscribe(data => {
       if (!data.success) {
@@ -100,64 +129,63 @@ export class CampersComponent implements OnInit {
       var lines = myReader.result.split('\r');
       var skip = true;
       for(let line of lines){
+        console.log(line);
         if(skip)
           skip = false;
         else{
           var vals = line.split(',');
-          var data;
-          if(cs.hasModule("swim")){
-            
-            var _id = vals[0].split('\n')[1];
-            var bracelet;
-            if(vals[11])
-              bracelet = vals[11].toLowerCase();
-            else
-              bracelet = "none";
-            if(bracelet != "orange" && bracelet != "green")
-              bracelet = "none";
-            
-            data = {
-              divisionName:vals[5],
-              camper:{
+          if(vals.length > 1){
+            var data;
+            if(cs.hasModule("swim")){
+              var _id = vals[0].split('\n')[1];
+              var bracelet;
+              if(vals[11])
+                bracelet = vals[11].toLowerCase();
+              else
+                bracelet = "none";
+              if(bracelet != "orange" && bracelet != "green")
+                bracelet = "none";
+              data = {
+                divisionName:vals[5].trim(),
+                camper:{
+                    _id: _id,
+                    first: vals[1],
+                    last: vals[2],
+                    gender: vals[4].toLowerCase(),
+                    grade: vals[3],
+                    p1Name: vals[6],
+                    p1Email: vals[7],
+                    p2Name: vals[8],
+                    p2Email: vals[9],
+                    cSwimOpts: {
+                      bracelet: bracelet
+                    },
+                },
+                cSwimOpts: {
+                  rcLevel: vals[10]
+                },
+              }
+              campers.push(data);
+            }
+            else{
+              var _id = vals[0].split('\n')[1];
+              data = {
+                divisionName:vals[4],
+                camper:{
                   _id: _id,
                   first: vals[1],
                   last: vals[2],
-                  gender: vals[4],
-                  grade: vals[3],
-                  p1Name: vals[6],
-                  p1Email: vals[7],
-                  p2Name: vals[8],
-                  p2Email: vals[9],
-                  cSwimOpts: {
-                    bracelet: bracelet
-                  },
-              },
-              cSwimOpts: {
-                rcLevel: vals[10]
-              },
-            }
-            if(vals[1] && vals[1] != "")
+                  gender: vals[3].toLowerCase(),
+                } 
+              }
               campers.push(data);
-          }
-          else{
-            var _id = vals[0].split('\n')[1];
-            data = {
-              divisionName:vals[4],
-              camper:{
-                _id: _id,
-                first: vals[1],
-                last: vals[2],
-                gender: vals[3],
-              } 
             }
-            console.log(data);
-            campers.push(data);
           }
         }
       }
     }
     myReader.readAsText(file);
-
+    console.log(campers);
     this.uploaded_campers = campers;
 }
 
@@ -229,7 +257,6 @@ gradeConversion(grade){
     this.loading = true;
     this.campsService.getAllCampers().subscribe(data => {
       if(this.authService.isUser()){
-        this.divisions = Object.keys(data.campers);
         this.campers = data.campers;
       }
       if(this.authService.admin()){
@@ -272,6 +299,7 @@ gradeConversion(grade){
   }
 
   remove(camper){
+    if(confirm("Are you sure you wish to delete this camper?")){
     this.loading = true;
     this.campsService.removeCamper(camper).subscribe(data => {
       if (!data.success) {
@@ -284,6 +312,7 @@ gradeConversion(grade){
         this.getAllCampers();
       }
     });
+  }
   }
 
   addDivision(camper){
@@ -362,12 +391,14 @@ gradeConversion(grade){
   populateDivisions(){
     this.loading = true;
     this.campsService.getAllDivisions().subscribe(data=>{
-      this.dropdownDivisions = data;
+      this.dropdownDivisions = []
+      for(let gender of data.divisions)
+        this.dropdownDivisions[gender._id.gender] = gender.divisions;
       if(this.authService.admin()){
-        this.dropdownDivisions.divisions[0].divisions.unshift({
+        this.dropdownDivisions["female"].unshift({
           name:"Show All"
         });
-        this.dropdownDivisions.divisions[1].divisions.unshift({
+        this.dropdownDivisions["male"].unshift({
           name:"Show All"
         });
       }
@@ -401,8 +432,7 @@ gradeConversion(grade){
         var tempSession = Object.assign({},session);;
         var tempCampers = [];
         for(let campers of session.campers){
-          console.log((campers.gender.toLowerCase() == this.genderShowing || allGenders) && (campers.division.name == this.divisionShowing.name || allDivisions));
-          if((campers.gender.toLowerCase() == this.genderShowing || allGenders) && (campers.division.name == this.divisionShowing.name || allDivisions)){
+          if(campers.division&&(campers.gender.toLowerCase() == this.genderShowing || allGenders) && (campers.division.name == this.divisionShowing.name || allDivisions)){
             tempCampers.push(campers);
           }
         }
@@ -415,10 +445,14 @@ gradeConversion(grade){
 
   divGenders(gender){
     if(gender.toLowerCase()=="female"){
-      return this.dropdownDivisions.divisions[0].divisions;
+      return this.dropdownDivisions["female"];
     }
     else if(gender.toLowerCase()=="male")
-      return this.dropdownDivisions.divisions[1].divisions;
+      return this.dropdownDivisions["male"];
+  }
+
+  goToCamper(id){
+    this.router.navigate(['/camper/'+id]);
   }
 
   ngOnInit() {

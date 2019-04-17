@@ -64,6 +64,7 @@ export class RegisterCampComponent implements OnInit {
     }
     //Function to send login data to API
     this.authService.registerCamp(camp).subscribe(data => {
+      console.log(data);
       // Check if response was a success or error
       if (!data.success) {
         this.messageClass = 'alert alert-danger'; // Set bootstrap error class

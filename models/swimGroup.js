@@ -7,9 +7,10 @@ const SessionSchema = require('./session').schema;
 
 const swimGroupSchema = new Schema({
     name: {type:String, required: true},
-    lifeguardId: String,
-    camperIds:[String],
-    sessionId:String
+    lifeguard_id: String,
+    camper_ids:[String],
+    session_id:String,
+    camp_id:String
 });
 
 module.exports = mongoose.model('SwimGroup',swimGroupSchema);

@@ -35,34 +35,40 @@
           <th></th>
         </tr>
         <tr *ngFor="let roster of specialty.rosters">
+          <ng-container *ngIf="roster.session_id == curSession">
           <td>{{roster.name}}</td>
           <td><a class="btn btn-primary" [routerLink]="['/roster', specialty._id, roster._id,false]">Go</a></td>
           <td><button class="btn btn-primary"(click) = "remove(specialty,roster,false)">X</button></td>
+          </ng-container>
         </tr>
       </table>
     </div>
   </div>
   <div *ngIf="getType()=='leader'">
-    <div *ngFor="let division of d_keys">
-      <h2>{{division}}</h2>
-      <div *ngFor="let specialty of keys[division]">
-        <h3>{{specialty}}</h3>
+    <div *ngFor="let division of divisions">
+      <h2>{{division._id.division}}</h2>
+      <div *ngFor="let specialty of division.specialties">
+        <h3>{{specialty.name}}</h3>
         <table class="table">
-          <tr *ngFor="let roster of divisions[division]['specialties'][specialty]">
-            <td>{{roster.roster.name}}</td>
-            <td><a class="btn btn-primary" [routerLink]="['/roster', roster.s_id, roster.roster._id,false]">Go</a></td>
+          <tr *ngFor="let roster of specialty.rosters">
+            <ng-container *ngIf="roster.session_id == curSession">
+            <td>{{roster._id.name}}</td>
+            <td><a class="btn btn-primary" [routerLink]="['/roster', roster.specialty._id, roster._id._id,false]">Go</a></td>
+            </ng-container>
           </tr>
         </table>
       </div>
-      <div *ngIf="divisions[division]['internal']">
+      <!-- <div *ngIf="divisions[division]['internal']">
           <h3>Internal<button class="btn btn-primary" (click) = "showAdd(divisions[division].d_id,true)" *ngIf = "!newRoster">Add</button></h3>
           <table class="table">
             <tr *ngFor="let roster of divisions[division]['internal']">
+              <ng-container *ngIf="roster.session_id == curSession">
               <td>{{roster.name}}</td>
               <td><a class="btn btn-primary" [routerLink]="['/roster', divisions[division].d_id, roster._id,true]">Go</a></td>
               <td><button class="btn btn-primary"(click) = "remove(divisions[division].d_id,roster,true)">X</button></td>
+              </ng-container>
             </tr>
           </table>
-        </div>
+        </div> -->
     </div>
   </div>

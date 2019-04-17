@@ -160,24 +160,40 @@ export class CalendarComponent implements OnInit {
       }
     }
     if(this._events){
-      for(let event of this._events){
-        var day = this.days[new Date(event.date).getDate()+this.monthStart-1];
-        if(day.events)
-          day.events.push(event);
-        else
-          day.events = [event];
-        this.days[new Date(event.date).getDate()+this.monthStart-1] = day;
+      console.log(this._events);
+      for(let type of this._events){
+        console.log(type);
+        for(let event of type.events){
+          var day = this.days[new Date(event.date).getDate()+this.monthStart-1];
+          if(day.events){
+            if(day.events[type._id])
+              day.events[type._id].push(event);
+            else
+              day.events[type._id] = [event];
+          }
+          else{
+            day.events = {};
+            day.events[type._id] = [event];
+          }
+          this.days[new Date(event.date).getDate()+this.monthStart-1] = day;
+        }
       }
     }
   }
 
-  eventClass(day){
-    for(let event of day.events){
-      if(!event.rosterId){
-        return "no-roster";
+  types(events){
+    return Object.keys(events);
+  }
+  eventClass(events,type){
+
+    if(type=="game"){
+      for(let event of events){
+        if(!event.roster_id){
+          return "no-roster";
+        }
       }
     }
-    return "event-num";
+    return "event-num "+type;
   }
 
   ngOnInit() {

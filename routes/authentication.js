@@ -1,8 +1,11 @@
 const User = require('../models/user');
 const SuperUser = require('../models/superUser');
 const Camp = require('../models/camp');
+const Camper = require('../models/camper');
+const SwimGroup = require('../models/swimGroup');
 const jwt = require('jsonwebtoken');
 const config = require('../config/database');
+const mongoose = require('mongoose');
 
 module.exports = (router) => {
 
@@ -29,7 +32,6 @@ module.exports = (router) => {
         let camp = new Camp({
             name: req.body.name,
             admin: admin._id,
-            users:[admin],
             options:{
                 counselor_types:[
                     {
@@ -53,62 +55,80 @@ module.exports = (router) => {
                 ]
             }
         });
+
         camp.save((err) =>{
             if (err) {
                 if(err.code === 11000){
                     res.json({
                         success:false,
-                        message: "Username or email already exists"
+                        message: "Camp already exists"
                     });
                 }
-                else{
-                    if(err.errors){
-                        if(err.errors.name){
+                else if(err.errors){
+                    if(err.errors.name){
+                        res.json({
+                            success:false,
+                            message: "Camp name required"
+                        });
+                    }
+                }
+            }
+        }).then(()=>{
+                    admin.save((err)=>{
+                    if(err){
+                        if(err.code === 11000){
                             res.json({
                                 success:false,
-                                message: "Camp name required"
+                                message: "Username or email already exists"
                             });
                         }
-                        else if(err.errors['users.0.email']){
-                            res.json({
-                                success:false,
-                                message: err.errors['users.0.email'].message
-                            });
-                        }
-                        else if(err.errors['users.0.username']){
-                            res.json({
-                                success:false,
-                                message: err.errors['users.0.username'].message
-                            });
-                        }
-                        else if(err.errors['users.0.password']){
-                            res.json({
-                                success:false,
-                                message: err.errors['users.0.password'].message
-                            });
+                        else if(err.errors){
+                            if(err.errors.name){
+                                res.json({
+                                    success:false,
+                                    message: "Camp name required"
+                                });
+                            }
+                            else if(err.errors['users.0.email']){
+                                res.json({
+                                    success:false,
+                                    message: err.errors['users.0.email'].message
+                                });
+                            }
+                            else if(err.errors['users.0.username']){
+                                res.json({
+                                    success:false,
+                                    message: err.errors['users.0.username'].message
+                                });
+                            }
+                            else if(err.errors['users.0.password']){
+                                res.json({
+                                    success:false,
+                                    message: err.errors['users.0.password'].message
+                                });
+                            }
+                            else{
+                                res.json({
+                                    success:false,
+                                    message: err.errors
+                                });
+                            }
                         }
                         else{
                             res.json({
                                 success:false,
-                                message: err.errors
+                                message: "Could not save user. Error: " + err
                             });
                         }
                     }
                     else{
                         res.json({
-                            success:false,
-                            message: "Could not save user. Error: " + err
+                            success:true,
+                            message: "Account Registered!"
                         });
                     }
-                }
-            }
-            else{
-                res.json({
-                    success:true,
-                    message: "Account Registered!"
-                });
-            }
-        })
+                }); 
+            });
     });
     
     router.post('/login',(req,res)=>{
@@ -119,11 +139,11 @@ module.exports = (router) => {
             res.json({success:false,message:'No password provided'});
         }
         else{
-            Camp.findOne({users:{$elemMatch:{email:req.body.email.toLowerCase()}}}, (err,camp)=>{
+            User.findOne({email:req.body.email.toLowerCase()}, (err,user)=>{
                 if(err){
                     res.json({success:false,message:err.message});
                 }
-                else if(!camp){
+                else if(!user){
                     SuperUser.findOne({username:req.body.email.toLowerCase()}, (err,superuser)=>{
                         if(err){
                             res.json({success:false,message:err});
@@ -145,23 +165,24 @@ module.exports = (router) => {
                     
                 }
                 else{
-                    const admin = camp.admin;
-                    Camp.findOne({users:{$elemMatch:{email:req.body.email.toLowerCase()}}},{"users.$":1,modules:1}, (err,camp)=>{
+                    User.findOne({email:req.body.email.toLowerCase()}, (err,user)=>{
 
-                        const validPassword = camp.users[0].comparePassword(req.body.password);
+                        const validPassword = user.comparePassword(req.body.password);
                         if(!validPassword){
                             res.json({success:false,message:"Password is not valid"});
                         }
                         else{
-                            console.log(camp.users[0].type);
-                            const token = jwt.sign({userId:camp.users[0]._id,campId:camp._id}, config.secret,{ expiresIn:'100d'});
-                            if(camp.users[0]._id.equals(admin)||(camp.users[0].type && camp.users[0].type.type == "admin")){
-                                res.json({success:true,message:"Success",token:token, user:{_id:camp.users[0]._id,type:{type:"leader"},email:camp.users[0].email,permissions:"admin",camp_id:camp._id,modules:camp.modules}});
+                            user = user.toObject();
+                            Camp.findById(user.camp_id,(err,camp)=>{
+                            admin = camp.admin;
+                            const token = jwt.sign({userId:user._id,campId:user.camp_id}, config.secret,{ expiresIn:'100d'});
+                            if(user._id.equals(admin)||(user.type && user.type.type == "admin")){
+                                res.json({success:true,message:"Success",token:token, user:{_id:user._id,type:{type:"leader"},email:user.email,permissions:"admin",camp_id:camp._id,modules:camp.modules}});
                             }
                             else{
-                                res.json({success:true,message:"Success",token:token, user:{_id:camp.users[0]._id,type:camp.users[0].type,email:camp.users[0].email,permissions:"user",camp_id:camp._id,modules:camp.modules}});
+                                res.json({success:true,message:"Success",token:token, user:{_id:user._id,type:user.type,email:user.email,permissions:"user",camp_id:camp._id,modules:camp.modules}});
                             }
-                            
+                        });
                         }
                     });
                 }
@@ -169,21 +190,58 @@ module.exports = (router) => {
         }
     });
 
-    router.get('/get_swim_group/:campId/:id',(req,res) => {
-        Camp.findById(req.params.campId, (err,camp)=>{
-            var data = camp.swimGroups.id(req.params.id);
-            var lifeguard = camp.counselors.id(data.lifeguardId);
-            var campers = [];
-            for(let camperId of data.camperIds){
-                campers.push(camp.campers.id(camperId));
-            }
-            var result = {
-                data:data,
-                lifeguard:lifeguard,
-                campers:campers
-            }
-            res.json({success:true,group:result});
-        });
+    router.get('/get_swim_group/:groupId/:camperId', async function(req,res) {
+        console.log(req.params.groupId);
+        const group = await SwimGroup.aggregate([
+            {
+                $match:{_id:mongoose.Types.ObjectId(req.params.groupId)}
+            },
+            { $lookup:{
+                from: "counselors",
+                localField: "lifeguard_id",
+                foreignField: "_id",
+                as: "lifeguard"
+                }
+            },
+            { $unwind:{path:"$lifeguard",preserveNullAndEmptyArrays: true}},
+        ]);
+
+        const camper = await Camper.aggregate([
+            {
+                $match:{_id:req.params.camperId}
+            },
+            { $addFields: {
+                "convertedId": { $toObjectId: "$division_id" }
+            }},
+            { $lookup:{
+                from: "divisions",
+                localField: "convertedId",
+                foreignField: "_id",
+                as: "division"
+                }
+            },
+            { $unwind:{path:"$division",preserveNullAndEmptyArrays: true}},
+            ]);
+        console.log(group,camper);
+        var result = {
+            data:group[0],
+            camper:camper[0]
+        }
+        res.json({success:true,group:result});
+        // Camp.findById(req.params.campId, (err,camp)=>{
+        //     var data = camp.swimGroups.id(req.params.id);
+        //     var lifeguard = camp.counselors.id(data.lifeguardId);
+        //     var campers = [];
+        //     for(let camperId of data.camperIds){
+        //         campers.push(camp.campers.id(camperId));
+        //     }
+        //     var result = {
+        //         data:data,
+        //         lifeguard:lifeguard,
+        //         campers:campers
+        //     }
+        //     res.json({success:true,group:result});
+        // });
     });
 
     router.use((req, res, next) => {
@@ -204,12 +262,14 @@ module.exports = (router) => {
 
     
     router.post('/change_password',(req,res)=>{
-        Camp.findById(req.decoded.campId).exec().then((camp)=>{
-            if(req.body.user_id == -1)
-                camp.users.id(req.decoded.userId).password = req.body.password;
-            else
-                camp.users.id(req.body.user_id).password = req.body.password;
-            camp.save({ validateBeforeSave: false },(err) =>{
+        var u;
+        if(req.body.user_id == -1)
+            u = req.decoded.userId;
+        else
+            u = req.body.user_id;
+        User.findById(u).exec().then((user)=>{
+            user.password = req.body.password;
+            user.save({ validateBeforeSave: false },(err) =>{
                 if (err) {
                     if(err.errors){
                         res.json({
@@ -231,7 +291,7 @@ module.exports = (router) => {
                     });
                 }
                 })
-            });
+        });
         });
 
 

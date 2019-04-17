@@ -165,7 +165,7 @@
     </div>
     <div *ngIf="authService.isUser()">
       <div *ngFor="let division of divisions">
-      <h2>{{division}}</h2>
+      <h2>{{division._id}}</h2>
       <table class="table" >
           <tr>
             <th>First</th>
@@ -174,7 +174,7 @@
             <th>Type</th>
             <th>Specialty</th>
           </tr>
-          <tr *ngFor="let counselor of counselors[division]">
+          <tr *ngFor="let counselor of division.counselors">
             <td>{{counselor.first}}</td>
             <td>{{counselor.last}}</td>
             <td>{{counselor.gender}}</td>

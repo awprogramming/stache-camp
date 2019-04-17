@@ -54,10 +54,10 @@ export class CounselorSelectorComponent implements OnInit {
 
   divGenders(gender){
     if(gender.toLowerCase()=="female"){
-      this.divisionsShowing = this.dropdownDivisions.divisions[0].divisions;
+      this.divisionsShowing = this.dropdownDivisions["female"];
     }
     else if(gender.toLowerCase()=="male")
-      this.divisionsShowing = this.dropdownDivisions.divisions[1].divisions;
+      this.divisionsShowing = this.dropdownDivisions["male"];
     else
       return [];
   }
@@ -65,26 +65,30 @@ export class CounselorSelectorComponent implements OnInit {
 
   populateDivisions(){
     this.campService.getAllDivisions().subscribe(data=>{
-      this.dropdownDivisions = data;
+      this.dropdownDivisions = []
+      for(let gender of data.divisions)
+        this.dropdownDivisions[gender._id.gender] = gender.divisions;
       this.divGenders("male");
     });
   }
 
   populateDivision(divisonId){
+    console.log("**");
     if(!this.options){
       this.getOptions()
     }
     else{
       this.campService.get_division_counselors(divisonId,this.options.session._id).subscribe(data => {
-        
+        console.log(data);
         if(data.success == false){
           console.log("fail")
           this.counselors = [];
         }
         else{
           console.log("success")
+          console.log(this._exclude);
           this.counselors = [];
-          for(let counselor of data.division.counselors){
+          for(let counselor of data.counselors){
             var add = true
             for(let exclude of this._exclude){
               if(counselor._id == exclude._id){

@@ -39,7 +39,7 @@
     <button class="btn btn-primary" (click) = "showAdd()" *ngIf = "!newQuestion">Add</button>
 
     <div *ngFor="let type of types">
-      <h2>{{type?._id.type.type}}</h2>
+      <h2>{{type?._id.type_name}}</h2>
       <table class="table">
           <tr>
             <th>Content</th>

@@ -35,6 +35,7 @@ export class SwimGroupComponent implements OnInit {
   loadSwimGroup(){
     this.loading = true;
     this.swimService.getSwimGroup(this.id).subscribe(data => {
+      console.log(data);
       this.swimGroup = data.group;
       this.exclude = [];
       this.fillExclude();
@@ -51,6 +52,12 @@ export class SwimGroupComponent implements OnInit {
   addToGroup(camper){
     this.loading = true;
     this.swimService.addToSwimGroup(this.id,camper._id).subscribe(data => {
+      this.loadSwimGroup();
+    });
+  }
+  addMultipleToGroup(ids){
+    this.loading = true;
+    this.swimService.addMultipleToSwimGroup(this.id,ids).subscribe(data => {
       this.loadSwimGroup();
     });
   }
@@ -138,8 +145,7 @@ export class SwimGroupComponent implements OnInit {
   }
 
   goToReport(camper){
-    var camp = JSON.parse(localStorage.getItem('user')).camp_id;
-    this.router.navigate(['/swim-report/'+camp+"/"+camper+'/'+this.swimGroup.data._id]);
+    this.router.navigate(['/swim-report/'+camper._id+"/"+this.swimGroup._id+"/-1"]);
   }
 
   sendReports(){
@@ -168,6 +174,15 @@ export class SwimGroupComponent implements OnInit {
       this.loadSwimGroup();
     });
   }
+
+  selectAll(e){
+    var allInputs = document.getElementsByTagName("input");
+    for (var i = 0, max = allInputs.length; i < max; i++){
+        if (allInputs[i].type === 'checkbox')
+            allInputs[i].checked = e.target.checked;
+    }
+  }
+
   ngOnInit() {
       this.route.paramMap.subscribe(params => {
         this.id = params.get('groupId');

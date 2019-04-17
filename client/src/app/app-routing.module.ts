@@ -22,13 +22,16 @@ import { EvaluateComponent } from './components/evaluate/evaluate.component';
 import { ApproversComponent } from './components/approvers/approvers.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CampersComponent } from './components/campers/campers.component';
+import { CamperComponent } from './components/camper/camper.component';
 import { RostersComponent } from './components/rosters/rosters.component';
 import { RosterComponent } from './components/roster/roster.component';
 import { MedsComponent } from './components/meds/meds.component';
 import { DietaryComponent } from './components/dietary/dietary.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { GameCalendarComponent } from './components/game-calendar/game-calendar.component';
+import { EventCalendarComponent } from './components/event-calendar/event-calendar.component';
 import { GameComponent } from './components/game/game.component';
+import { EventComponent } from './components/event/event.component';
 import { SwimGroupsComponent } from './components/swim-groups/swim-groups.component';
 import { SwimGroupComponent } from './components/swim-group/swim-group.component';
 import { SwimStatsComponent } from './components/swim-stats/swim-stats.component';
@@ -36,8 +39,12 @@ import { SwimStatComponent } from './components/swim-stat/swim-stat.component';
 import { SwimLevelsComponent } from './components/swim-levels/swim-levels.component';
 import { SwimLevelComponent } from './components/swim-level/swim-level.component';
 import { SwimReportComponent } from './components/swim-report/swim-report.component';
+import { LifeguardReportsComponent } from './components/lifeguard-reports/lifeguard-reports.component';
 import { HeadStaffProfileComponent } from './components/head-staff-profile/head-staff-profile.component';
 import { LevelCompletedComponent } from './components/level-completed/level-completed.component';
+/**DB MAINTENANCE*/
+import { DbMaintenanceComponent } from './components/db-maintenance/db-maintenance.component';
+
 
 const appRoutes: Routes = [
     {
@@ -125,6 +132,11 @@ const appRoutes: Routes = [
         canActivate: [AuthGuard]
     },
     {
+        path: 'camper/:id',
+        component: CamperComponent,
+        canActivate: [AuthGuard, AdminGuard]
+    },
+    {
         path: 'rosters',
         component: RostersComponent,
         canActivate: [AuthGuard,ModuleGuard],
@@ -138,13 +150,13 @@ const appRoutes: Routes = [
     },
     {
         path:'calendar',
-        component: GameCalendarComponent,
+        component: EventCalendarComponent,
         canActivate: [AuthGuard,ModuleGuard],
         data: {module: 'sports'}
     },
     {
-        path:'game/:id',
-        component: GameComponent,
+        path:'event/:id',
+        component: EventComponent,
         canActivate: [AuthGuard,ModuleGuard],
         data: {module: 'sports'}
     },
@@ -197,8 +209,14 @@ const appRoutes: Routes = [
         data: {module: 'swim'}
     },
     {
-        path:'swim-report/:campId/:camperId/:swimGroupId/:level',
+        path:'swim-report/:camperId/:swimGroupId/:level',
         component: SwimReportComponent,
+    },
+    {
+        path:'lifeguard-reports',
+        component: LifeguardReportsComponent,
+        canActivate: [AuthGuard,ModuleGuard],
+        data: {module: 'swim'}
     },
     {
         path: 'meds',
@@ -211,6 +229,11 @@ const appRoutes: Routes = [
         component: DietaryComponent,
         canActivate: [AuthGuard,ModuleGuard],
         data: {module: 'meds'}
+    },
+    {
+        path: 'db-maintenance',
+        component: DbMaintenanceComponent,
+        canActivate: [AuthGuard,SuperUserGuard],
     },
     {   path: '**', 
         component: LoginComponent,

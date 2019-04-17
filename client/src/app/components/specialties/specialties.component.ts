@@ -63,6 +63,7 @@ export class SpecialtiesComponent implements OnInit {
   getAllSpecialties(){
     this.loading = true;
     this.campsService.getAllSpecialties().subscribe(data => {
+      console.log(data.specialties);
       this.specialties = data.specialties;
       this.loading = false;
     })
@@ -116,6 +117,7 @@ export class SpecialtiesComponent implements OnInit {
   getHeads(){
     this.loading = true;
     this.campsService.getAllHeads().subscribe(data=>{
+      console.log(data);
       this.heads = data.heads;
       this.getAllSpecialties();
     });

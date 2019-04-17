@@ -2,13 +2,18 @@
 <app-back-button></app-back-button>
 <div>
   <div id="camper-selector" *ngIf="!viewing">
-    <app-camper-selector [exclude]="exclude" (selection)="addToRoster($event)"></app-camper-selector>
+    <app-camper-selector [exclude]="exclude" (selection)="addToRoster($event)" (multiSelection)="addMultipleToRoster($event)"></app-camper-selector>
   </div>
   <div id="roster" [ngClass] = "viewing?'full':'half'">
   <h2>{{roster?.name}}</h2>
-    <div class="camper" *ngFor="let camper of roster?.campers" >
-      <span>{{camper.first}} {{camper.last}}</span>
-      <button class="btn btn-primary" (click)="removeFromRoster(camper._id)" *ngIf="!viewing">x</button>
+    <div class="camper" >
+        <h2>Roster</h2>
+        <table class="table">
+            <tr class="camper" *ngFor="let camper of roster?.campers; let i = index">
+              <td>{{camper.first}} {{camper.last}}</td>
+              <td><button class="btn btn-primary" (click)="removeFromRoster(camper._id)" *ngIf="!viewing">x</button></td>
+            </tr> 
+          </table>
     </div>
   </div>
 </div>

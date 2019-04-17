@@ -65,6 +65,7 @@ export class DivisionsComponent implements OnInit {
   getAllDivisions(){
     this.loading = true;
     this.campsService.getAllDivisions().subscribe(data => {
+      console.log(data);
       this.divisions = data.divisions;
       this.loading = false;
     })
@@ -90,6 +91,7 @@ export class DivisionsComponent implements OnInit {
   }
 
   addHead(division){
+    console.log(division);
     this.loading = true;
     this.campsService.addHeadToDivision(division).subscribe(data => {
       this.getAllDivisions();

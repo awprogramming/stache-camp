@@ -37,7 +37,8 @@ export class SwimStatsComponent implements OnInit {
         this.divisions = Object.keys(data.campers);
       }
       if(this.authService.admin()){
-        this.allCampers = data.output;
+        console.log(data);
+        this.allCampers = data;
         this.session = this.allCampers;
       }
       this.loading = false;

@@ -7,7 +7,8 @@ const HeadStaffTypeSchema = require('./headStaffType').schema;
 const QuestionSchema = new Schema({
     content: {type:String, required: true},
     type: CounselorTypeSchema,
-    byWho: HeadStaffTypeSchema 
+    byWho: HeadStaffTypeSchema,
+    camp_id:String
 });
 
 module.exports = mongoose.model('Question',QuestionSchema);

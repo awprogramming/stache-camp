@@ -64,9 +64,9 @@ export class GameCalendarComponent implements OnInit {
       location: this.form.get('location').value,
       opponent: this.form.get('opponent').value,
       date: date,
-      specialty: this.selectedSpecialty,
+      specialty_id: this.selectedSpecialty._id.toString(),
       needsLunch: this.form.get('needsLunch').value,
-      divisionId: this.preSchedDivision
+      division_id: this.preSchedDivision
     }
 
     this.sportsService.scheduleGame(game).subscribe((data)=>{
@@ -78,6 +78,7 @@ export class GameCalendarComponent implements OnInit {
 
   dateSelected(e){
     this.selectedDate = e;
+    console.log(this.selectedDate);
     this.scheduler = false;
   }
   timeSelected(e){
@@ -91,6 +92,7 @@ export class GameCalendarComponent implements OnInit {
   getGames(e){
     this.loading = true;
     this.monthView = e;
+    console.log(this.divisionShowing)
     if(this.divisionShowing == -1){
       var type;
       if(this.authService.admin())
@@ -98,6 +100,7 @@ export class GameCalendarComponent implements OnInit {
       else
         type = this.authService.userType();
       this.sportsService.getMonthGames(e,type).subscribe((data)=>{
+
         this.games = data.games;
         this.loading = false;
       });
@@ -163,13 +166,15 @@ export class GameCalendarComponent implements OnInit {
   }
 
   divGenders(gender){
+    console.log(this.dropdownDivisions)
     if(gender.toLowerCase()=="female"){
-      return this.dropdownDivisions.divisions[0].divisions;
+      return this.dropdownDivisions["female"];
     }
     else if(gender.toLowerCase()=="male")
-      return this.dropdownDivisions.divisions[1].divisions;
+      return this.dropdownDivisions["male"];
     else
       return [];
+    
   }
   schedGenderChange(e){
     this.schedDivisions = this.divGenders(e);
@@ -192,7 +197,9 @@ export class GameCalendarComponent implements OnInit {
   populateDivisions(){
     this.loading = true;
     this.campsService.getAllDivisions().subscribe(data=>{
-      this.dropdownDivisions = data;
+      this.dropdownDivisions = []
+      for(let gender of data.divisions)
+        this.dropdownDivisions[gender._id.gender] = gender.divisions;
       this.schedDivisions = this.divGenders("male");
       this.loading = false;
     });

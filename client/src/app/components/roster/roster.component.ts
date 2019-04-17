@@ -65,6 +65,16 @@ export class RosterComponent implements OnInit {
     }
   }
 
+  addMultipleToRoster(e){
+    const ids = {
+      c_ids:e,
+      r_id:this.id
+    };
+    this.sportsService.addCampersToRoster(ids).subscribe(data => {   
+      this.loadRoster();
+    });
+  }
+
   removeFromRoster(c_id){
     this.loading = true;
     for(var i = 0; i < this.exclude.length; i++){

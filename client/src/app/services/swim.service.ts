@@ -56,9 +56,9 @@ export class SwimService {
     return this.http.get(this.domain + 'swim/get_swim_group/'+ id,this.options).map(res => res.json());
   }
 
-  getSwimGroupGuest(campId,id){
+  getSwimGroupGuest(groupId,camperId){
     this.createAuthenticationHeaders();
-    return this.http.get(this.domain + 'authentication/get_swim_group/'+campId+'/'+id,this.options).map(res => res.json());
+    return this.http.get(this.domain + 'authentication/get_swim_group/'+groupId+'/'+camperId,this.options).map(res => res.json());
   }
 
   changeSendReport(data){
@@ -73,6 +73,15 @@ export class SwimService {
     }
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + 'swim/add_to_swim_group',data,this.options).map(res => res.json());
+  }
+
+  addMultipleToSwimGroup(groupId,camperIds){
+    var data = {
+      camperIds:camperIds,
+      groupId:groupId
+    }
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'swim/add_multiple_to_swim_group',data,this.options).map(res => res.json());
   }
 
   removeFromSwimGroup(groupId,camperId){
@@ -247,6 +256,26 @@ export class SwimService {
       newName: newName
     }
     return this.http.post(this.domain + 'swim/change_group_name',data,this.options).map(res => res.json());
+  }
+
+  getCompleted(){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'swim/get_completed',this.options).map(res => res.json());
+  }
+
+  prepExport(){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'swim/prep_export',this.options).map(res => res.json());
+  }
+
+  lifeguardReports(id){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'swim/lifeguard_reports/'+id,this.options).map(res => res.json());
+  }
+
+  mergeGroups(data){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'swim/merge_groups',data,this.options).map(res => res.json());
   }
 
 }

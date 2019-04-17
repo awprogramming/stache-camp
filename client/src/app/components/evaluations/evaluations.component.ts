@@ -7,6 +7,10 @@ import { AuthService } from '../../services/auth.service';
 import { EvaluationsService } from '../../services/evaluations.service';
 import { Angular2Csv } from 'angular2-csv/Angular2-csv';
 
+import * as pdfMake from 'pdfmake/build/pdfmake.js';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
 @Component({
   selector: 'app-evaluations',
   templateUrl: './evaluations.component.html',
@@ -30,6 +34,7 @@ export class EvaluationsComponent implements OnInit {
   };
   genderShowing = "all";
   dropdownDivisions;
+  ssc;
 
   constructor(
     private campsService: CampsService,
@@ -41,11 +46,11 @@ export class EvaluationsComponent implements OnInit {
 
   getAllCurrent(){
     this.loading = true;
+    this.ssc = this.campsService.hasModule('ssc');
     this.evaluationsService.getCurrentEvals().subscribe(data => {
       this.divisions = [];
       this.counselors = [];
       if(this.authService.admin()){
-        console.log("HELLO WORLD");
         this.sessions = data.output;
         for(let session of this.sessions){
           for(let counselor of session.counselors){
@@ -76,71 +81,71 @@ export class EvaluationsComponent implements OnInit {
       else{
       for(let counselor of data.output){
           if(this.approver){
-            if(counselor._id.counselor.division && counselor._id.counselor.division.approvers){
-              for(let leader of counselor._id.counselor.division.approvers){
-                if(leader._id == JSON.parse(localStorage.getItem('user'))._id){
-                    if(this.divisions.indexOf(counselor._id.counselor.division.name)==-1){  
-                      this.divisions.push(counselor._id.counselor.division.name);
+
+            if(counselor.division && counselor.division.approver_ids){
+              for(let leader_id of counselor.division.approver_ids){
+                if(leader_id == JSON.parse(localStorage.getItem('user'))._id){
+                    if(this.divisions.indexOf(counselor.division.name)==-1){  
+                      this.divisions.push(counselor.division.name);
                     }
                     const c = {
                       evals:counselor.evaluations,
-                      _id:counselor._id.counselor._id,
-                      first: counselor._id.counselor.first,
-                      last: counselor._id.counselor.last,
+                      _id:counselor._id,
+                      first: counselor.first,
+                      last: counselor.last,
                     }
-                    if(this.counselors[counselor._id.counselor.division.name])
-                      this.counselors[counselor._id.counselor.division.name].push(c);
+                    if(this.counselors[counselor.division.name])
+                      this.counselors[counselor.division.name].push(c);
                     else
-                      this.counselors[counselor._id.counselor.division.name] = [c]
+                      this.counselors[counselor.division.name] = [c]
                     break;
                   }
               }
             }
           }
-          else if(this.getType() == "leader" && counselor._id.counselor.division){
-            if(counselor._id.counselor.division){
-              for(let leader of counselor._id.counselor.division.leaders){
-                if(leader._id == JSON.parse(localStorage.getItem('user'))._id){
-                    if(this.divisions.indexOf(counselor._id.counselor.division.name)==-1)  
-                      this.divisions.push(counselor._id.counselor.division.name);
+          else if(this.getType() == "leader" && counselor.division){
+            if(counselor.division){
+              for(let leader_id of counselor.division.leader_ids){
+                if(leader_id == JSON.parse(localStorage.getItem('user'))._id){
+                    if(this.divisions.indexOf(counselor.division.name)==-1)  
+                      this.divisions.push(counselor.division.name);
                     const c = {
                       evals:counselor.evaluations,
-                      _id:counselor._id.counselor._id,
-                      first: counselor._id.counselor.first,
-                      last: counselor._id.counselor.last,
+                      _id:counselor._id,
+                      first: counselor.first,
+                      last: counselor.last,
                     }
-                    if(this.counselors[counselor._id.counselor.division.name])
-                      this.counselors[counselor._id.counselor.division.name].push(c);
+                    if(this.counselors[counselor.division.name])
+                      this.counselors[counselor.division.name].push(c);
                     else
-                      this.counselors[counselor._id.counselor.division.name] = [c]
+                      this.counselors[counselor.division.name] = [c]
                     break;
                   }
               }
             }
           }
           else{
-            if(counselor._id.counselor.specialty){
-              for(let leader of counselor._id.counselor.specialty.head_specialists){
-                if(leader._id == JSON.parse(localStorage.getItem('user'))._id){
-                    if(this.divisions.indexOf(counselor._id.counselor.specialty.name)==-1)  
-                      this.divisions.push(counselor._id.counselor.specialty.name);
+            if(counselor.specialty){
+              for(let leader_id of counselor.specialty.head_specialist_ids){
+                if(leader_id == JSON.parse(localStorage.getItem('user'))._id){
+                    if(this.divisions.indexOf(counselor.specialty.name)==-1)  
+                      this.divisions.push(counselor.specialty.name);
                     const c = {
                       evals:counselor.evaluations,
-                      _id:counselor._id.counselor._id,
-                      first: counselor._id.counselor.first,
-                      last: counselor._id.counselor.last,
+                      _id:counselor._id,
+                      first: counselor.first,
+                      last: counselor.last,
                     }
-                    if(this.counselors[counselor._id.counselor.specialty.name])
-                      this.counselors[counselor._id.counselor.specialty.name].push(c);
+                    if(this.counselors[counselor.specialty.name])
+                      this.counselors[counselor.specialty.name].push(c);
                     else
-                      this.counselors[counselor._id.counselor.specialty.name] = [c]
+                      this.counselors[counselor.specialty.name] = [c]
                     break;
                   }
               }
             }
           }
       }
-
       for(var type in this.counselors){
         for(let counselor of this.counselors[type]){
           if(counselor.evals[0] && counselor.evals[0].number > 1){
@@ -239,7 +244,7 @@ export class EvaluationsComponent implements OnInit {
     this.loading = true;
     var session;
     for(let sess of this.sessions){
-      if(sess._id==session_id){
+      if(sess._id._id==session_id){
         session = sess;
         break;
       }
@@ -261,12 +266,11 @@ export class EvaluationsComponent implements OnInit {
     
     data.push(labels);
 
-
     for(let counselor of session.counselors){
       var rowObj = {};
       var count = 0;
-      rowObj["first"] = counselor.counselor.first;
-      rowObj["last"] = counselor.counselor.last;
+      rowObj["first"] = counselor.first;
+      rowObj["last"] = counselor.last;
       if(counselor.preFiller){
         for(let pre of counselor.preFiller){
           count++;
@@ -314,9 +318,102 @@ export class EvaluationsComponent implements OnInit {
       }
       data.push(rowObj)
     }
-    
-   new Angular2Csv(data, session.session.name+'_Eval_Report');
+   new Angular2Csv(data, session._id.name+'_Eval_Report');
    this.loading = false;
+  }
+
+   async downloadPDF(){
+    var docDefinition = { 
+      content: [],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [0, 0, 0, 10]
+        },
+        subheader: {
+          fontSize: 16,
+          bold: true,
+          margin: [0, 10, 0, 5]
+        },
+        tableExample: {
+          margin: [0, 5, 0, 15]
+        },
+        tableHeader: {
+          bold: true,
+          fontSize: 13,
+          color: 'black'
+        }
+      },
+    };
+
+    for(let division of this.divisions){
+      // var divText = {text: division, style: 'subheader'}
+      for(let counselor of this.counselors[division]){
+        var cText = {text: counselor.first+" "+counselor.last+" - "+division, style: 'subheader'}
+        docDefinition.content.push(cText);
+        var table = {
+          headerRows: 1,
+          body: [
+            [{text: 'Question', style: 'tableHeader'}, {text: 'Notes', style: 'tableHeader'}, {text: 'Score', style: 'tableHeader'}]
+          ]
+        };
+        var curEval;
+        for(let evaluation of counselor.evals){
+          if(evaluation.number = this.options.evaluationOpts.currentEval){
+            curEval = evaluation;
+            break;
+          }
+        }
+        if(curEval){
+          for(let answer of curEval.answers){
+            if(answer.comment_ids && answer.comment_ids.length > 0){
+              var comments = await this.evaluationsService.populateComments(answer.comment_ids).toPromise();
+              var commentBody = {
+									text: []
+              }
+              for(let comment of comments.comments){
+                if(this.ssc)
+                  commentBody.text.push({text:comment.commenter + " on "+ new Date(comment.date).toLocaleDateString("en-US")+" ("+comment.type+")\n",bold:true});
+                else
+                commentBody.text.push({text:comment.commenter + " on "+ new Date(comment.date).toLocaleDateString("en-US")+"\n",bold:true});
+                commentBody.text.push(comment.comment+"\n\n")
+
+              }
+              table.body.push([answer.question.content,commentBody,answer.numerical]);
+            }
+            else{
+              table.body.push([answer.question.content,answer.text,answer.numerical]);
+            }
+          }
+        }
+        docDefinition.content.push({
+          style: 'tableExample',
+          table: table,
+        },);
+       
+        if(curEval.additional_comment_ids){
+          console.log("hello world");
+          docDefinition.content.push({text: "Additional Notes", style: 'subheader'});
+          var comments = await this.evaluationsService.populateComments(curEval.additional_comment_ids).toPromise();
+            var commentBody = {
+                text: []
+            }
+            for(let comment of comments.comments){
+              if(this.ssc)
+                commentBody.text.push({text:comment.commenter + " on "+ new Date(comment.date).toLocaleDateString("en-US")+" ("+comment.type+")\n",bold:true});
+              else
+              commentBody.text.push({text:comment.commenter + " on "+ new Date(comment.date).toLocaleDateString("en-US")+"\n",bold:true});
+              commentBody.text.push(comment.comment+"\n\n")
+            }
+            docDefinition.content.push(commentBody);
+        }
+        var score = this.getScore(curEval.answers);
+        docDefinition.content.push({text: "Score: "+score, style: 'subheader'})
+        docDefinition.content.push({text: "Level: "+this.getLevel(score), style: 'subheader',pageBreak:"after"})
+      }
+    }
+    pdfMake.createPdf(docDefinition).download('pdf_export.pdf');
   }
 
   getType(){
@@ -342,7 +439,8 @@ export class EvaluationsComponent implements OnInit {
         var tempSession = Object.assign({},session);;
         var tempCounselors = [];
         for(let counselor of session.counselors){
-          if((counselor.counselor.gender.toLowerCase() == this.genderShowing || allGenders) && ((counselor.counselor.division && counselor.counselor.division.name == this.divisionShowing.name) || allDivisions)){
+
+          if(((counselor.division && counselor.division.gender.toLowerCase() == this.genderShowing) || allGenders) && ((counselor.division && counselor.division.name == this.divisionShowing.name) || allDivisions)){
             tempCounselors.push(counselor);
           }
         }
@@ -354,21 +452,23 @@ export class EvaluationsComponent implements OnInit {
 
   divGenders(gender){
     if(gender.toLowerCase()=="female"){
-      return this.dropdownDivisions.divisions[0].divisions;
+      return this.dropdownDivisions["female"];
     }
     else if(gender.toLowerCase()=="male")
-      return this.dropdownDivisions.divisions[1].divisions;
+      return this.dropdownDivisions["male"];
   }
 
   populateDivisions(){
     this.loading = true;
     this.campsService.getAllDivisions().subscribe(data=>{
-      this.dropdownDivisions = data;
+      this.dropdownDivisions = []
+      for(let gender of data.divisions)
+        this.dropdownDivisions[gender._id.gender] = gender.divisions;
       if(this.authService.admin()){
-        this.dropdownDivisions.divisions[0].divisions.unshift({
+        this.dropdownDivisions["male"].unshift({
           name:"Show All"
         });
-        this.dropdownDivisions.divisions[1].divisions.unshift({
+        this.dropdownDivisions["female"].unshift({
           name:"Show All"
         });
       }

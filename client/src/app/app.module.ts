@@ -74,6 +74,17 @@ import { PasswordResetComponent } from './components/password-reset/password-res
 import { LoadingComponent } from './components/loading/loading.component';
 import { HowWeSayComponent } from './components/how-we-say/how-we-say.component';
 import { LevelCompletedComponent } from './components/level-completed/level-completed.component';
+
+import { DbMaintenanceComponent } from './components/db-maintenance/db-maintenance.component';
+import { DbMaintenanceService } from './services/db-maintenance.service';
+
+import { EventsService } from './services/events.service';
+import { EventCalendarComponent } from './components/event-calendar/event-calendar.component';
+import { EventComponent } from './components/event/event.component';
+import { CamperComponent } from './components/camper/camper.component';
+import { LifeguardreportsComponent } from './components/lifeguardreports/lifeguardreports.component';
+import { LifeguardReportsComponent } from './components/lifeguard-reports/lifeguard-reports.component';
+import { EvalCommentComponent } from './components/eval-comment/eval-comment.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -128,7 +139,13 @@ import { LevelCompletedComponent } from './components/level-completed/level-comp
     LoadingComponent,
     HowWeSayComponent,
     LevelCompletedComponent,
-
+    DbMaintenanceComponent,
+    EventCalendarComponent,
+    EventComponent,
+    CamperComponent,
+    LifeguardreportsComponent,
+    LifeguardReportsComponent,
+    EvalCommentComponent
   ],
   imports: [
     BrowserModule,
@@ -140,7 +157,7 @@ import { LevelCompletedComponent } from './components/level-completed/level-comp
     BrowserAnimationsModule,
     CalendarModule.forRoot()
   ],
-  providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard, AdminOrUserGuard, ModuleGuard,EvaluationsService,SportsService,MedsService,HttpClient,SwimService],
+  providers: [AuthService, CampsService, ModuleService, AuthGuard, NotAuthGuard, SuperUserGuard, AdminGuard, AdminOrUserGuard, ModuleGuard,EvaluationsService,SportsService,MedsService,HttpClient,SwimService,DbMaintenanceService,EventsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

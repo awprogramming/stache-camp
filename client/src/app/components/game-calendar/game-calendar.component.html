@@ -57,7 +57,7 @@
   </div>
   <div *ngIf="selectedDate?.date.events">
     <div *ngFor="let game of selectedDate.date.events">
-      <h2>{{displayTime(game.date)}} ({{game.specialty.name}})<span *ngIf="!game.rosterId" class="no-roster">No Roster Submitted!</span></h2>
+      <h2>{{displayTime(game.date)}} ({{game.specialty.name}})<span *ngIf="!game.roster" class="no-roster">No Roster Submitted!</span></h2>
       <h3 *ngIf="game.division">{{game.division.name}} ({{game.division.gender}})</h3>
       <h3>{{game.name}}</h3>
       <p>vs. {{game.opponent}}</p>

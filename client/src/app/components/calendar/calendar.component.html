@@ -17,7 +17,9 @@
   <tr class="week" *ngFor="let i of [0,1,2,3,4,5]">
     <td class="day" *ngFor="let j of [0,1,2,3,4,5,6]" [ngClass]="days[7*i+j].cur ? 'cur' : 'not-cur'" (click)="dateSelected(days[7*i+j],7*i+j)">
       {{days[7*i+j].day}}
-      <div *ngIf="days[7*i+j].events" [ngClass]="eventClass(days[7*i+j])">{{days[7*i+j].events.length}}</div>
+      <div *ngIf="days[7*i+j].events"><!--{{numEvents(days[7*i+j])}}</div>-->
+        <div *ngFor="let type of types(days[7*i+j].events)" [ngClass]="eventClass(days[7*i+j].events[type],type)">{{days[7*i+j].events[type].length}}</div>
+      </div>
     </td>
   </tr>
 </table>

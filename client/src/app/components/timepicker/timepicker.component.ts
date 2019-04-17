@@ -1,4 +1,5 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { isGeneratedFile } from '@angular/compiler/src/aot/util';
 
 @Component({
   selector: 'app-timepicker',
@@ -7,12 +8,28 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 })
 export class TimepickerComponent implements OnInit {
 
+  time ={
+      hour:"12",
+      minute:"00",
+      ampm:"PM"
+    }
+  @Input() 
+    set selectedTime(selectedTime){
+        console.log(selectedTime);
+          
+          this.time = {
+            hour:selectedTime.hour,
+            minute:selectedTime.minute,
+            ampm:selectedTime.ampm
+          }
+          if(this.time.minute=="0"){
+            this.time.minute="00";
+          }
+    }
+
   @Output() selection = new EventEmitter();
-  time = {
-    hour:"12",
-    minute:"00",
-    ampm:"PM"
-  }
+
+  
   constructor() { }
 
   increaseHour(){

@@ -63,12 +63,13 @@ const passwordValidators = [
 ]
 
 const userSchema = new Schema({
-    email: {type:String, required: true, unique: true,sparse:true, lowercase: true, validate: emailValidators },
-    password: {type:String, required: true, validate: passwordValidators},
+    email: {type:String, required: true},//, unique: true,sparse:true, lowercase: true},//, validate: emailValidators },
+    password: {type:String, required: true},//, validate: passwordValidators},
     first:{type:String, required:true},
     last:{type:String, required:true},
     type:HeadStaffTypeSchema,
-    counselorRef: String
+    counselorRef: String,
+    camp_id: String
 });
 
 userSchema.pre('save',function(next) {

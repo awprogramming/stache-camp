@@ -34,20 +34,24 @@ export class SwimStatComponent implements OnInit {
   }
 
   getCamperGroup(){
+    console.log('test')
     this.swimService.getCamperGroup(this.camper._id).subscribe(data => {
+      console.log(data);
       this.camperGroup = data.group;
+      console.log(this.camperGroup);
     });
   }
 
   goToReport(level){
+    console.log(level);
     if(level==-1){
      level = {
        rcLevel:-1
      };
     }
     if(this.camperGroup){
-    var camp = JSON.parse(localStorage.getItem('user')).camp_id;
-    this.router.navigate(['/swim-report/'+camp+"/"+this.camper._id+'/'+this.camperGroup._id+'/'+level.rcLevel]);
+      var camp = JSON.parse(localStorage.getItem('user')).camp_id;
+      this.router.navigate(['/swim-report/'+this.camper._id+'/'+this.camperGroup._id+'/'+level.rcLevel]);
     }
   }
 

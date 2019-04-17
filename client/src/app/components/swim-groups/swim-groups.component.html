@@ -1,5 +1,6 @@
 <app-loading *ngIf="loading"></app-loading>
 <button class="btn btn-primary" (click)="generateGroups()" *ngIf="authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())">Auto-Generate Groups</button>
+<button class="btn btn-primary" (click)="export()" *ngIf="authService.admin()">Export Groups</button>
 <form [formGroup]="form" (submit)="createSwimGroupSubmit()" *ngIf="authService.userType() != 'lifeguard' && (authService.userType() != 'leader'||authService.admin())">
   <div class="form-group">
     <label for="name">Name</label>
@@ -15,22 +16,33 @@
   <input class="btn btn-primary" type="submit" value="Register" />
   <input class="btn btn-primary" (click) = "cancelAdd()" value="Cancel Add" />
 </form>
+<h2>Merge Groups</h2>
+<div class="merge">
+    <h4>Merge</h4>
+    <div><span *ngIf="group1">{{group1.name}}</span></div>
+    <h4>Into</h4>
+    <div><span *ngIf="group2">{{group2.name}} (&lt;--This group will retain name)</span></div>
+    <button class="btn btn-primary" [disabled]="!group1 || !group2" (click)="mergeGroups()">Merge</button>
+    <button class="btn btn-primary" [disabled]="!group1 || !group2" (click)="swapGroups()">Swap</button>
+</div>
 <app-divisions-dropdown (selectedChanged) = "showDivision($event)" [gender]="male" [divisions]="divisions"></app-divisions-dropdown>
 <app-lifeguard-dropdown (selectedChanged) = "lifeguardFilter($event)" [addAll]="true"></app-lifeguard-dropdown>
 
 <div *ngIf="groups">
-  <div *ngFor="let division of getGroupDivisions()">
-  <h2>{{division}}</h2>
+  <div *ngFor="let division of groups">
+  <h2 *ngIf="division.division">{{division.division.name}}</h2>
+  <h2 *ngIf="!division.division">No Division</h2>
   <table class="table" >
     <tr>
       <th>Name</th>
       <th>Lifeguard</th>
       <th></th>
     </tr>
-    <tr *ngFor="let group of groups[division]">
-      <td>{{group.data.name}}</td>
+    <tr *ngFor="let group of division.groups" (click)="selectForMerge($event,group)">
+      <td>{{group.name}}</td>
       <td>{{group.lifeguard?.first}} {{group.lifeguard?.last}}</td>
-      <td><a class="btn btn-primary" [routerLink]="['/swim-group',group.data._id]">View</a><button *ngIf="authService.admin()" class="btn btn-primary" (click) = "removeGroup(group.data._id)">X</button></td>
+      <td><a class="btn btn-primary" [routerLink]="['/swim-group',group._id]">View</a><button *ngIf="authService.admin()" class="btn btn-primary" (click) = "removeGroup(group._id)">X</button></td>
     </tr>
   </table>
+  </div>
 </div>

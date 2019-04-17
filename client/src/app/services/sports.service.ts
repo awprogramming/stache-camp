@@ -64,6 +64,12 @@ export class SportsService {
     return this.http.post(this.domain + 'sports/add_camper_to_roster',ids,this.options).map(res => res.json());
   }
 
+  addCampersToRoster(ids){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'sports/add_campers_to_roster',ids,this.options).map(res => res.json());
+  }
+
+
   addCamperToInternalRoster(ids){
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + 'sports/add_camper_to_internal_roster',ids,this.options).map(res => res.json());

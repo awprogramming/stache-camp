@@ -11,11 +11,11 @@ const gameSchema = new Schema({
     location: String,
     opponent: String,
     needsLunch: Boolean,
-    specialty: SpecialtySchema,
-    divisionId:String,
-    rosterId: String,
-    coachIds:[String],
-    refIds:[String],
+    specialty_id:String,
+    division_id:String,
+    roster_id: String,
+    coach_ids:[String],
+    ref_ids:[String],
     emailSent: {type: Boolean, default: false}
 });
 

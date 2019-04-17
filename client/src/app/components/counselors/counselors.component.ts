@@ -196,12 +196,14 @@ export class CounselorsComponent implements OnInit {
   getAllCounselors(){
     this.loading = true;
     this.campsService.getAllCounselors().subscribe(data => {
+      
       if(this.authService.isUser()){
-        this.divisions = Object.keys(data.counselors);
-        this.counselors = data.counselors;
+        this.divisions = data.counselors;
+        
       }
       if(this.authService.admin()){
         this.sessions = data.output.sessions;
+        console.log(this.sessions);
         if(this.sessions.length != 0){
           if(data.output.sessions[0]._id.session_id!=data.output.cur_session._id){
             const session = {
@@ -332,12 +334,14 @@ export class CounselorsComponent implements OnInit {
   populateDivisions(){
     this.loading = true;
     this.campsService.getAllDivisions().subscribe(data=>{
-      this.dropdownDivisions = data;
+      this.dropdownDivisions = []
+      for(let gender of data.divisions)
+        this.dropdownDivisions[gender._id.gender] = gender.divisions;
       if(this.authService.admin()){
-        this.dropdownDivisions.divisions[0].divisions.unshift({
+        this.dropdownDivisions["male"].unshift({
           name:"Show All"
         });
-        this.dropdownDivisions.divisions[1].divisions.unshift({
+        this.dropdownDivisions["female"].unshift({
           name:"Show All"
         });
       }
@@ -370,7 +374,7 @@ export class CounselorsComponent implements OnInit {
         var tempSession = Object.assign({},session);;
         var tempCounselors = [];
         for(let counselor of session.counselors){
-          if((counselor.gender.toLowerCase() == this.genderShowing || allGenders) && (counselor.division.name == this.divisionShowing.name || allDivisions)){
+          if(counselor.division&&(counselor.gender.toLowerCase() == this.genderShowing || allGenders) && (counselor.division.name == this.divisionShowing.name || allDivisions)){
             tempCounselors.push(counselor);
           }
         }
@@ -382,10 +386,10 @@ export class CounselorsComponent implements OnInit {
 
   divGenders(gender){
     if(gender.toLowerCase()=="female"){
-      return this.dropdownDivisions.divisions[0].divisions;
+      return this.dropdownDivisions["female"];
     }
     else if(gender.toLowerCase()=="male")
-      return this.dropdownDivisions.divisions[1].divisions;
+      return this.dropdownDivisions["male"];
   }
 
   getSpecialties(){

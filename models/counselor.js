@@ -12,11 +12,16 @@ const counselorSchema = new Schema({
     first: {type:String, required: true},
     last: {type:String, required: true},
     gender: {type:String, enum:['male','female'], required: true},
+    camp_id:String,
+    division_id:String,
+    specialty_id:String,
     division: {type:DivisionSchema},
     type: CounselorTypeSchema,
     specialty: {type:SpecialtySchema},
+    session_ids: [String],
     sessions:[SessionSchema],
     evaluations:[EvaluationSchema]
-});
+},
+{usePushEach : true});
 
 module.exports = mongoose.model('Counselor',counselorSchema);

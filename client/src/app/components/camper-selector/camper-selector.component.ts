@@ -17,12 +17,14 @@ export class CamperSelectorComponent implements OnInit {
     }
 
   @Output() selection = new EventEmitter();
+  @Output() multiSelection = new EventEmitter();
   options;
   divisions;
   gender = "male";
   division
   campers;
   dropdownDivisions;
+  selectedCampers = [];
   constructor(
     private campService: CampsService
   ) { }
@@ -30,6 +32,7 @@ export class CamperSelectorComponent implements OnInit {
   divisionChange(e){
     this.division = e._id
     this.campers = [];
+    console.log(this.division);
     this.populateDivision(e._id);
   }
 
@@ -38,6 +41,7 @@ export class CamperSelectorComponent implements OnInit {
     this.gender = e;
     this.divisions = this.divGenders();
     this.campers = [];
+    console.log(this.gender);
     this.divGenders();
     this.populateDivision(this.division);
   }
@@ -56,26 +60,29 @@ export class CamperSelectorComponent implements OnInit {
 
   populateDivisions(){
     this.campService.getAllDivisions().subscribe(data=>{
-      this.dropdownDivisions = data;
-      this.divisions = this.dropdownDivisions.divisions[1].divisions;
+      this.dropdownDivisions = []
+      for(let gender of data.divisions)
+        this.dropdownDivisions[gender._id.gender] = gender.divisions;
+
+      // this.dropdownDivisions = data;
+      console.log(this.dropdownDivisions);
+      this.divisions = this.dropdownDivisions["male"];
+      console.log(this.divisions);
       this.populateDivision(this.divisions[0]._id);
     });
   }
 
   divGenders(){
       if(this.gender.toLowerCase()=="female"){
-        return this.dropdownDivisions.divisions[0].divisions;
+        return this.dropdownDivisions["female"];
       }
       else if(this.gender.toLowerCase()=="male")
-        return this.dropdownDivisions.divisions[1].divisions;
+        return this.dropdownDivisions["male"];
   }
 
   populateDivision(divisionId){
-    if(!this.options){
-      this.getOptions()
-    }
-    else{
-      this.campService.get_division_campers(divisionId,this.options.session._id).subscribe(data => {
+      this.campService.get_division_campers(divisionId).subscribe(data => {
+        console.log(data);
         if(data.success == false)
           this.campers = [];
         else{
@@ -94,7 +101,22 @@ export class CamperSelectorComponent implements OnInit {
           }
         }
       });
+  }
+
+  selectCamper(e,camper){
+    if(e.target.style.fontWeight == "bold"){
+      e.target.style.fontWeight = "";
+      this.selectedCampers.splice(this.selectedCampers.indexOf(camper._id.toString()),1)
     }
+    else{
+      e.target.style.fontWeight = "bold";
+      this.selectedCampers.push(camper._id.toString());
+    }
+  }
+
+  addSelected(){
+    this.multiSelection.emit(this.selectedCampers);
+    this.selectedCampers = [];
   }
 
   ngOnInit() {

@@ -6,9 +6,9 @@ const CamperSchema = require('./camper').schema;
 
 
 const swimOptsSchema = new Schema({
-    swimLevels: [SwimLevelSchema],
     completed:[{
         camper: CamperSchema,
+        camper_id: String,
         level:Number
     }],
     agMax: Number

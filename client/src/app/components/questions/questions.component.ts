@@ -72,6 +72,7 @@ export class QuestionsComponent implements OnInit {
   getAllQuestions(){
     this.loading = true;
     this.evaluationsService.getAllQuestions().subscribe(data => {
+      console.log(data);
       this.types = data.types;
       this.loading = false;
     })

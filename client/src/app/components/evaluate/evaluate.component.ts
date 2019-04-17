@@ -23,6 +23,7 @@ export class EvaluateComponent implements OnInit {
   private sub: any;
   type;
   loading;
+  ssc;
 
   constructor(
     private route: ActivatedRoute,
@@ -46,6 +47,7 @@ export class EvaluateComponent implements OnInit {
 
   getOptions(){
     this.loading = true;
+    this.ssc = this.campsService.hasModule('swim');
     this.campsService.getOptions().subscribe(data => {
       this.options = data.options
       this.loadEvaluation();
@@ -80,7 +82,9 @@ export class EvaluateComponent implements OnInit {
     for(let answer of this.evaluation.evaluation.answers){
       total+=answer.numerical
     }
+    
     this.percentage = Math.round(total/(this.evaluation.evaluation.answers.length*this.options.evaluationOpts.high)*100);
+    console.log(this.percentage);
     this.calculate_level();
   }
 
@@ -134,7 +138,7 @@ export class EvaluateComponent implements OnInit {
   userIsApprover(){
     this.loading = true;
     this.evaluationsService.isEvalApprover(this.counselorId).subscribe(data => {
-      console.log(data.approver);
+      console.log(data);
       this.approver = data.approver;
       this.loading = false;
     });

@@ -12,40 +12,46 @@
   </select>
   <app-divisions-dropdown (selectedChanged) = "schedDivisionChange($event)" [gender] = "male" [divisions]="schedDivisions" *ngIf="dropdownDivisions"></app-divisions-dropdown>
   <button class="btn btn-primary" (click)="changeDivision()">Change Division</button>
-  <h4>{{division.name}} ({{division.gender}})</h4>
+  <h4>{{game.division.name}} ({{game.division.gender}})</h4>
   
-  <div *ngIf="game.rosterId">
+  <div *ngIf="game.roster&&game.roster._id">
     <h3>Roster <button *ngIf="authService.userType() =='head_specialist'" class="btn btn-primary" (click)="removeRoster()">Remove Roster</button></h3>
     <ul>
-      <li *ngFor="let camper of campers">{{camper.first}} {{camper.last}}</li>
+      <li *ngFor="let camper of game.roster.campers">{{camper.first}} {{camper.last}}</li>
     </ul>
   </div>
-  <div *ngIf="!game.rosterId">
+  <div *ngIf="!game.roster||(game.roster&&!game.roster._id)">
     <app-roster-dropdown (selectedChanged) ="rosterSelected($event)" [specialtyId]="game.specialty._id"></app-roster-dropdown>
     <button class="btn btn-primary" (click)="addRoster()">Add Roster</button>
   </div>
-  <div *ngIf="coaches.length == 0">
+  <div *ngIf="game.coaches.length == 0">
     <h4>No Coaches Selected</h4>
   </div>
-  <div *ngIf="coaches.length > 0">
+  <div *ngIf="game.coaches.length > 0">
       <h4>Coaches</h4>
-      <ul>
-        <li *ngFor="let coach of coaches">{{coach.first}} {{coach.last}} <button class="btn btn-primary" (click)="removeCoachFromGame(coach)">x</button></li>
-      </ul>
+      <table class="table">
+          <tr *ngFor="let coach of game.coaches">
+            <td>{{coach.first}} {{coach.last}}</td>
+            <td><button class="btn btn-primary" (click)="removeCoachFromGame(coach)">x</button></td>
+          </tr> 
+      </table>
   </div>
   <div>
     <h4>Select Coach</h4>
     
     <app-counselor-selector [exclude] = "exclude" (selection)="addCoachToGame($event)"></app-counselor-selector>
   </div>
-  <div *ngIf="refs.length == 0">
+  <div *ngIf="game.refs.length == 0">
     <h4>No Refs Selected</h4>
   </div>
-  <div *ngIf="refs.length > 0">
+  <div *ngIf="game.refs.length > 0">
       <h4>Refs</h4>
-      <ul>
-        <li *ngFor="let ref of refs">{{ref.first}} {{ref.last}} <button class="btn btn-primary" (click)="removeRefFromGame(ref)">x</button></li>
-      </ul>
+      <table class="table">
+          <tr *ngFor="let ref of game.refs">
+            <td>{{ref.first}} {{ref.last}}</td>
+            <td><button class="btn btn-primary" (click)="removeRefFromGame(ref)">x</button></td>
+          </tr> 
+      </table>
   </div>
   <div>
     <h4>Select Ref</h4>

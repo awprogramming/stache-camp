@@ -2,7 +2,7 @@
 <div *ngIf="authService.admin() && session">  
   <app-swim-level-dropdown (selectedChanged) = "filter($event)" [all]="true"></app-swim-level-dropdown>
   <div *ngFor="let division of session.divisions">
-    <h2>{{division.d_id.name}}</h2>
+    <h2>{{division.d_name}}</h2>
     <table class="table table-hover" >
       <thead>
         <tr>
@@ -19,7 +19,8 @@
         <tr *ngFor="let camper of division.campers" (click)="goToStats(camper)">
           <td>{{camper.first}}</td>
           <td>{{camper.last}}</td>
-          <td>{{camper.p1Email}}</td>
+          <td *ngIf="camper.p1Email">{{camper.p1Email}}</td>
+          <td *ngIf="!camper.p1Email"><input (click)="addEmail(camper,$event)"><button>ok</button></td>
           <td>{{camper.p2Email}}</td>
           <td>{{camper.cSwimOpts.currentLevel?.rcLevel}}</td>
           <td>{{camper.cSwimOpts.bracelet}}</td>

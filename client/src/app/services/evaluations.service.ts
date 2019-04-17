@@ -112,4 +112,31 @@ export class EvaluationsService {
     return this.http.post(this.domain + 'evaluations/change_green',data,this.options).map(res => res.json());
   }
 
+  createComment(counselor_id,evaluation_id,answer_id,comment){
+    var data = {
+      counselor_id:counselor_id,
+      evaluation_id: evaluation_id,
+      answer_id: answer_id,
+      comment:comment
+    }
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'evaluations/create_comment',data,this.options).map(res => res.json());
+  }
+
+  populateComments(comment_ids){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'evaluations/populate_comments',comment_ids,this.options).map(res => res.json());
+  }
+
+  deleteComment(counselor_id,evaluation_id,answer_id,comment_id){
+    var data = {
+      counselor_id:counselor_id,
+      evaluation_id: evaluation_id,
+      answer_id: answer_id,
+      comment_id:comment_id
+    }
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'evaluations/delete_comment',data,this.options).map(res => res.json());
+  }
+
 }

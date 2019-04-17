@@ -3,7 +3,13 @@
   <option value="female">Girls</option>
 </select>
 <app-divisions-dropdown (selectedChanged) = "divisionChange($event)" [gender] = "male" [divisions]="divisionsShowing" *ngIf="dropdownDivisions"></app-divisions-dropdown>
-<div class="counselor" *ngFor="let counselor of counselors; let i = index">
+<table class="table">
+  <tr class="counselor" *ngFor="let counselor of counselors; let i = index">
+    <td>{{counselor.first}} {{counselor.last}}</td>
+    <td><button class="btn btn-primary" (click) = "counselorSelected(i)">+</button></td>
+  </tr> 
+</table>
+<!-- <div class="counselor" *ngFor="let counselor of counselors; let i = index">
   <span>{{counselor.first}} {{counselor.last}}</span>
   <button class="btn btn-primary" (click) = "counselorSelected(i)">+</button>
-</div> 
+</div>  -->

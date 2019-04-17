@@ -9,48 +9,116 @@
       </div>
     </div>
     
-    <!-- Login Form -->
-    <form [formGroup]="form" (submit)="onRegistrationSubmit()">
+    <div *ngIf="!campsService.hasModule('swim')">
+      <form [formGroup]="form" (submit)="onRegistrationSubmit()">
+        
+          <div class="form-group">
+            <label for="pID">personID</label>
+            <div>
+              <input class="form-control" type="text" name="pID" formControlName="pID" />
+            </div>
+          </div>
+
+        <div class="form-group">
+          <label for="first">First Name</label>
+          <div>
+            <input class="form-control" type="text" name="first" formControlName="first" />
+          </div>
+        </div>
       
         <div class="form-group">
-          <label for="pID">personID</label>
+          <label for="last">Last Name</label>
           <div>
-            <input class="form-control" type="text" name="pID" formControlName="pID" />
+            <input class="form-control" type="text" name="last" formControlName="last" />
           </div>
         </div>
-
-      <div class="form-group">
-        <label for="first">First Name</label>
-        <div>
-          <input class="form-control" type="text" name="first" formControlName="first" />
+        
+        <div class="form-group">
+          <label for="gender">Gender</label>
+          <div>
+            <div>
+              <input class="form-check-input" formControlName="gender" type="radio" name="gender" value="male">
+              <label class="form-check-label">Male</label>
+            </div>
+            <div>
+                <input class="form-check-input" formControlName="gender" type="radio" name="gender" value="female">
+                <label class="form-check-label">Female</label>
+            </div>
+          </div>
         </div>
-      </div>
-    
-      <div class="form-group">
-        <label for="last">Last Name</label>
-        <div>
-          <input class="form-control" type="text" name="last" formControlName="last" />
-        </div>
-      </div>
       
-      <div class="form-group">
-        <label for="gender">Gender</label>
-        <div>
-          <div>
-            <input class="form-check-input" formControlName="gender" type="radio" name="gender" value="male">
-            <label class="form-check-label">Male</label>
+        <!-- Submit Button -->
+        <input class="btn btn-primary" type="submit" value="Register" />
+        <input class="btn btn-primary" (click) = "cancelAdd()" value="Cancel Add" />
+      </form>
+    </div>
+    <div *ngIf="campsService.hasModule('swim')">
+      <form [formGroup]="parentForm" (submit)="onRegistrationSubmit()">
+        
+          <div class="form-group">
+            <label for="pID">personID</label>
+            <div>
+              <input class="form-control" type="text" name="pID" formControlName="pID" />
+            </div>
           </div>
+
+        <div class="form-group">
+          <label for="first">First Name</label>
           <div>
-              <input class="form-check-input" formControlName="gender" type="radio" name="gender" value="female">
-              <label class="form-check-label">Female</label>
+            <input class="form-control" type="text" name="first" formControlName="first" />
           </div>
         </div>
-      </div>
-    
-      <!-- Submit Button -->
-      <input class="btn btn-primary" type="submit" value="Register" />
-      <input class="btn btn-primary" (click) = "cancelAdd()" value="Cancel Add" />
-    </form>
+      
+        <div class="form-group">
+          <label for="last">Last Name</label>
+          <div>
+            <input class="form-control" type="text" name="last" formControlName="last" />
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="gender">Gender</label>
+          <div>
+            <div>
+              <input class="form-check-input" formControlName="gender" type="radio" name="gender" value="male">
+              <label class="form-check-label">Male</label>
+            </div>
+            <div>
+                <input class="form-check-input" formControlName="gender" type="radio" name="gender" value="female">
+                <label class="form-check-label">Female</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="p1Name">Parent 1 Name</label>
+          <div>
+            <input class="form-control" type="text" name="p1Name" formControlName="p1Name" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="p1Email">Parent 1 Email</label>
+          <div>
+            <input class="form-control" type="text" name="p1Email" formControlName="p1Email" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="p2Name">Parent 2 Name</label>
+          <div>
+            <input class="form-control" type="text" name="p2Name" formControlName="p2Name" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="p2Email">Parent 2 Email</label>
+          <div>
+            <input class="form-control" type="text" name="p2Email" formControlName="p2Email" />
+          </div>
+        </div>
+      
+        <!-- Submit Button -->
+        <input class="btn btn-primary" type="submit" value="Register" />
+        <input class="btn btn-primary" (click) = "cancelAdd()" value="Cancel Add" />
+      </form>
+    </div>
 </div>
 
 <div *ngIf="bulkAdd">
@@ -100,7 +168,7 @@
                 <div class="tab-content">
                     <div *ngFor="let session of sessions; let i = index" [ngClass] = "{'in active':i==0}" class="tab-pane fade" id="{{session._id.session_name}}">
                         <h2>{{session._id.session_name}}</h2>
-                        <table class="table" >
+                        <table *ngIf="!campsService.hasModule('swim')" class="table" >
                             <tr>
                               <th></th>
                               <th>First</th>
@@ -112,21 +180,62 @@
                               <th *ngIf="i==0"></th>
                             </tr>
                             <tr *ngFor="let camper of session.campers let j = index">
-                              <td>{{j+1}}</td>
-                              <td>{{camper.first}}</td>
-                              <td>{{camper.last}}</td>
-                              <td>{{camper.gender}}</td>
-                              <td *ngIf="camper.division ">{{camper.division.name}}</td>
+                              <td (click)="goToCamper(camper._id)">{{j+1}}</td>
+                              <td (click)="goToCamper(camper._id)">{{camper.first}}</td>
+                              <td (click)="goToCamper(camper._id)">{{camper.last}}</td>
+                              <td (click)="goToCamper(camper._id)">{{camper.gender}}</td>
+                              <td (click)="goToCamper(camper._id)" *ngIf="camper.division ">{{camper.division.name}}</td>
                               <td *ngIf="!camper.division">
                                 <app-divisions-dropdown *ngIf="i==0" (selectedChanged) = "preAdd($event,camper)" [gender]="camper.gender" [divisions]="divGenders(camper.gender)"></app-divisions-dropdown>
                                 <button *ngIf="i==0" class="btn btn-primary" (click) = "addDivision(camper)">Add</button>
                               </td>
                         
-                              <td *ngIf="i!=0 && camper.enrolled">Enrolled</td>
+                              <td (click)="goToCamper(camper._id)" *ngIf="i!=0 && camper.enrolled">Enrolled</td>
                               <td *ngIf="i!=0 && !camper.enrolled">
                                   <button class="btn btn-primary" (click) = "reenroll(camper,false)">Re-enroll</button>
                               </td>
-                              <td *ngIf="i!=0 && camper.enrolled"></td>
+                              <td (click)="goToCamper(camper._id)" *ngIf="i!=0 && camper.enrolled"></td>
+                              <td *ngIf="i!=0 && !camper.enrolled">
+                                  <input type="checkbox" (change)="preMassReenroll($event,camper)">
+                              </td>
+                              <td *ngIf="i==0"><button class="btn btn-primary" (click) = "remove(camper)">X</button></td>
+                            </tr>
+                          </table>
+                          <table *ngIf="campsService.hasModule('swim')" class="table" >
+                            <tr>
+                              <th></th>
+                              <th>First</th>
+                              <th>Last</th>
+                              <th>Gender</th>
+                              <th>P1Name</th>
+                              <th>P1Email</th>
+                              <th>P2Name</th>
+                              <th>P2Email</th>
+                              <th>{{options.howWeSay.division}}</th>
+                              <th *ngIf="i!=0"></th>
+                              <th *ngIf="i!=0"><button class="btn btn-primary" (click) = "massReenroll()">Reenroll Selected</button></th>
+                              <th *ngIf="i==0"></th>
+                            </tr>
+                            <tr *ngFor="let camper of session.campers let j = index">
+                              <td (click)="goToCamper(camper._id)">{{j+1}}</td>
+                              <td (click)="goToCamper(camper._id)">{{camper.first}}</td>
+                              <td (click)="goToCamper(camper._id)">{{camper.last}}</td>
+                              <td (click)="goToCamper(camper._id)">{{camper.gender}}</td>
+                              <td (click)="goToCamper(camper._id)">{{camper.p1Name}}</td>
+                              <td (click)="goToCamper(camper._id)">{{camper.p1Email}}</td>
+                              <td (click)="goToCamper(camper._id)">{{camper.p2Name}}</td>
+                              <td (click)="goToCamper(camper._id)">{{camper.p2Email}}</td>
+                              <td (click)="goToCamper(camper._id)" *ngIf="camper.division ">{{camper.division.name}}</td>
+                              <td *ngIf="!camper.division">
+                                <app-divisions-dropdown *ngIf="i==0" (selectedChanged) = "preAdd($event,camper)" [gender]="camper.gender" [divisions]="divGenders(camper.gender)"></app-divisions-dropdown>
+                                <button *ngIf="i==0" class="btn btn-primary" (click) = "addDivision(camper)">Add</button>
+                              </td>
+                        
+                              <td (click)="goToCamper(camper._id)" *ngIf="i!=0 && camper.enrolled">Enrolled</td>
+                              <td *ngIf="i!=0 && !camper.enrolled">
+                                  <button class="btn btn-primary" (click) = "reenroll(camper,false)">Re-enroll</button>
+                              </td>
+                              <td (click)="goToCamper(camper._id)" *ngIf="i!=0 && camper.enrolled"></td>
                               <td *ngIf="i!=0 && !camper.enrolled">
                                   <input type="checkbox" (change)="preMassReenroll($event,camper)">
                               </td>
@@ -138,16 +247,16 @@
             </div>
         </div>
     </div>
-    <div *ngIf="authService.isUser() && divisions">
-      <div *ngFor="let division of divisions">
-      <h2>{{division}}</h2>
+    <div *ngIf="authService.isUser()">
+      <div *ngFor="let division of campers">
+      <h2>{{division._id}}</h2>
       <table class="table" >
           <tr>
             <th>First</th>
             <th>Last</th>
             <th>Gender</th>
           </tr>
-          <tr *ngFor="let camper of campers[division]">
+          <tr *ngFor="let camper of division.campers">
             <td>{{camper.first}}</td>
             <td>{{camper.last}}</td>
             <td>{{camper.gender}}</td>

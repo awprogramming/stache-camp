@@ -28,10 +28,13 @@ export class DivisionsDropdownComponent implements OnInit {
 
   populateDivisions(){
     this.campService.getAllDivisions().subscribe(data=>{
+      var divs = []
+      for(let gender of data.divisions)
+        divs[gender._id.gender] = gender.divisions;
       if(this._gender=="female")
-        this.divisions = data.divisions[0].divisions;
+        this.divisions = divs["female"];
       else if(this._gender=="male")
-        this.divisions = data.divisions[1].divisions;
+        this.divisions = divs["male"];
       
       this.selectedChanged.emit(this._divisions[0]);
     });

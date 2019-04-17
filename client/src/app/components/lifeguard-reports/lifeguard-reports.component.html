@@ -1,0 +1,11 @@
+<app-loading *ngIf="loading"></app-loading>
+<app-lifeguard-dropdown (selectedChanged)="loadReports($event)" [addAll]="false"></app-lifeguard-dropdown>
+<div *ngFor="let camper of campers" [id]="camper._id" class="report" (click)="goToReport(camper)">
+  <img [src]="'./assets/'+camper.level+'.jpg'">
+  <span [id]="'name-'+camper.level">{{camper.first}} {{camper.last}}</span>
+  <span [id]="'date-'+camper.level">{{displayDate()}}</span>
+  <span [id]="'instructor-'+camper.level">{{camper.instructor}}</span>
+  <span [id]="'group-'+camper.level">{{camper.group}}</span>
+  <span *ngFor="let skill of completedSkills(camper.currentLevel)" [id]="generateSkillClass(camper.level,skill)">&#10004;</span>
+</div>
+    

@@ -5,6 +5,7 @@
     </ul>
 
       <ul class="nav navbar-nav navbar-right">
+        <li *ngIf="authService.superUser()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/db-maintenance">DB Maintenance</a></li>
         <li *ngIf="authService.superUser()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/register-camp">Register Camp</a></li>
         <li *ngIf="authService.superUser()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/camps">Camps</a></li>
         <li *ngIf="authService.superUser()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/modules">Modules</a></li>
@@ -17,7 +18,6 @@
                 <li *ngIf="authService.loggedIn() && campsService.hasModule('meds')" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/dietary">Dietary</a></li>
             </ul>
         </li>
-
         <li *ngIf="authService.loggedIn()" class="nav-item dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Staff <b class="caret"></b></a>
             <ul class="dropdown-menu" role="menu">
@@ -50,6 +50,7 @@
                 <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/swim-levels">Swim Levels</a></li>
                 <li *ngIf="authService.admin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/level-completed">Level Completed</a></li>
                 <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/register-lifeguard">Register Lifeguard</a></li>
+                <li *ngIf="authService.admin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/lifeguard-reports">Lifeguard Reports</a></li>
             </ul>
         </li>
         <li *ngIf="!authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/login">Login</a></li>

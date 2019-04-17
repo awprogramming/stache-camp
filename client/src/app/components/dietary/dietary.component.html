@@ -51,7 +51,7 @@
 </div>
 <div *ngIf="authService.isUser()">
   <div *ngFor="let division of divisions">
-  <h2>{{division}}</h2>
+  <h2>{{division._id}}</h2>
   <table class="table" >
       <tr>
         <th>First</th>
@@ -60,7 +60,7 @@
         <th>Allergies</th>
         <th>Other</th>
       </tr>
-      <tr *ngFor="let camper of campers[division]">
+      <tr *ngFor="let camper of division.campers">
         <td>{{camper.first}}</td>
         <td>{{camper.last}}</td>
         <td>{{camper.gender}}</td>

@@ -5,7 +5,7 @@
         <div class="panel-heading">
                 <ul class="nav nav-tabs">
                     <li class="nav-item" [ngClass] = "{'active':i==0}" *ngFor="let session of sessions; let i = index">
-                      <a  class="nav-link" id="{{session.session.name}}-tab" data-toggle="tab" href="#{{session.session.name}}" role="tab" attr.aria-controls="{{session.session.name}}" aria-selected="true">{{session.session.name}}</a>
+                      <a  class="nav-link" id="{{session._id.name}}-tab" data-toggle="tab" href="#{{session._id.name}}" role="tab" attr.aria-controls="{{session._id.name}}" aria-selected="true">{{session._id.name}}</a>
                     </li>
                 </ul>
         </div>
@@ -17,9 +17,9 @@
               </select>
               <app-divisions-dropdown (selectedChanged) = "filterDivision($event)" [gender] = "male" [divisions]="divGenders('male')" *ngIf="dropdownDivisions"></app-divisions-dropdown>
             <div class="tab-content">
-                <div *ngFor="let session of sessions; let i = index" [ngClass] = "{'in active':i==0}" class="tab-pane fade" id="{{session.session.name}}">
-                    <h2>{{session.session.name}}</h2>
-                    <button class="btn btn-primary" (click)="export(session.session._id)">Export</button>
+                <div *ngFor="let session of sessions; let i = index" [ngClass] = "{'in active':i==0}" class="tab-pane fade" id="{{session._id.name}}">
+                    <h2>{{session._id.name}}</h2>
+                    <button class="btn btn-primary" (click)="export(session._id._id)">Export</button>
                     <table class="table">
                         <tr>
                           <th>First</th>
@@ -27,8 +27,8 @@
                           <th *ngFor="let i of perSession">Eval {{i+1}}</th>
                         </tr>
                         <tr *ngFor="let counselor of session.counselors">
-                          <td>{{counselor.counselor.first}}</td>
-                          <td>{{counselor.counselor.last}}</td>
+                          <td>{{counselor.first}}</td>
+                          <td>{{counselor.last}}</td>
                           <td *ngFor="let i of counselor.preFiller"></td>
                           <td *ngFor="let eval of counselor.evaluations">
                             <div>
@@ -36,7 +36,7 @@
                               <br>
                               <div *ngIf="eval.sub_evals">
                                 <div *ngFor="let sub of getSubKeys(eval)">
-                                    <a [routerLink]="['/evaluate', counselor.counselor._id,eval._id,sub]"><span>{{sub}}: </span><span>{{getScore(eval.sub_evals[sub])}}% </span>({{getLevel(getScore(eval.sub_evals[sub]))}})</a>
+                                    <a [routerLink]="['/evaluate', counselor._id,eval._id,sub]"><span>{{sub}}: </span><span>{{getScore(eval.sub_evals[sub])}}% </span>({{getLevel(getScore(eval.sub_evals[sub]))}})</a>
                                 </div>
                               </div>
                             </div>
@@ -50,6 +50,7 @@
     </div>
 </div>
 <div *ngIf="!authService.admin()">
+  <button class="btn btn-primary" (click)="downloadPDF()">Export Evals</button>
   <div *ngFor="let division of divisions">
     <h2>{{division}}</h2>
     <table class="table" >

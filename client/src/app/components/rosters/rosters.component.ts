@@ -5,6 +5,7 @@ import { AuthService } from '../../services/auth.service';
 
 import { Router } from '@angular/router';
 import { AuthGuard } from '../../guards/auth.guard';
+import { findLocaleData } from '@angular/common/src/i18n/locale_data_api';
 
 @Component({
   selector: 'app-rosters',
@@ -26,6 +27,7 @@ export class RostersComponent implements OnInit {
   keys;
   internal;
   loading;
+  curSession;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -124,20 +126,28 @@ export class RostersComponent implements OnInit {
     if(this.getType() == "head_specialist" || this.authService.admin()){
       this.sportsService.getAllRosters().subscribe(data => {
         console.log(data.specialties);
-        this.specialties = data.specialties
-        this.loading = false;;
+        this.specialties = data.specialties;
+        this.curSession = data.curSession;
+        this.loading = false;
       });
     }
     else{
       this.sportsService.getLeaderRosters().subscribe(data => {
-        this.divisions = data.rosters;
-        if(this.divisions){
-          this.d_keys = Object.keys(this.divisions);
-          this.keys = []
-          for(let key of this.d_keys){
-            this.keys[key] = Object.keys(this.divisions[key]["specialties"]);
-          }
-        }
+        console.log(data);
+        this.divisions = data.divisions;
+        // var divs = []
+        // for(let division of data.rosters)
+        //   divs[division._id] = division.rosters;
+        // this.divisions = divs;
+        // console.log(this.divisions);
+        // if(this.divisions){
+        //   this.d_keys = Object.keys(this.divisions);
+        //   console.log(this.d_keys);
+        //   this.keys = []
+        //   for(let key of this.d_keys){
+        //     this.keys[key] = Object.keys(this.divisions[key]["specialties"]);
+        //   }
+        // }
         this.loading = false;
       });
     }

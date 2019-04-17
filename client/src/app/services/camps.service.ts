@@ -245,6 +245,11 @@ export class CampsService {
     return this.http.post(this.domain + 'camps/add_camper',camper,this.options).map(res => res.json());
   }
 
+  editCamper(camper){
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + 'camps/edit_camper',camper,this.options).map(res => res.json());
+  }
+
   bulkRegisterCampers(campers){
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + 'camps/bulk_add_camper/',campers,this.options).map(res => res.json());
@@ -260,9 +265,9 @@ export class CampsService {
     return this.http.post(this.domain + 'camps/reenroll',camper,this.options).map(res => res.json());
   }
 
-  get_division_campers(divisionId,sessionId){
+  get_division_campers(divisionId){
     this.createAuthenticationHeaders();
-    return this.http.get(this.domain + 'camps/get_division_campers/'+divisionId+"/"+sessionId,this.options).map(res => res.json());
+    return this.http.get(this.domain + 'camps/get_division_campers/'+divisionId,this.options).map(res => res.json());
   }
 
   get_all_division_campers(){
